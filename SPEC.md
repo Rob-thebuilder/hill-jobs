@@ -41,7 +41,7 @@ All four groups are first-class users. Copy and categories should serve each of 
 | Name | Required |
 | Type | One of: `Prime contractor`, `Subcontractor / supplier`, `Federal civilian`, `Services / support`. Shown as a badge. |
 | Description | One line (≤ 120 characters) about what they do *at Hill*, not a generic company tagline |
-| Job categories | 1–5 tags from a fixed list: `Trades & Maintenance`, `Engineering`, `Software & IT`, `Logistics & Supply`, `Admin & Business`, `Internships & Entry-level` |
+| Job categories | 1–5 tags from a fixed list: `Trades & Maintenance`, `Engineering`, `Software & IT`, `Logistics & Supply`, `Admin & Business`, `Internships & Entry-level`, `Base services` (clinic, commissary, Exchange) |
 | Primary link | "View jobs →" pointing to the careers page. If possible, the link is pre-filtered to Utah/Hill. |
 | Secondary link (optional) | Federal employers only: the agency's own hiring page, if one exists |
 | Verified date | Small text: "Link verified Nov 2026" |
@@ -68,11 +68,13 @@ The primary link is a **USAJOBS search pre-filtered to the agency and the Hill A
       "categories": ["engineering", "software-it", "trades-maintenance"],
       "jobsUrl": "https://…",
       "secondaryUrl": null,
-      "verified": "2026-11"
+      "verified": "2026-11",
+      "sourceUrl": "https://…"
     }
   ]
 }
 ```
+- `sourceUrl` is internal and never shown on the page. It links to evidence (news, a contract award, an official page) that the employer has a workforce at Hill. It's required, so every listing can be traced back to its evidence.
 - `base` lets one employer appear at several bases as separate records, each with its own local description and pre-filtered link.
 - `type` and `categories` use slug values. A single map in the JS turns slugs into display labels.
 - A JSON Schema (`data/employers.schema.json`) is checked in CI (see §8). Unknown types or categories, missing fields, and duplicate ids all fail the build.
