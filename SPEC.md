@@ -1,0 +1,218 @@
+# Work At Hill — v1 Spec
+
+A one-page directory of employers at Hill Air Force Base, Utah: defense contractors and government employers. Job seekers can see who hires at Hill and go straight to each employer's careers page. The data model supports other depot bases with large civilian workforces (e.g., Tinker AFB, Robins AFB), but v1 shows Hill only.
+
+## 1. Goals
+
+- A job seeker can find a relevant employer and reach its careers page in under 30 seconds, on a phone.
+- The page looks distinctive and specific to Hill's aerospace/depot mission. It should not look like a generic link list.
+- Recruiters can request a correction or ask to be added without a GitHub account.
+- Links stay accurate with minimal manual effort.
+- Adding a second base means adding data, not rewriting code.
+
+## 2. Audience
+
+All four groups are first-class users. Copy and categories should serve each of them:
+
+| Group | What they look for |
+|---|---|
+| Skilled trades / aircraft maintenance | Depot maintenance, A&P, sheet metal, avionics, electricians |
+| Engineers & software | Aerospace, systems, embedded, software (e.g., Sentinel/ICBM, F-35 sustainment) |
+| Students / new grads | Internships, entry-level roles (Weber State, USU, U of U) |
+| Transitioning military / veterans | Employers near Hill that hire people leaving service |
+
+## 3. Design
+
+**Direction: bold aviation/aerospace.**
+
+- **Palette:** deep navy background in the hero, an amber/safety-orange accent for calls to action and active chips, and a light neutral surface for the card grid. All text meets WCAG AA contrast (4.5:1 for body text).
+- **Hero:** site name "Work At Hill", a one-line value proposition (e.g., "Who's hiring at Hill AFB, and where to apply."), a live count of employers, and the search box placed directly in the hero.
+- **Motif:** one subtle aviation element (runway centerline stripes or a faint aircraft silhouette as inline SVG). No photos in v1, and no US Air Force or DoD seals, logos, or insignia.
+- **Cards:** a responsive grid (1 column on phones, 2 on tablets, 3 on desktop). Each card has strong typography, a type badge, category tags, and one prominent "View jobs →" button.
+- **Type:** a system font stack (no web-font download), with large, heavy headings.
+- **Theme:** works in light and dark mode, following `prefers-color-scheme`.
+- **Disclaimer (footer, always visible):** "Work At Hill is an independent directory and is not affiliated with or endorsed by the U.S. Air Force, the Department of Defense, or any listed employer."
+
+## 4. Employer listings
+
+### Fields shown on each card
+| Field | Notes |
+|---|---|
+| Name | Required |
+| Type | One of: `Prime contractor`, `Subcontractor / supplier`, `Federal civilian`, `Services / support`. Shown as a badge. |
+| Description | One line (≤ 120 characters) about what they do *at Hill*, not a generic company tagline |
+| Job categories | 1–5 tags from a fixed list: `Trades & Maintenance`, `Engineering`, `Software & IT`, `Logistics & Supply`, `Admin & Business`, `Internships & Entry-level` |
+| Primary link | "View jobs →" pointing to the careers page. If possible, the link is pre-filtered to Utah/Hill. |
+| Secondary link (optional) | Federal employers only: the agency's own hiring page, if one exists |
+| Verified date | Small text: "Link verified Nov 2026" |
+| Suggest a change | Small link to the recruiter feedback form, prefilled with the employer name (see §7) |
+
+**Not shown in v1:** logos, clearance requirements, veteran/SkillBridge flags, and headcount (see §10).
+
+### Federal / government employers
+The primary link is a **USAJOBS search pre-filtered to the agency and the Hill AFB location**. The agency's own hiring page is the secondary link when one exists. Confirm the exact USAJOBS query-string format during the build by running the search on usajobs.gov and copying the resulting URL. Don't guess parameter names or agency codes.
+
+### Data file: `data/employers.json`
+```json
+{
+  "bases": {
+    "hill": { "name": "Hill AFB", "state": "UT", "path": "/" }
+  },
+  "employers": [
+    {
+      "id": "northrop-grumman",
+      "base": "hill",
+      "name": "Northrop Grumman",
+      "type": "prime",
+      "description": "Sentinel ICBM program engineering and integration in Roy and Clearfield.",
+      "categories": ["engineering", "software-it", "trades-maintenance"],
+      "jobsUrl": "https://…",
+      "secondaryUrl": null,
+      "verified": "2026-11"
+    }
+  ]
+}
+```
+- `base` lets one employer appear at several bases as separate records, each with its own local description and pre-filtered link.
+- `type` and `categories` use slug values. A single map in the JS turns slugs into display labels.
+- A JSON Schema (`data/employers.schema.json`) is checked in CI (see §8). Unknown types or categories, missing fields, and duplicate ids all fail the build.
+
+### Seed data
+I will draft ~25–40 employers: federal employers (e.g., Ogden Air Logistics Complex / OO-ALC and other units at Hill that hire civilians), prime contractors (e.g., Northrop Grumman, Boeing, Lockheed Martin, L3Harris), and major subcontractors and services firms. **You approve every entry before launch.** Each entry needs a working link and a Hill-specific description. Drop any employer that has no verifiable Hill/Northern Utah presence.
+
+## 5. Search and filtering
+
+Everything runs in the browser, with no server.
+
+- **Search box** (in the hero): matches as you type against name, description, and category labels. It ignores case and accents and is debounced (~100 ms). Type `/` on desktop to focus it.
+- **Filter chips**, shown below the hero in two rows:
+  - **Type** (single-select, with "All" as the default)
+  - **Job category** (multi-select; an employer matches if it has *any* selected category)
+- Search and chips combine with AND.
+- **Result count** is announced live ("12 employers") through an `aria-live="polite"` region.
+- **Empty state:** "No employers match. Clear filters", with a button that resets everything.
+- **State in the URL:** filters and the search term go in the query string (`?q=boeing&type=prime&cat=engineering`), so a filtered view can be shared or bookmarked. Back/forward should work.
+- **Sort order:** alphabetical by name. No paid or featured placement in v1.
+- On phones, the chip rows scroll horizontally inside their own container. The page itself never scrolls sideways.
+
+## 6. Build and structure
+
+**Plain HTML/CSS/JS plus JSON. No framework and no npm dependencies.**
+
+```
+/
+├── index.html              Hill page (generated)
+├── assets/
+│   ├── styles.css
+│   └── app.js              search, filters, URL state
+├── data/
+│   ├── employers.json
+│   └── employers.schema.json
+├── scripts/
+│   ├── build.mjs           renders cards into the HTML per base (Node built-ins only)
+│   └── check-links.mjs     link checker (Node built-ins only)
+├── templates/base.html
+└── .github/workflows/
+    ├── deploy.yml
+    └── link-check.yml
+```
+
+- `build.mjs` validates the data, then writes the full card list into static HTML for each base. The directory therefore works **without JavaScript** and search engines can index it; `app.js` only adds search and filtering on top. This is the only build step, and it needs only Node 20+.
+- **Page weight budget:** under 100 KB transferred for the Hill page, excluding the favicon. There are no third-party requests at all.
+- **Meta:** `<title>`, meta description, Open Graph/Twitter tags with a static share image (`og.png`, 1200×630), a favicon, and a canonical URL. No `JobPosting` structured data: the site lists employers, not job postings.
+- **Adding a base later:** add an entry to `bases` with a `path` (e.g., `/tinker/`) plus its employers, then run the build. The root stays the Hill page while the site is called Work At Hill.
+
+## 7. Recruiter feedback
+
+- A Google Form titled **"Work At Hill — suggest a change"** with these fields:
+  - Your name
+  - Work email
+  - Company
+  - Request type (Add my company / Fix a link / Fix details / Remove listing)
+  - Details
+  - Correct URL (optional)
+- Responses go to a linked Google Sheet that you review by hand. Nothing updates on the site automatically.
+- Each card's "Suggest a change" link uses the form's prefill URL to fill in Company and set Request type to "Fix details".
+- The footer and hero have a "Recruiter? Add or update your company" link that opens the form with Request type set to "Add my company".
+- Links open in a new tab with `rel="noopener"`.
+- **Workflow:** a submission comes in → you check it → you edit `employers.json` (or ask Claude to) → push → the site redeploys.
+
+## 8. Hosting, CI and link upkeep
+
+- **Hosting:** GitHub Pages from this repo, deployed with GitHub Actions on every push to `main` (`deploy.yml`: validate → build → upload artifact → deploy). The site is served at **https://workathill.com** through a custom domain on GitHub Pages:
+  - Add a `CNAME` file containing `workathill.com`.
+  - At the DNS registrar, point the apex record at GitHub Pages' A/AAAA records and point `www` at `<user>.github.io` with a CNAME.
+  - Turn on "Enforce HTTPS" in the repo's Pages settings.
+  - Verify the domain in the GitHub account settings so nobody else can claim it.
+  - `www.workathill.com` redirects to the apex domain.
+- **Validation on every push and PR:** schema check, duplicate-id check, and all URLs must be `https://`. Any failure blocks the deploy.
+- **Weekly link check** (`link-check.yml`, cron every Monday plus a manual trigger):
+  - Requests every `jobsUrl` and `secondaryUrl`. Uses HEAD and falls back to GET, follows redirects, and times out after 15 s. Sends a generic User-Agent such as `WorkAtHill-LinkCheck/1.0`.
+  - A link is broken on 4xx/5xx or a failed connection. A redirect to a different domain is flagged for review but not counted as broken.
+  - If anything fails, the workflow opens or updates **one** GitHub issue titled "Broken links: <date>" that lists each employer, URL, and status. It doesn't open duplicates.
+  - Some careers sites block bots (Workday, Taleo, and others). An allowlist of known false positives can be checked by hand.
+- **Verified dates:** when you confirm a link, update `verified` in the data. The card shows month and year.
+
+## 9. Accessibility
+
+- Semantic HTML: a single `<h1>`, a `<main>` landmark, cards as `<article>` inside a list, and chips as `<button aria-pressed>`.
+- Fully keyboard operable, with visible focus rings and logical tab order.
+- Tap targets are at least 44×44 px.
+- Respects `prefers-reduced-motion` (no animated motif when it's set).
+- Meets WCAG 2.2 AA color contrast in both themes.
+- Links that open in a new tab say so for screen readers ("opens in new tab").
+
+## 10. Out of scope for v1
+
+- Other bases' pages, and any base switcher in the UI (the data model is ready for them)
+- Company logos and photos
+- Clearance-required, veteran/SkillBridge, and headcount fields
+- Individual job postings, job feeds, scraping, or any third-party job API
+- User accounts, saved employers, and job alerts
+- Recruiter self-service editing, a CMS, or automatic updates from form submissions
+- Featured, paid, or sponsored placement
+- Analytics and tracking of any kind, including outbound click counts
+- Map view, commute or distance filters
+- Languages other than English
+- A backend, database, or serverless functions
+
+## 11. Open questions
+
+1. **Name vs. expansion:** "Work At Hill" is specific to Hill. When a second base is added, should it get its own name (e.g., "Work At Tinker") on its own page or domain, or should the umbrella brand change? This doesn't block v1.
+2. **Google Form owner:** which Google account owns the form and Sheet? The form's prefill URL is needed before launch.
+3. **Repo visibility:** a public repo is needed for free GitHub Pages on a personal account.
+
+**Decided:** the domain is **workathill.com** (see §8).
+
+## 12. Verifying it works on a phone
+
+The site isn't done until every check below passes.
+
+### Automated (run locally and in CI where possible)
+- [ ] Lighthouse **mobile** run (Moto G-class emulation, slow 4G) on the deployed URL: Performance ≥ 90, Accessibility ≥ 95, Best Practices ≥ 95, SEO ≥ 95
+- [ ] No horizontal page scroll at 320, 360, 390, and 414 px widths (Chrome DevTools device mode). Check `document.documentElement.scrollWidth <= window.innerWidth`.
+- [ ] Hill page transfer size under 100 KB, and 0 third-party requests (DevTools Network tab)
+- [ ] With JavaScript disabled, all employers and links are still visible and usable
+
+### On real devices (deployed GitHub Pages URL, not localhost)
+Test on at least **one iPhone (Safari)** and **one Android phone (Chrome)**. If you don't have one of them, use BrowserStack's free trial or a friend's phone.
+
+- [ ] Page loads and looks right in portrait and landscape, with no clipped text and no content hidden under the notch or home indicator
+- [ ] Tapping the search box opens the keyboard without the page zooming in (input font-size ≥ 16 px), and results update while typing
+- [ ] Filter chips scroll sideways with a swipe, toggle on tap, and the result count updates
+- [ ] Search and filters combine correctly. Example: type "Boeing", then tap "Engineering": the result shows or hides as expected.
+- [ ] Empty state appears for a nonsense search, and "Clear filters" resets everything
+- [ ] Opening a shared filtered URL (e.g., `?cat=trades-maintenance`) in a fresh tab shows the same filtered view
+- [ ] Back button after changing filters restores the previous view
+- [ ] "View jobs →" opens the careers page in a new tab for 5 randomly chosen employers, including at least 1 federal (USAJOBS) employer
+- [ ] "Suggest a change" opens the Google Form with Company prefilled
+- [ ] Dark mode on the phone shows the dark theme, and it stays readable
+- [ ] With VoiceOver (iOS) or TalkBack (Android) on, you can reach the search box, a chip, and a "View jobs" link, and the result count is announced
+- [ ] Sharing the URL in a messaging app shows the Open Graph preview card
+
+### Launch checklist
+- [ ] You approved every seed employer entry
+- [ ] All links pass the link checker (or are on the reviewed allowlist)
+- [ ] Footer disclaimer is present
+- [ ] Google Form is live, with the prefill link tested
+- [ ] Weekly link-check workflow ran at least once by manual trigger and opened a test issue for a deliberately broken URL. Then that test data is removed.
