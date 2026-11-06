@@ -1,0 +1,378 @@
+{
+  "bases": {
+    "hill": {
+      "name": "Hill AFB",
+      "state": "UT",
+      "path": "/"
+    }
+  },
+  "employers": [
+    {
+      "id": "northrop-grumman",
+      "base": "hill",
+      "name": "Northrop Grumman",
+      "type": "prime",
+      "description": "Sentinel ICBM prime, run from its Roy Innovation Center next to Hill; staff in Clearfield, Ogden and on base",
+      "categories": [
+        "engineering",
+        "software-it",
+        "trades-maintenance",
+        "logistics-supply",
+        "internships-entry"
+      ],
+      "jobsUrl": "https://jobs.northropgrumman.com/careers?location=Roy%2C%20UT",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.utahbusiness.com/press-releases/2026/07/15/northrop-grumman-breaks-ground-new-facility-aerospace-missions-utah/"
+    },
+    {
+      "id": "lockheed-martin",
+      "base": "hill",
+      "name": "Lockheed Martin",
+      "type": "prime",
+      "description": "On-base F-35 sustainment and depot support, plus F-16 and C-130 engineering, field service and IT at Hill",
+      "categories": [
+        "engineering",
+        "software-it",
+        "logistics-supply",
+        "trades-maintenance"
+      ],
+      "jobsUrl": "https://lockheedmartin.eightfold.ai/careers?location=Hill%20AFB%2C%20UT",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://lockheedmartin.eightfold.ai/careers/job/996476737937"
+    },
+    {
+      "id": "boeing",
+      "base": "hill",
+      "name": "Boeing",
+      "type": "prime",
+      "description": "Minuteman III guidance support and nuclear-effects testing at Little Mountain; teams at Hill, Ogden and Layton",
+      "categories": [
+        "engineering",
+        "software-it",
+        "admin-business",
+        "internships-entry"
+      ],
+      "jobsUrl": "https://jobs.boeing.com/search-jobs/Utah",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.standard.net/news/military/2023/feb/06/boeing-wins-1-6b-minuteman-iii-contract-most-work-to-be-done-in-utah"
+    },
+    {
+      "id": "bae-systems",
+      "base": "hill",
+      "name": "BAE Systems",
+      "type": "prime",
+      "description": "Large on-base ICBM team (Sentinel, Minuteman III, Mk21A) supporting the Air Force Nuclear Weapons Center",
+      "categories": [
+        "engineering",
+        "software-it",
+        "admin-business"
+      ],
+      "jobsUrl": "https://jobs.baesystems.com/global/en/search-results?keywords=Hill%20AFB",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://clearancejobs.com/jobs/bae-systems-4/hill-afb-ut"
+    },
+    {
+      "id": "leidos",
+      "base": "hill",
+      "name": "Leidos",
+      "type": "prime",
+      "description": "SATCOM, network operations and cyber/security operations roles at Hill AFB and nearby Sunset",
+      "categories": [
+        "software-it",
+        "admin-business"
+      ],
+      "jobsUrl": "https://leidos.wd5.myworkdayjobs.com/External?q=Hill%20AFB",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://clearancejobs.com/jobs/leidos/utah"
+    },
+    {
+      "id": "saic",
+      "base": "hill",
+      "name": "SAIC",
+      "type": "prime",
+      "description": "Systems engineers on base supporting the Air Force's Sentinel ICBM acquisition program at Hill AFB",
+      "categories": [
+        "engineering"
+      ],
+      "jobsUrl": "https://jobs.saic.com/jobs?location=Hill%20AFB",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://clearancejobs.com/jobs/saic/hill-afb-ut"
+    },
+    {
+      "id": "rtx-pratt-whitney",
+      "base": "hill",
+      "name": "RTX (Pratt & Whitney)",
+      "type": "prime",
+      "description": "F135 engine field service engineers on base supporting the 388th Fighter Wing and Ogden ALC on the F-35",
+      "categories": [
+        "engineering",
+        "trades-maintenance"
+      ],
+      "jobsUrl": "https://careers.rtx.com/global/en/search-results?keywords=Hill%20AFB",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.career.com/job/pratt-whitney/f135-field-service-engineer-hill-afb-ut-onsite/j202606022356108717760"
+    },
+    {
+      "id": "l3harris",
+      "base": "hill",
+      "name": "L3Harris (Aerojet Rocketdyne)",
+      "type": "prime",
+      "description": "Small on-base team sustaining the Minuteman III post-boost rocket engine at Hill AFB",
+      "categories": [
+        "engineering"
+      ],
+      "jobsUrl": "https://careers.l3harris.com/en/search-jobs/Utah",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://secure.localjobnetwork.com/apply/add/75425405/1"
+    },
+    {
+      "id": "air-force-civilian-hill",
+      "base": "hill",
+      "name": "Air Force civilian jobs at Hill",
+      "type": "federal",
+      "description": "Ogden Air Logistics Complex depot, 75th Air Base Wing, and Hill's aircraft and ICBM program offices",
+      "categories": [
+        "trades-maintenance",
+        "engineering",
+        "software-it",
+        "logistics-supply",
+        "admin-business"
+      ],
+      "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=AF1M",
+      "secondaryUrl": "https://afciviliancareers.com/find-a-job/",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.dvidshub.net/video/696371/309th-aircraft-maintenance-group-amxg-app-promo-1-b"
+    },
+    {
+      "id": "75th-force-support-squadron",
+      "base": "hill",
+      "name": "75th Force Support Squadron (Air Force Services)",
+      "type": "federal",
+      "description": "Nonappropriated-fund jobs at Hill: child development centers, fitness, golf, bowling, lodging, dining",
+      "categories": [
+        "admin-business",
+        "internships-entry",
+        "trades-maintenance"
+      ],
+      "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=AF1M&pp=NA&pp=NF&pp=NL&pp=NS",
+      "secondaryUrl": "https://hillfss.com/careers/",
+      "verified": "2026-11",
+      "sourceUrl": "https://hillfss.com/careers/"
+    },
+    {
+      "id": "af-civilian-career-training",
+      "base": "hill",
+      "name": "Air Force Civilian Career Training (PALACE Acquire, PCIP, interns)",
+      "type": "federal",
+      "description": "Paid Air Force intern and trainee programs (PALACE Acquire, Copper Cap, PCIP) with positions at Hill",
+      "categories": [
+        "internships-entry",
+        "engineering",
+        "logistics-supply",
+        "admin-business",
+        "software-it"
+      ],
+      "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=AF1Y",
+      "secondaryUrl": "https://afciviliancareers.com/students-and-graduates/",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.usajobs.gov/job/885616700"
+    },
+    {
+      "id": "dla-hill",
+      "base": "hill",
+      "name": "Defense Logistics Agency (DLA Distribution Hill & DLA Aviation)",
+      "type": "federal",
+      "description": "Warehousing and distribution of parts for F-35, F-22, F-16, A-10 and C-130 depot work at Hill",
+      "categories": [
+        "logistics-supply",
+        "trades-maintenance",
+        "software-it",
+        "admin-business"
+      ],
+      "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=DD07",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.dvidshub.net/news/440870/dla-expanding-dod-visibility-f-35-supply-chain"
+    },
+    {
+      "id": "deca-hill-commissary",
+      "base": "hill",
+      "name": "Defense Commissary Agency (Hill AFB Commissary)",
+      "type": "federal",
+      "description": "Runs the Hill AFB commissary grocery store: store associates, checkers, meatcutters",
+      "categories": [
+        "base-services",
+        "logistics-supply",
+        "internships-entry"
+      ],
+      "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=DD34",
+      "secondaryUrl": "https://corp.commissaries.com/our-agency/careers-with-deca",
+      "verified": "2026-11",
+      "sourceUrl": "https://corp.commissaries.com/shopping/store-locations/hill-afb"
+    },
+    {
+      "id": "aafes-hill-exchange",
+      "base": "hill",
+      "name": "Army & Air Force Exchange Service (Hill AFB Exchange)",
+      "type": "federal",
+      "description": "Nonappropriated retail at Hill: the main Exchange store, food court and Express shops",
+      "categories": [
+        "base-services",
+        "logistics-supply",
+        "admin-business",
+        "internships-entry"
+      ],
+      "jobsUrl": "https://www.applymyexchange.com/hourly/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.dvidshub.net/news/406436/exchange-senior-enlisted-leader-visits-hill-afb"
+    },
+    {
+      "id": "419th-fighter-wing",
+      "base": "hill",
+      "name": "419th Fighter Wing (Air Force Reserve technicians)",
+      "type": "federal",
+      "description": "Reserve F-35 wing hiring civil-service Air Reserve Technicians for aircraft maintenance. Reserve membership required",
+      "categories": [
+        "trades-maintenance",
+        "admin-business"
+      ],
+      "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=AF0M",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.dvidshub.net/news/542624/419th-fighter-wing-celebrates-70-years-reserve-hill-afb"
+    },
+    {
+      "id": "75th-medical-group",
+      "base": "hill",
+      "name": "75th Medical Group (Defense Health Agency)",
+      "type": "federal",
+      "description": "Hill's military clinic, the only military treatment facility in Utah: primary care, pharmacy, mental health",
+      "categories": [
+        "base-services"
+      ],
+      "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=DD83",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.dvidshub.net/news/363612/af-surgeon-general-medical-enlisted-force-chief-visit-hill-afb"
+    },
+    {
+      "id": "kihomac",
+      "base": "hill",
+      "name": "KIHOMAC",
+      "type": "subcontractor",
+      "description": "Aircraft sustainment, engineering, composites and logistics support for Hill programs from its Layton site",
+      "categories": [
+        "engineering",
+        "trades-maintenance",
+        "logistics-supply",
+        "software-it"
+      ],
+      "jobsUrl": "https://www.kihomac.com/careers/",
+      "secondaryUrl": "https://apply.workable.com/kihomac/",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.kihomac.com/contact-kihomac/locations/"
+    },
+    {
+      "id": "es3",
+      "base": "hill",
+      "name": "ES3 (Engineering Software System Solutions)",
+      "type": "services",
+      "description": "F-16 wing overhauls in Clearfield for the Hill AFB F-16 program office, plus structural engineering in Layton",
+      "categories": [
+        "engineering",
+        "trades-maintenance",
+        "logistics-supply"
+      ],
+      "jobsUrl": "https://www.es3inc.com/employment/opportunities/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.es3inc.com/f-16-services/"
+    },
+    {
+      "id": "systems-implementers",
+      "base": "hill",
+      "name": "Systems Implementers",
+      "type": "services",
+      "description": "Clearfield firm that builds and sustains the MRO Apps depot-maintenance software for Ogden ALC at Hill",
+      "categories": [
+        "software-it",
+        "logistics-supply",
+        "admin-business"
+      ],
+      "jobsUrl": "https://www.systemsimplementers.com/careers/",
+      "secondaryUrl": "https://systemsimplementers.isolvedhire.com/jobs/",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.highergov.com/contract/FA822419DA003-FA822425F0057"
+    },
+    {
+      "id": "caci",
+      "base": "hill",
+      "name": "CACI",
+      "type": "services",
+      "description": "Automated test equipment sustainment and modernization for the 309th Electronics Maintenance Group at Hill",
+      "categories": [
+        "engineering",
+        "software-it",
+        "logistics-supply"
+      ],
+      "jobsUrl": "https://searchcareers.caci.com/careers?location=Hill%20AFB%2C%20UT",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.highergov.com/contract/FA822721D0004-FA822726F0012/"
+    },
+    {
+      "id": "amentum",
+      "base": "hill",
+      "name": "Amentum",
+      "type": "services",
+      "description": "Warehouse and distribution support for DLA Distribution at Hill AFB",
+      "categories": [
+        "logistics-supply",
+        "trades-maintenance"
+      ],
+      "jobsUrl": "https://www.amentumcareers.com/jobs/search?location=Utah",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.executivebiz.com/articles/amentum-lands-88m-contract-to-support-dla-distribution-activities"
+    },
+    {
+      "id": "sts-systems-defense",
+      "base": "hill",
+      "name": "STS Systems Defense",
+      "type": "services",
+      "description": "Engineering support for the F-16 program office at Hill AFB and F-35 paint booth construction there",
+      "categories": [
+        "engineering",
+        "trades-maintenance"
+      ],
+      "jobsUrl": "https://jobs.dayforcehcm.com/brs/SGSCANDIDATEPORTAL",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.highergov.com/news/sts-systems-defense-awarded-21-6-million-f-35-pai-6447945"
+    },
+    {
+      "id": "el-blake",
+      "base": "hill",
+      "name": "E.L. Blake",
+      "type": "services",
+      "description": "Mission planning system support staff at Hill AFB under an Air Force contract running through 2034",
+      "categories": [
+        "software-it",
+        "engineering"
+      ],
+      "jobsUrl": "https://elblakecorp.applicantpro.com/jobs/",
+      "secondaryUrl": "https://elblakecorp.com/careers/",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.defensedaily.com/contract-awards/contract-award-elb-services-llc-columbus-georgia-600000000"
+    }
+  ]
+}
