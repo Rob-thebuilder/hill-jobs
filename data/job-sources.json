@@ -1,0 +1,23 @@
+{
+  "_note": "Where to read live job titles for contractors (federal entries use USAJOBS). Titles are read once per build, filtered to data/locations.json, and used only to make search find them. Every request first checks the site's robots.txt. Entries in 'skipped' are not read, with the reason.",
+  "sources": {
+    "northrop-grumman": { "type": "eightfold", "host": "jobs.northropgrumman.com", "domain": "ngc.com" },
+    "lockheed-martin": { "type": "eightfold", "host": "lockheedmartin.eightfold.ai", "domain": "lockheedmartin.com" },
+    "caci": { "type": "eightfold", "host": "searchcareers.caci.com", "domain": "caci.com" },
+    "leidos": { "type": "workday", "host": "leidos.wd5.myworkdayjobs.com", "tenant": "leidos", "site": "External", "searchText": "Utah" },
+    "bae-systems": { "type": "phenom", "url": "https://jobs.baesystems.com/global/en/search-results", "keywords": "Hill AFB" },
+    "kihomac": { "type": "workable", "account": "kihomac" },
+    "el-blake": { "type": "applicantpro", "host": "elblakecorp.applicantpro.com", "domainId": 19939 },
+    "systems-implementers": { "type": "applicantpro", "host": "systemsimplementers.isolvedhire.com", "domainId": 1445 },
+    "es3": { "type": "es3", "url": "https://www.es3inc.com/employment/opportunities/" },
+    "boeing": { "type": "radancy-sitemap", "sitemap": "https://jobs.boeing.com/sitemap.xml" },
+    "l3harris": { "type": "radancy-sitemap", "sitemap": "https://careers.l3harris.com/sitemap.xml" }
+  },
+  "skipped": {
+    "saic": "jobs.saic.com refuses automated requests (HTTP 403, even for robots.txt).",
+    "rtx-pratt-whitney": "careers.rtx.com refuses automated requests (HTTP 403, even for robots.txt).",
+    "amentum": "amentumcareers.com has no working location filter, and its search API is disallowed by robots.txt; reading all ~2,800 jobs daily is too heavy.",
+    "sts-systems-defense": "The Dayforce job board loads only through scripts, and it may belong to a sibling company (see ROLES-REVIEW.md).",
+    "aafes-hill-exchange": "No public job feed found on applymyexchange.com."
+  }
+}

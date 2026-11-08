@@ -1,28 +1,43 @@
 // Work At Hill — search, filter chips and URL state. The page is fully usable without this file.
+// Matching rules live in search.js (shared with the Node tests).
 (() => {
   const $ = (sel, root = document) => root.querySelector(sel);
   const $$ = (sel, root = document) => [...root.querySelectorAll(sel)];
 
+  const Search = window.WorkAtHillSearch;
   const input = $('#q');
   const form = $('.search');
   const list = $('#list');
   const countEl = $('#count');
   const emptyEl = $('#empty');
+  const emptyTitle = $('#empty-title');
+  const emptyFiltered = $('#empty-filtered');
+  const emptyUsajobs = $('#empty-usajobs');
+  const usajobsLink = $('#usajobs-link');
+  const usajobsQ = $('#usajobs-q');
   const resetBtn = $('#reset');
   const typeChips = $$('.chip[data-type]');
   const catChips = $$('.chip[data-cat]');
-  if (!input || !list) return;
+  if (!Search || !input || !list) return;
 
-  const norm = (s) => s.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/\s+/g, ' ').trim();
+  let index;
+  try {
+    const data = JSON.parse($('#search-data').textContent);
+    index = Search.createIndex(data.employers, data.synonyms);
+  } catch {
+    return; // without search data the static page still works
+  }
 
   const cards = $$('.card', list).map((el) => ({
     li: el.parentElement,
+    id: el.dataset.id,
     type: el.dataset.type,
     cats: el.dataset.cats.split(' '),
-    text: norm(el.dataset.text),
+    why: $('.why', el),
   }));
   const TYPES = new Set(typeChips.map((c) => c.dataset.type).filter(Boolean));
   const CATS = new Set(catChips.map((c) => c.dataset.cat));
+  const USAJOBS_BASE = usajobsLink.href;
 
   // ---- state <-> URL ----
   const fromUrl = () => {
@@ -46,22 +61,44 @@
   let state = fromUrl();
 
   // ---- render ----
+  const passesChips = (c) => (!state.type || c.type === state.type) && (!state.cats.size || c.cats.some((cat) => state.cats.has(cat)));
+
   const render = () => {
-    const tokens = norm(state.q).split(' ').filter(Boolean);
+    const q = state.q.trim();
+    const { results } = Search.search(index, q);
     let shown = 0;
     for (const c of cards) {
-      const match =
-        (!state.type || c.type === state.type) &&
-        (!state.cats.size || c.cats.some((cat) => state.cats.has(cat))) &&
-        tokens.every((t) => c.text.includes(t));
+      const hit = results[c.id];
+      const match = !!hit && passesChips(c);
       c.li.hidden = !match;
+      const why = match && q ? Search.explain(hit.reasons) : '';
+      if (c.why.textContent !== why) c.why.textContent = why;
+      c.why.hidden = !why;
       if (match) shown++;
     }
     const text = `${shown} employer${shown === 1 ? '' : 's'}`;
     if (countEl.textContent !== text) countEl.textContent = text;
+
+    const filtersOn = !!(state.type || state.cats.size);
     emptyEl.hidden = shown !== 0;
     list.hidden = shown === 0;
-    resetBtn.hidden = !(state.q.trim() || state.type || state.cats.size);
+    if (shown === 0) {
+      emptyTitle.textContent = q ? `No employers list “${q}” yet.` : 'No employers match these filters.';
+      // Would the search find anything without the chips?
+      const withoutChips = q ? cards.filter((c) => results[c.id]).length : 0;
+      emptyFiltered.textContent = withoutChips
+        ? `${withoutChips} employer${withoutChips === 1 ? '' : 's'} match “${q}” if you clear the type and category filters.`
+        : '';
+      emptyFiltered.hidden = !(filtersOn && withoutChips);
+      emptyUsajobs.hidden = !q;
+      if (q) {
+        const u = new URL(USAJOBS_BASE);
+        u.searchParams.set('k', q);
+        usajobsLink.href = u.toString();
+        usajobsQ.textContent = `“${q}”`;
+      }
+    }
+    resetBtn.hidden = !(q || filtersOn);
     for (const chip of typeChips) chip.setAttribute('aria-pressed', String(chip.dataset.type === state.type));
     for (const chip of catChips) chip.setAttribute('aria-pressed', String(state.cats.has(chip.dataset.cat)));
     if (input.value !== state.q && document.activeElement !== input) input.value = state.q;
@@ -116,6 +153,17 @@
       const cat = chip.dataset.cat;
       if (state.cats.has(cat)) state.cats.delete(cat);
       else state.cats.add(cat);
+      endBurst();
+      render();
+      commit('push');
+    });
+  }
+
+  // Suggestion buttons in the empty state run that search (keeping the chips as they are).
+  for (const btn of $$('.suggest')) {
+    btn.addEventListener('click', () => {
+      state.q = btn.dataset.q;
+      input.value = state.q;
       endBurst();
       render();
       commit('push');

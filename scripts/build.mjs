@@ -1,7 +1,8 @@
 // Validates data/employers.json, then renders one static page per base into dist/.
-// Node built-ins only. Usage: node scripts/build.mjs [--check] [--no-counts] [--out DIR]
+// Node built-ins only. Usage: node scripts/build.mjs [--check] [--no-counts] [--no-careers] [--out DIR]
 //   --check      validate only (no network, no output)
-//   --no-counts  skip the USAJOBS open-job counts
+//   --no-counts  skip the USAJOBS open-job counts and titles
+//   --no-careers skip the contractor careers-site job titles
 //   --out DIR    write the site somewhere other than dist/
 // Env (from .env locally, Actions secrets in CI): USAJOBS_API_KEY, USAJOBS_EMAIL
 import { readFile, writeFile, mkdir, cp, rm } from 'node:fs/promises';
@@ -9,10 +10,13 @@ import { gzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { existsSync } from 'node:fs';
-import { fetchCounts } from './lib/usajobs.mjs';
+import { createRequire } from 'node:module';
+import { fetchUsajobs } from './lib/usajobs.mjs';
+import { fetchCareers } from './lib/careers.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BUDGET_BYTES = 100 * 1024;
+const Search = createRequire(import.meta.url)('../assets/search.js');
 
 // The single slug → label map. The schema enums must match these keys.
 export const LABELS = {
@@ -135,13 +139,13 @@ export function openJobsLine(id, jobCounts) {
 function renderCard(e, form, jobCounts) {
   const typeLabel = LABELS.types[e.type];
   const catLabels = e.categories.map((c) => LABELS.categories[c]);
-  const searchText = [e.name, e.description, ...catLabels].join(' ');
   const suggest = formUrl(form, form?.fixValue, e.name);
-  return `<li><article class="card" data-type="${esc(e.type)}" data-cats="${esc(e.categories.join(' '))}" data-text="${esc(searchText)}" aria-labelledby="e-${esc(e.id)}">
+  return `<li><article class="card" data-type="${esc(e.type)}" data-cats="${esc(e.categories.join(' '))}" data-id="${esc(e.id)}" aria-labelledby="e-${esc(e.id)}">
 <div class="card-top"><span class="badge badge-${esc(e.type)}">${esc(typeLabel)}</span></div>
 <h2 id="e-${esc(e.id)}">${esc(e.name)}</h2>
 <p class="desc">${esc(e.description)}</p>
 <ul class="tags" aria-label="Job categories">${catLabels.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
+<p class="why" hidden></p>
 <div class="card-actions">
 ${openJobsLine(e.id, jobCounts)}<a class="btn-jobs" href="${esc(e.jobsUrl)}" target="_blank" rel="noopener">View jobs <span aria-hidden="true">→</span><span class="sr-only"> at ${esc(e.name)}</span>${NEW_TAB}</a>
 ${e.secondaryUrl ? `<a class="link-secondary" href="${esc(e.secondaryUrl)}" target="_blank" rel="noopener">${e.type === 'federal' ? 'Agency hiring page' : 'More openings'}<span class="sr-only"> for ${esc(e.name)}</span>${NEW_TAB}</a>` : ''}
@@ -171,7 +175,22 @@ function fill(template, values) {
   });
 }
 
-export function renderBase(baseId, base, allEmployers, site, template, jobCounts = null) {
+/** JSON for the page's search: synonyms plus each employer's searchable text. Safe inside <script>. */
+export function searchData(employers, synonyms, jobCounts, careerTitles = null) {
+  const data = {
+    synonyms: { groups: synonyms?.groups || [] },
+    employers: employers.map((e) => ({
+      id: e.id,
+      name: e.name,
+      description: e.description,
+      roles: e.roles || [],
+      titles: jobCounts?.titles?.[e.id] || careerTitles?.[e.id] || [],
+    })),
+  };
+  return JSON.stringify(data).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
+}
+
+export function renderBase(baseId, base, allEmployers, site, template, jobCounts = null, synonyms = null, careerTitles = null) {
   const employers = allEmployers
     .filter((e) => e.base === baseId)
     .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base', numeric: true }));
@@ -198,7 +217,34 @@ export function renderBase(baseId, base, allEmployers, site, template, jobCounts
     typeChips,
     catChips,
     cards: employers.map((e) => renderCard(e, site.form, jobCounts)).join('\n'),
+    searchData: searchData(employers, synonyms, jobCounts, careerTitles),
   });
+}
+
+const SOURCE_TYPES = ['eightfold', 'workday', 'phenom', 'workable', 'applicantpro', 'es3', 'radancy-sitemap'];
+
+export function validateJobSources(cfg, data) {
+  const errors = [];
+  const ids = new Set(data.employers.map((e) => e.id));
+  for (const [id, src] of Object.entries(cfg?.sources || {})) {
+    if (!ids.has(id)) errors.push(`"${id}" is not an employer id`);
+    if (!SOURCE_TYPES.includes(src?.type)) errors.push(`"${id}": unknown type "${src?.type}"`);
+    const fed = data.employers.find((e) => e.id === id)?.type === 'federal';
+    if (fed) errors.push(`"${id}" is federal; federal titles come from USAJOBS`);
+  }
+  for (const id of Object.keys(cfg?.skipped || {})) {
+    if (!ids.has(id)) errors.push(`skipped "${id}" is not an employer id`);
+    if (cfg.sources?.[id]) errors.push(`"${id}" is both a source and skipped`);
+  }
+  return errors;
+}
+
+export function validatePlaces(p) {
+  const errors = [];
+  for (const key of ['hillNames', 'places', 'state']) {
+    if (!Array.isArray(p?.[key]) || !p[key].length || p[key].some((x) => typeof x !== 'string' || !x.trim())) errors.push(`"${key}" must be a non-empty list of names`);
+  }
+  return errors;
 }
 
 // ---------- main ----------
@@ -208,13 +254,21 @@ async function main() {
   const checkOnly = argv.includes('--check');
   const outArg = argv.includes('--out') ? argv[argv.indexOf('--out') + 1] : null;
   const DIST = outArg ? path.resolve(outArg) : path.join(ROOT, 'dist');
-  const [data, schema, site] = await Promise.all([
+  const [data, schema, site, synonyms, jobSources, places] = await Promise.all([
     readJson('data/employers.json'),
     readJson('data/employers.schema.json'),
     readJson('data/site.json'),
+    readJson('data/synonyms.json'),
+    readJson('data/job-sources.json'),
+    readJson('data/locations.json'),
   ]);
 
-  const errors = validateData(data, schema);
+  const errors = [
+    ...validateData(data, schema),
+    ...Search.validateSynonyms(synonyms).map((e) => `synonyms.json: ${e}`),
+    ...validateJobSources(jobSources, data).map((e) => `job-sources.json: ${e}`),
+    ...validatePlaces(places).map((e) => `locations.json: ${e}`),
+  ];
   if (errors.length) {
     console.error(`✗ ${errors.length} data error(s):\n  - ${errors.join('\n  - ')}`);
     process.exit(1);
@@ -229,19 +283,35 @@ async function main() {
     try {
       const envFile = path.join(ROOT, '.env');
       if (existsSync(envFile)) process.loadEnvFile(envFile); // existing env vars (CI secrets) win
-      jobCounts = await fetchCounts(data.employers, {
+      jobCounts = await fetchUsajobs(data.employers, {
         key: process.env.USAJOBS_API_KEY,
         email: process.env.USAJOBS_EMAIL,
         apiUrl: process.env.USAJOBS_API_URL || undefined, // tests point this at a local fake API
       });
       if (jobCounts) {
         const got = Object.keys(jobCounts.counts).length;
-        if (got) console.log(`✓ USAJOBS counts: ${got}/${jobCounts.eligible} (checked ${jobCounts.checkedAt})`);
+        const titled = Object.values(jobCounts.titles).reduce((n, t) => n + t.length, 0);
+        if (got) console.log(`✓ USAJOBS counts: ${got}/${jobCounts.eligible} (checked ${jobCounts.checkedAt}), ${titled} job titles`);
         else console.warn(`WARN: USAJOBS counts: 0/${jobCounts.eligible}, building without counts`);
       }
     } catch (err) {
       console.warn(`WARN: USAJOBS counts failed (${err?.name || 'error'}), building without counts`);
       jobCounts = null;
+    }
+  }
+
+  // Contractor job titles from careers sites (Hill AFB + Northern Utah only). Never stops the build.
+  let careerTitles = null;
+  if (!argv.includes('--no-careers')) {
+    try {
+      const r = await fetchCareers(jobSources, places);
+      careerTitles = r.titles;
+      const ok = Object.keys(r.titles).length;
+      const total = Object.values(r.titles).reduce((n, t) => n + t.length, 0);
+      const all = Object.keys(jobSources.sources).length;
+      console.log(`${ok === all ? '✓' : 'WARN:'} Contractor job titles: ${ok}/${all} sources, ${total} titles near Hill`);
+    } catch (err) {
+      console.warn(`WARN: contractor job titles failed (${err?.name || 'error'}), building without them`);
     }
   }
 
@@ -254,10 +324,10 @@ async function main() {
   await writeFile(path.join(DIST, '.nojekyll'), '');
 
   const gz = async (rel) => gzipSync(await readFile(path.join(DIST, rel))).length;
-  const sharedAssets = ['assets/styles.css', 'assets/app.js', 'assets/favicon.svg'];
+  const sharedAssets = ['assets/styles.css', 'assets/search.js', 'assets/app.js', 'assets/favicon.svg'];
   let failed = false;
   for (const [id, base] of Object.entries(data.bases)) {
-    const html = renderBase(id, base, data.employers, site, template, jobCounts);
+    const html = renderBase(id, base, data.employers, site, template, jobCounts, synonyms, careerTitles);
     const dir = path.join(DIST, base.path);
     await mkdir(dir, { recursive: true });
     await writeFile(path.join(dir, 'index.html'), html);

@@ -46,6 +46,8 @@
 }
 
 *, *::before, *::after { box-sizing: border-box; }
+/* `hidden` must win over the display rules below (grid, flex), or filtered cards stay on screen. */
+[hidden] { display: none !important; }
 html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; overflow-x: clip; }
 body {
   margin: 0;
@@ -221,6 +223,19 @@ button { font: inherit; }
   padding: 2.5rem 1rem;
 }
 .empty p { font-size: 1.2rem; font-weight: 800; }
+.empty-title { overflow-wrap: anywhere; }
+.empty-filtered { margin-top: .5rem; font-size: 1rem !important; font-weight: 600 !important; color: var(--text); }
+.empty-try { margin-top: 1rem; font-size: 1rem !important; font-weight: 600 !important; color: var(--muted); }
+.suggest-row { display: flex; flex-wrap: wrap; justify-content: center; gap: .5rem; margin-top: .5rem; }
+.suggest {
+  min-height: 44px; padding: .4rem 1rem;
+  border-radius: 999px; border: 1.5px solid var(--chip-border);
+  background: var(--surface); color: var(--text);
+  font-weight: 700; cursor: pointer; touch-action: manipulation;
+}
+.suggest:hover { border-color: var(--text); }
+.empty-usajobs { margin-top: 1rem; font-size: 1rem !important; font-weight: 700 !important; }
+.empty-usajobs a { display: inline-block; padding-block: .7rem; line-height: 1.4; }
 .btn-clear {
   margin-top: 1rem; min-height: 48px; padding: 0 1.5rem;
   border: 0; border-radius: 10px; cursor: pointer;
@@ -269,6 +284,15 @@ button { font: inherit; }
   padding: .2rem .55rem; border-radius: 999px;
 }
 .card-actions { margin-top: auto; padding-top: 1rem; display: flex; flex-direction: column; gap: .25rem; }
+.why {
+  margin-top: .6rem;
+  padding: .35rem .6rem;
+  border-left: 3px solid var(--amber);
+  background: var(--tag-bg);
+  border-radius: 0 6px 6px 0;
+  font-size: .85rem; font-weight: 700; color: var(--text);
+  overflow-wrap: anywhere;
+}
 .open-jobs {
   font-size: .95rem; font-weight: 700; color: var(--text);
   margin-bottom: .35rem;

@@ -20,6 +20,20 @@
         "logistics-supply",
         "internships-entry"
       ],
+      "roles": [
+        "Systems engineer",
+        "Software engineer",
+        "Electronic technician",
+        "Field technician (Sentinel)",
+        "Manufacturing technician",
+        "Maintenance technician",
+        "Subcontract technical engineer",
+        "Industrial engineer",
+        "Manufacturing engineer",
+        "Composite bonder technician",
+        "Aircraft structures mechanic",
+        "Engineering intern"
+      ],
       "jobsUrl": "https://jobs.northropgrumman.com/careers?location=Roy%2C%20UT",
       "secondaryUrl": null,
       "verified": "2026-11",
@@ -36,6 +50,16 @@
         "software-it",
         "logistics-supply",
         "trades-maintenance"
+      ],
+      "roles": [
+        "Structures/sheet metal technician (F-35)",
+        "LO coatings technician (F-35)",
+        "Nondestructive inspection (NDI) inspector",
+        "Aircraft field support engineer (F-35)",
+        "Field service engineer",
+        "Research scientist (supportable low observables)",
+        "Logistics analyst",
+        "IT systems administrator"
       ],
       "jobsUrl": "https://lockheedmartin.eightfold.ai/careers?location=Hill%20AFB%2C%20UT",
       "secondaryUrl": null,
@@ -54,6 +78,15 @@
         "admin-business",
         "internships-entry"
       ],
+      "roles": [
+        "Guidance, navigation and control engineer",
+        "Systems engineer",
+        "Flight control systems engineer",
+        "Propulsion systems engineer",
+        "Test engineer",
+        "Software engineer",
+        "Early career engineer"
+      ],
       "jobsUrl": "https://jobs.boeing.com/search-jobs/Utah",
       "secondaryUrl": null,
       "verified": "2026-11",
@@ -70,6 +103,16 @@
         "software-it",
         "admin-business"
       ],
+      "roles": [
+        "Systems engineer",
+        "Command and launch engineer",
+        "Systems security engineer",
+        "Modeling and simulation engineer",
+        "Flight test engineer",
+        "Command and control engineer",
+        "Engineering technician",
+        "Program control analyst"
+      ],
       "jobsUrl": "https://jobs.baesystems.com/global/en/search-results?keywords=Hill%20AFB",
       "secondaryUrl": null,
       "verified": "2026-11",
@@ -85,6 +128,13 @@
         "software-it",
         "admin-business"
       ],
+      "roles": [
+        "Network engineer",
+        "SATCOM network engineer",
+        "SATCOM IP network support specialist",
+        "Network operations center (NOC) technician",
+        "Cybersecurity analyst"
+      ],
       "jobsUrl": "https://leidos.wd5.myworkdayjobs.com/External?q=Hill%20AFB",
       "secondaryUrl": null,
       "verified": "2026-11",
@@ -98,6 +148,16 @@
       "description": "Systems engineers on base supporting the Air Force's Sentinel ICBM acquisition program at Hill AFB",
       "categories": [
         "engineering"
+      ],
+      "roles": [
+        "Systems engineer",
+        "Principal systems engineer",
+        "Reliability and maintainability engineer",
+        "Nuclear surety engineer",
+        "Communications systems engineer",
+        "Modeling, simulation and analysis engineer",
+        "Software systems engineer",
+        "Systems engineering manager"
       ],
       "jobsUrl": "https://jobs.saic.com/jobs?location=Hill%20AFB",
       "secondaryUrl": null,
@@ -114,6 +174,11 @@
         "engineering",
         "trades-maintenance"
       ],
+      "roles": [
+        "F135 field service engineer",
+        "Field service representative",
+        "Engine maintenance technician"
+      ],
       "jobsUrl": "https://careers.rtx.com/global/en/search-results?keywords=Hill%20AFB",
       "secondaryUrl": null,
       "verified": "2026-11",
@@ -127,6 +192,11 @@
       "description": "Small on-base team sustaining the Minuteman III post-boost rocket engine at Hill AFB",
       "categories": [
         "engineering"
+      ],
+      "roles": [
+        "Rocket engine sustainment engineer",
+        "Field service engineer",
+        "Systems engineer"
       ],
       "jobsUrl": "https://careers.l3harris.com/en/search-jobs/Utah",
       "secondaryUrl": null,
@@ -146,6 +216,33 @@
         "logistics-supply",
         "admin-business"
       ],
+      "roles": [
+        "Aircraft painter",
+        "Stealth coatings (LO) technician",
+        "Composite/plastic fabricator",
+        "Sheet metal mechanic",
+        "Aircraft mechanic",
+        "Pneudraulic systems mechanic",
+        "Electronic integrated systems mechanic",
+        "Electronics mechanic",
+        "Aircraft engine mechanic",
+        "Nondestructive tester (NDI)",
+        "Machinist",
+        "Electroplater",
+        "Powered support systems mechanic",
+        "Engineering technician",
+        "Electronics technician",
+        "Production controller",
+        "Equipment specialist",
+        "General engineer",
+        "Aerospace engineer",
+        "Electronics engineer",
+        "Computer scientist",
+        "IT specialist (network/infosec)",
+        "Telecommunications specialist",
+        "Logistics management specialist",
+        "Administrative support specialist"
+      ],
       "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=AF1M",
       "secondaryUrl": "https://afciviliancareers.com/find-a-job/",
       "verified": "2026-11",
@@ -161,6 +258,22 @@
         "admin-business",
         "internships-entry",
         "trades-maintenance"
+      ],
+      "roles": [
+        "Child and youth program assistant",
+        "Recreation assistant",
+        "Guest services representative",
+        "Cook",
+        "Food service worker",
+        "Custodial worker",
+        "Laborer",
+        "Automotive mechanic",
+        "Mobile equipment servicer",
+        "Office automation clerk",
+        "Human resources assistant",
+        "Accounting technician",
+        "Cashier",
+        "Library technician"
       ],
       "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=AF1M&pp=NA&pp=NF&pp=NL&pp=NS",
       "secondaryUrl": "https://hillfss.com/careers/",
@@ -180,6 +293,24 @@
         "admin-business",
         "software-it"
       ],
+      "roles": [
+        "Student trainee (intern)",
+        "Engineer (PALACE Acquire intern)",
+        "Contract specialist",
+        "Logistics management specialist",
+        "Inventory management specialist",
+        "Financial management specialist",
+        "Cost analyst",
+        "Acquisition program manager",
+        "Operations research analyst",
+        "Computer scientist",
+        "Data scientist",
+        "Chemist",
+        "Mathematician",
+        "Physicist",
+        "Occupational safety and health specialist",
+        "Auditor"
+      ],
       "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=AF1Y",
       "secondaryUrl": "https://afciviliancareers.com/students-and-graduates/",
       "verified": "2026-11",
@@ -197,6 +328,24 @@
         "software-it",
         "admin-business"
       ],
+      "roles": [
+        "IT specialist (network/infosec)",
+        "IT specialist (application software)",
+        "IT specialist (systems administration)",
+        "IT project manager",
+        "Telecommunications specialist",
+        "Program analyst",
+        "Inventory management specialist",
+        "General supply specialist",
+        "Supply technician",
+        "Supply systems analyst",
+        "Distribution process worker",
+        "Materials handler (forklift operator)",
+        "Materials expediter",
+        "Contract specialist",
+        "Environmental protection specialist",
+        "Data scientist"
+      ],
       "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=DD07",
       "secondaryUrl": null,
       "verified": "2026-11",
@@ -212,6 +361,19 @@
         "base-services",
         "logistics-supply",
         "internships-entry"
+      ],
+      "roles": [
+        "Store associate",
+        "Sales store checker",
+        "Store worker",
+        "Meatcutter",
+        "Grocery department manager",
+        "Meat department manager",
+        "Produce department manager",
+        "Store manager",
+        "Commissary officer",
+        "Secretary",
+        "Student trainee"
       ],
       "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=DD34",
       "secondaryUrl": "https://corp.commissaries.com/our-agency/careers-with-deca",
@@ -230,6 +392,12 @@
         "admin-business",
         "internships-entry"
       ],
+      "roles": [
+        "Customer experience associate",
+        "Roving store worker (cashier)",
+        "Food service worker",
+        "Food service foreman"
+      ],
       "jobsUrl": "https://www.applymyexchange.com/hourly/",
       "secondaryUrl": null,
       "verified": "2026-11",
@@ -245,6 +413,22 @@
         "trades-maintenance",
         "admin-business"
       ],
+      "roles": [
+        "Aircraft mechanic (F-35)",
+        "Low observable (LO) technician",
+        "Aircraft ordnance systems mechanic",
+        "Electronic integrated systems mechanic",
+        "Aircraft overhaul leader",
+        "Composite/plastic fabricator",
+        "Ordnance equipment mechanic",
+        "Powered support systems mechanic",
+        "Aircraft engine mechanic",
+        "Aircraft survival and flight equipment repairer",
+        "Sheet metal mechanic",
+        "Human resources specialist (military)",
+        "Training technician",
+        "Administrative support assistant"
+      ],
       "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=AF0M",
       "secondaryUrl": null,
       "verified": "2026-11",
@@ -258,6 +442,15 @@
       "description": "Hill's military clinic, the only military treatment facility in Utah: primary care, pharmacy, mental health",
       "categories": [
         "base-services"
+      ],
+      "roles": [
+        "Medical technician",
+        "Nurse (clinical)",
+        "Pharmacy technician",
+        "Physical therapist",
+        "Diagnostic radiologic technologist",
+        "Clinical psychologist",
+        "Medical support assistant (office automation)"
       ],
       "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=DD83",
       "secondaryUrl": null,
@@ -276,6 +469,16 @@
         "logistics-supply",
         "software-it"
       ],
+      "roles": [
+        "Composite technician",
+        "Aerospace coater",
+        "Sheet metal technician",
+        "Aircraft structural repair technician",
+        "Machinist",
+        "Structures engineer",
+        "Logistics specialist",
+        "Quality inspector"
+      ],
       "jobsUrl": "https://www.kihomac.com/careers/",
       "secondaryUrl": "https://apply.workable.com/kihomac/",
       "verified": "2026-11",
@@ -291,6 +494,13 @@
         "engineering",
         "trades-maintenance",
         "logistics-supply"
+      ],
+      "roles": [
+        "Aircraft wing shop technician",
+        "Sheet metal mechanic (aircraft)",
+        "F-16 structural repair specialist",
+        "Aerospace engineer (MRO)",
+        "Aircraft technical support manager"
       ],
       "jobsUrl": "https://www.es3inc.com/employment/opportunities/",
       "secondaryUrl": null,
@@ -308,6 +518,13 @@
         "logistics-supply",
         "admin-business"
       ],
+      "roles": [
+        "Java web developer",
+        "Systems analyst",
+        "Configuration manager",
+        "Software developer",
+        "Database developer (Oracle)"
+      ],
       "jobsUrl": "https://www.systemsimplementers.com/careers/",
       "secondaryUrl": "https://systemsimplementers.isolvedhire.com/jobs/",
       "verified": "2026-11",
@@ -324,6 +541,12 @@
         "software-it",
         "logistics-supply"
       ],
+      "roles": [
+        "Test systems hardware/software engineer",
+        "Test and evaluation engineer",
+        "Electronics technician",
+        "Software engineer"
+      ],
       "jobsUrl": "https://searchcareers.caci.com/careers?location=Hill%20AFB%2C%20UT",
       "secondaryUrl": null,
       "verified": "2026-11",
@@ -338,6 +561,13 @@
       "categories": [
         "logistics-supply",
         "trades-maintenance"
+      ],
+      "roles": [
+        "Warehouse specialist",
+        "Shipper/packer",
+        "Forklift operator",
+        "Material handler",
+        "Warehouse team lead"
       ],
       "jobsUrl": "https://www.amentumcareers.com/jobs/search?location=Utah",
       "secondaryUrl": null,
@@ -354,6 +584,12 @@
         "engineering",
         "trades-maintenance"
       ],
+      "roles": [
+        "Systems engineer (F-16 design and interface)",
+        "Engineering technician (F-16 avionics)",
+        "Electrical engineer",
+        "Avionics technician"
+      ],
       "jobsUrl": "https://jobs.dayforcehcm.com/brs/SGSCANDIDATEPORTAL",
       "secondaryUrl": null,
       "verified": "2026-11",
@@ -368,6 +604,15 @@
       "categories": [
         "software-it",
         "engineering"
+      ],
+      "roles": [
+        "Mission planning subject matter expert",
+        "Mission planning computer (MPC) team lead",
+        "Help desk specialist",
+        "Information assurance manager",
+        "Configuration manager",
+        "Technical publications specialist",
+        "Software security analyst"
       ],
       "jobsUrl": "https://elblakecorp.applicantpro.com/jobs/",
       "secondaryUrl": "https://elblakecorp.com/careers/",

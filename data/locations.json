@@ -1,0 +1,12 @@
+{
+  "_note": "Places that count as 'Hill AFB and Northern Utah' when pulling contractor job titles. A job location must name one of these places and say Utah/UT (the Hill AFB names count on their own). Salt Lake County (Salt Lake City, Draper, Magna, West Jordan) is left out on purpose. Edit freely.",
+  "hillNames": ["Hill AFB", "Hill Air Force Base"],
+  "places": [
+    "Ogden", "North Ogden", "South Ogden", "Roy", "Clearfield", "Layton", "Sunset", "Riverdale",
+    "Washington Terrace", "Harrisville", "Pleasant View", "Plain City", "West Haven", "Farr West",
+    "Kaysville", "Fruit Heights", "Syracuse", "Clinton", "West Point", "Farmington", "Centerville",
+    "Bountiful", "Woods Cross", "Brigham City", "Tremonton", "Corinne", "Promontory", "Logan",
+    "Morgan", "Hooper"
+  ],
+  "state": ["UT", "Utah"]
+}

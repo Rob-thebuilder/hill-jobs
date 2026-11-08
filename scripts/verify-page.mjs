@@ -8,6 +8,7 @@ import { gzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { LABELS } from './build.mjs';
+import { createRequire } from 'node:module';
 import { launchChrome } from './lib/chrome.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -24,14 +25,17 @@ function check(name, ok, detail = '') {
 // ---------- oracle: expected results computed from the data, not the page ----------
 const data = JSON.parse(await readFile(path.join(ROOT, 'data/employers.json'), 'utf8'));
 const hill = data.employers.filter((e) => e.base === 'hill');
-const norm = (s) => s.toLowerCase().normalize('NFD').replace(/\p{Diacritic}/gu, '').replace(/\s+/g, ' ').trim();
+// Expected results use the shared search engine (unit-tested in test/search.test.mjs) over the
+// search data embedded in the built page, so live USAJOBS titles are included.
+const Search = createRequire(import.meta.url)('../assets/search.js');
+const builtHtml = await readFile(path.join(DIST, 'index.html'), 'utf8').catch(() => '');
+const embedded = builtHtml.match(/<script type="application\/json" id="search-data">([\s\S]*?)<\/script>/);
+const searchIndex = embedded ? Search.createIndex(JSON.parse(embedded[1]).employers, JSON.parse(embedded[1]).synonyms) : null;
 function expected({ q = '', type = '', cats = [] }) {
-  const tokens = norm(q).split(' ').filter(Boolean);
-  return hill.filter((e) => {
-    const text = norm([e.name, e.description, ...e.categories.map((c) => LABELS.categories[c])].join(' '));
-    return (!type || e.type === type) && (!cats.length || e.categories.some((c) => cats.includes(c))) && tokens.every((t) => text.includes(t));
-  }).length;
+  const results = searchIndex ? Search.search(searchIndex, q).results : {};
+  return hill.filter((e) => results[e.id] && (!type || e.type === type) && (!cats.length || e.categories.some((c) => cats.includes(c)))).length;
 }
+const nameOf = Object.fromEntries(hill.map((e) => [e.id, e.name]));
 
 // ---------- static server (gzip, like GitHub Pages) ----------
 const TYPES = { '.html': 'text/html; charset=utf-8', '.css': 'text/css', '.js': 'text/javascript', '.svg': 'image/svg+xml', '.png': 'image/png', '.json': 'application/json' };
@@ -121,9 +125,11 @@ async function openPage(url, { width = 390, height = 844, js = true, scheme = 'l
 
 // Reads the page's filter state in one round trip.
 const STATE = `(() => ({
-  shown: [...document.querySelectorAll('#list > li')].filter(li => !li.hidden).length,
+  // Counted by what's actually on screen, not by the hidden attribute.
+  shown: [...document.querySelectorAll('#list > li')].filter(li => li.getClientRects().length > 0).length,
+  hiddenButShown: [...document.querySelectorAll('#list > li')].filter(li => li.hidden && li.getClientRects().length > 0).length,
   count: document.querySelector('#count').textContent,
-  empty: !document.querySelector('#empty').hidden,
+  empty: document.querySelector('#empty').getClientRects().length > 0,
   search: location.search,
   pressed: [...document.querySelectorAll('.chip[aria-pressed="true"]')].map(c => c.dataset.type ?? c.dataset.cat).filter(Boolean),
   allPressed: document.querySelector('.chip[data-type=""]').getAttribute('aria-pressed') === 'true',
@@ -144,7 +150,7 @@ const CONTRAST = `(() => {
     for (const l of layers.reverse()) bg = blend(l, bg);
     return bg;
   };
-  const sels = ['h1', '.eyebrow', '.tagline', '.stat', '.stat strong', '.search label', '.chip-label', '.chip', '.count', '.badge', '.card h2', '.desc', '.tags li', '.btn-jobs', '.link-secondary', '.open-jobs', '.open-jobs .checked', '.meta span', '.meta a', '.site-footer p', '.recruiter', '.reset', '.empty p', '.btn-clear', '.search input'];
+  const sels = ['h1', '.eyebrow', '.tagline', '.stat', '.stat strong', '.search label', '.chip-label', '.chip', '.count', '.badge', '.card h2', '.desc', '.tags li', '.btn-jobs', '.link-secondary', '.open-jobs', '.open-jobs .checked', '.meta span', '.meta a', '.site-footer p', '.recruiter', '.reset', '.empty p', '.btn-clear', '.search input', '.why', '.suggest', '.empty-usajobs a'];
   const out = [];
   for (const sel of sels) for (const el of document.querySelectorAll(sel)) {
     const r = el.getBoundingClientRect();
@@ -293,6 +299,52 @@ try {
     const s = await p.evaluate(STATE);
     check('Back after typing restores the unfiltered view', s.search === '' && s.q === '' && s.shown === total, JSON.stringify(s));
     await p.close();
+  }
+
+  // 6b. The five example searches from SPEC §5, typed into the real page.
+  {
+    const p = await openPage(H, { width: 390 });
+    for (const q of ['painter', 'coater', 'LO', 'networking', 'admin']) {
+      await p.evaluate(click('#reset'));
+      await p.evaluate(`(() => { const i = document.querySelector('#q'); i.value = ''; })()`);
+      await p.type(q);
+      const r = await p.evaluate(`[...document.querySelectorAll('#list > li')].filter(li => li.getClientRects().length > 0).map(li => ({ id: li.querySelector('.card').dataset.id, why: li.querySelector('.why').getClientRects().length ? li.querySelector('.why').textContent : '' }))`);
+      const want = expected({ q });
+      check(`example search "${q}" finds ${want} employer(s), each with a "Matches:" line`,
+        r.length === want && want >= 1 && r.every((x) => x.why.startsWith('Matches: ')),
+        r.map((x) => `${nameOf[x.id]} — ${x.why || '(no reason shown)'}`).join('; '));
+    }
+    await p.evaluate(click('#reset'));
+    const whyHidden = await p.evaluate(`[...document.querySelectorAll('.why')].every(w => w.hidden)`);
+    check('no "Matches:" lines when the search is empty', whyHidden);
+    const anyHiddenVisible = await p.evaluate(`[...document.querySelectorAll('[hidden]')].filter(el => el.getClientRects().length > 0).map(el => el.id || el.className)`);
+    check('elements marked hidden are really hidden on screen', anyHiddenVisible.length === 0, anyHiddenVisible.join(', '));
+    await p.close();
+  }
+
+  // 6c. A search with no results shows a helpful empty state.
+  {
+    const p = await openPage(H + '?q=zzqqxx', { width: 390 });
+    const r = await p.evaluate(`({
+      title: document.querySelector('#empty-title').textContent,
+      suggestions: [...document.querySelectorAll('.suggest')].map(b => b.textContent),
+      usajobsShown: !document.querySelector('#empty-usajobs').hidden,
+      usajobs: document.querySelector('#usajobs-link').href,
+      emptyShown: !document.querySelector('#empty').hidden,
+    })`);
+    const u = new URL(r.usajobs);
+    check('empty state names the search and offers suggestions', r.emptyShown && r.title === 'No employers list “zzqqxx” yet.' && r.suggestions.length >= 3, `${r.title} | ${r.suggestions.join(', ')}`);
+    check('empty state links to the same search on USAJOBS at Hill', r.usajobsShown && u.hostname === 'www.usajobs.gov' && u.searchParams.get('k') === 'zzqqxx' && u.searchParams.get('l') === 'Hill AFB, Utah', r.usajobs);
+    await p.evaluate(click('.suggest[data-q="mechanic"]'));
+    const s = await p.evaluate(STATE);
+    check('tapping a suggestion runs that search', s.q === 'mechanic' && s.shown === expected({ q: 'mechanic' }) && s.shown > 0 && s.search === '?q=mechanic', JSON.stringify(s));
+    await p.close();
+
+    const f = await openPage(H + '?q=painter&type=services', { width: 390 });
+    const msg = await f.evaluate(`(() => { const e = document.querySelector('#empty-filtered'); return e.hidden ? '' : e.textContent; })()`);
+    const without = expected({ q: 'painter' });
+    check('empty state says when the chips are hiding matches', expected({ q: 'painter', type: 'services' }) === 0 && msg.includes(`${without} employer`), msg || '(nothing shown)');
+    await f.close();
   }
 
   // 7. Shared filtered URLs open in the same view.

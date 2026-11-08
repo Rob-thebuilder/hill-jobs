@@ -1,0 +1,9 @@
+{
+  "_note": "Each group lists terms that mean the same thing in a search. A query word from a group also matches any other term of that group in an employer's roles and live job titles (not in names or descriptions). Terms of 2 letters or fewer only match whole words. Edit freely; the build checks the format.",
+  "groups": [
+    ["paint", "painter", "painting", "coater", "coating", "coatings", "lo", "low observable", "low observables", "low-observable", "stealth coatings"],
+    ["networking", "network", "it", "information technology", "cyber", "cybersecurity"],
+    ["admin", "administrative", "clerk", "office", "secretary"],
+    ["ap", "a&p", "airframe and powerplant", "aircraft mechanic"]
+  ]
+}

@@ -41,6 +41,7 @@ All four groups are first-class users. Copy and categories should serve each of 
 | Name | Required |
 | Type | One of: `Prime contractor`, `Subcontractor / supplier`, `Federal civilian`, `Services / support`. Shown as a badge. |
 | Description | One line (≤ 120 characters) about what they do *at Hill*, not a generic company tagline |
+| Matches (only while searching) | "Matches: LO technician": the role, or live USAJOBS job title, that made this card match the search (see §5) |
 | Job categories | 1–5 tags from a fixed list: `Trades & Maintenance`, `Engineering`, `Software & IT`, `Logistics & Supply`, `Admin & Business`, `Internships & Entry-level`, `Base services` (clinic, commissary, Exchange) |
 | Primary link | "View jobs →" pointing to the careers page. If possible, the link is pre-filtered to Utah/Hill. |
 | Secondary link (optional) | Federal employers only: the agency's own hiring page, if one exists |
@@ -89,6 +90,9 @@ The primary link is a **USAJOBS search pre-filtered to the agency and the Hill A
   ]
 }
 ```
+- `roles` (required, 3–25 unique job titles in sentence case, each 2–60 characters) lists the common jobs and trades the employer hires for **at Hill**, e.g. "Aircraft painter", "IT specialist (network/infosec)". It's used by search and isn't listed on the card.
+  - Each role needs evidence: USAJOBS postings at Hill (current or historic) for federal employers, or Hill-area job postings for contractors.
+  - `data/ROLES-REVIEW.md` records the source and confidence of each role. Uncertain ones are flagged there for you to verify before launch.
 - `sourceUrl` is internal and never shown on the page. It links to evidence (news, a contract award, an official page) that the employer has a workforce at Hill. It's required, so every listing can be traced back to its evidence.
 - `base` lets one employer appear at several bases as separate records, each with its own local description and pre-filtered link.
 - `type` and `categories` use slug values. A single map in the JS turns slugs into display labels.
@@ -101,13 +105,28 @@ I will draft ~25–40 employers: federal employers (e.g., Ogden Air Logistics Co
 
 Everything runs in the browser, with no server.
 
-- **Search box** (in the hero): matches as you type against name, description, and category labels. It ignores case and accents and is debounced (~100 ms). Type `/` on desktop to focus it.
+- **Search box** (in the hero): matches as you type, debounced (~100 ms). Type `/` on desktop to focus it. The rules live in `assets/search.js`, which the page and the tests share.
+  - **What it searches:** each employer's name, description, researched `roles`, and the **live job titles** open when the site was built. Federal cards get theirs from USAJOBS; contractors get theirs from their own careers sites, limited to Hill AFB and Northern Utah (§6).
+  - **Not searched:** category labels; the category chips do that.
+  - **Normalizing:** case and accents are ignored. "A&P" equals "AP". Other punctuation splits words, and a hyphenated term like "F-35" is matched as one phrase.
+  - **Whole words for short terms:** a term of 2 letters or fewer must match a whole word, so "LO" never matches "Lockheed" or "logistics", and "IT" never matches "its". Longer terms match the start of a word ("mech" → "mechanic"), never the middle.
+  - **Multi-word searches:** every word must match (AND).
+  - **Synonyms** (`data/synonyms.json`, editable):
+    - Groups of equivalent terms, e.g. painter/paint/coater/coatings/LO/low observable/stealth coatings (LO is a painting/coating trade, so these are one group), networking/network/IT/cyber, admin/administrative/clerk/office/secretary.
+    - A search word in a group matches whole words only (with a plural "s" for terms longer than 2 letters). It also matches the group's other terms, but only in roles and job titles, so "admin" doesn't match "F-16 program office".
+  - **"Matches:" line:** while a search is active, each card shows why it matched ("Matches: LO technician", "Matches: open job “Aircraft mechanic”", or "Matches: description"). Name matches need no explanation.
+  - **Required example searches:** "painter", "coater", "LO", "networking" and "admin" must each find at least one employer, with a "Matches:" line on every result. "painter" and "coater" must find the same employers. `node --test` prints what each one returns.
 - **Filter chips**, shown below the hero in two rows:
   - **Type** (single-select, with "All" as the default)
   - **Job category** (multi-select; an employer matches if it has *any* selected category)
 - Search and chips combine with AND.
 - **Result count** is announced live ("12 employers") through an `aria-live="polite"` region.
-- **Empty state:** "No employers match. Clear filters", with a button that resets everything.
+- **Empty state**, instead of a blank page:
+  - It names the search: "No employers list “painter” yet."
+  - If the chips are hiding matches, it says so: "3 employers match “painter” if you clear the type and category filters."
+  - It offers suggestion buttons (mechanic, engineer, IT, logistics) that run that search.
+  - It links to the same keyword search for all federal jobs at Hill on USAJOBS (`https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&k=<query>`; `k` was confirmed on usajobs.gov).
+  - A "Clear search and filters" button resets everything.
 - **State in the URL:** filters and the search term go in the query string (`?q=boeing&type=prime&cat=engineering`), so a filtered view can be shared or bookmarked. Back/forward should work.
 - **Sort order:** alphabetical by name. No paid or featured placement in v1.
 - On phones, the chip rows scroll horizontally inside their own container. The page itself never scrolls sideways.
@@ -121,16 +140,21 @@ Everything runs in the browser, with no server.
 ├── index.html              Hill page (generated)
 ├── assets/
 │   ├── styles.css
-│   └── app.js              search, filters, URL state
+│   ├── search.js           search rules (shared with the tests)
+│   └── app.js              search box, filters, URL state
 ├── data/
 │   ├── employers.json
-│   └── employers.schema.json
+│   ├── employers.schema.json
+│   ├── synonyms.json       search synonym groups
+│   ├── job-sources.json    contractor careers sites read for live job titles
+│   ├── locations.json      what counts as Hill AFB and Northern Utah
+│   └── ROLES-REVIEW.md     evidence for each employer's roles
 ├── scripts/
 │   ├── build.mjs           renders cards into the HTML per base, with USAJOBS counts (Node built-ins only)
 │   ├── check-links.mjs     link checker (Node built-ins only)
 │   ├── verify-page.mjs     automated phone checks in headless Chrome
 │   ├── verify-usajobs.mjs  compares API counts with the live USAJOBS site (run by hand)
-│   └── lib/                usajobs.mjs (API counts), chrome.mjs (headless Chrome driver)
+│   └── lib/                usajobs.mjs (USAJOBS counts/titles), careers.mjs (contractor titles), chrome.mjs (headless Chrome)
 ├── test/                   node --test unit and build tests
 ├── templates/base.html
 └── .github/workflows/
@@ -140,6 +164,16 @@ Everything runs in the browser, with no server.
 
 - The generated pages are written to `dist/` (not committed), and that folder is what gets deployed.
 - `build.mjs` validates the data, then writes the full card list into static HTML for each base. The directory therefore works **without JavaScript** and search engines can index it; `app.js` only adds search and filtering on top. This is the only build step, and it needs only Node 20+.
+- **Contractor job titles at build time:** the build reads open job titles from each contractor's careers site. They're used only for search, and refresh with the daily build.
+  - **Sources:** `data/job-sources.json` names each contractor's careers system (Eightfold, Workday, Phenom, Workable, ApplicantPro, an HTML list, or a Radancy sitemap). It also lists the contractors that aren't read, with the reason.
+  - **Location:** `data/locations.json` defines "Hill AFB and Northern Utah": Hill AFB by name, or a listed Davis/Weber/Box Elder/Cache/Morgan County town together with Utah/UT. Salt Lake County is left out. A job counts if any of its locations qualifies.
+  - **Polite reading:**
+    - Every request first checks the site's robots.txt, and a disallowed path is never requested. A site that answers robots.txt with 401/403/5xx is skipped.
+    - Requests identify as `WorkAtHill-JobTitles/1.0 (+https://workathill.com)`, run one at a time, once per build, with a 15 s timeout and a page cap.
+    - Only titles and locations are kept, never full postings.
+  - **Never breaks the site:** any failure drops that contractor's titles, and the build continues. `--no-careers` skips this step, and the tests use it.
+  - **No counts on contractor cards:** each careers site's own filter differs from the Northern Utah rule, so a count could disagree with what "View jobs" shows (the same rule as §4).
+- **USAJOBS job titles at build time:** the same API call that gets each count also returns the open job titles (up to 500). The titles are cleaned up (hiring-authority suffixes dropped, ALL-CAPS changed to sentence case) and embedded in the page's search data. They refresh with the daily build.
 - **USAJOBS counts at build time:**
   - The build reads `USAJOBS_API_KEY` and `USAJOBS_EMAIL` from the environment: `.env` locally (git-ignored), repo secrets in CI.
   - `--no-counts` skips the fetch.
@@ -197,7 +231,9 @@ Everything runs in the browser, with no server.
 - Other bases' pages, and any base switcher in the UI (the data model is ready for them)
 - Company logos and photos
 - Clearance-required, veteran/SkillBridge, and headcount fields
-- Individual job postings, job feeds, scraping, or third-party job APIs, **except** the build-time open-job counts from the official USAJOBS Search API (§4)
+- Individual job postings, job feeds, scraping, or third-party job APIs, **except** these, read at build time only:
+  - open-job counts and titles from the official USAJOBS Search API (§4)
+  - contractor job *titles* for search, read politely from public careers pages (§6)
 - User accounts, saved employers, and job alerts
 - Recruiter self-service editing, a CMS, or automatic updates from form submissions
 - Featured, paid, or sponsored placement
@@ -223,9 +259,12 @@ The site isn't done until every check below passes.
 - [ ] No horizontal page scroll at 320, 360, 390, and 414 px widths (Chrome DevTools device mode). Check `document.documentElement.scrollWidth <= window.innerWidth`.
 - [ ] Hill page transfer size under 100 KB, and 0 third-party requests (DevTools Network tab)
 - [ ] With JavaScript disabled, all employers and links are still visible and usable
+- [ ] Filtered-out cards are actually hidden on screen (checked by what's visible, not by the `hidden` attribute)
+- [ ] The five example searches ("painter", "coater", "LO", "networking", "admin") each show employers with a "Matches:" line, and a nonsense search shows the helpful empty state
 - [ ] `node --test` passes (USAJOBS mapping, failure handling, no credential leaks, rendering)
 - [ ] `node scripts/verify-usajobs.mjs`: every card's open-job count equals the count on its live "View jobs" USAJOBS page
 - [ ] Building without a key (or with a bad one) succeeds and gives the same page, just without counts
+- [ ] The build log shows contractor job titles from every source in `data/job-sources.json`, and building with `--no-careers` (or with a careers site down) still succeeds
 
 ### On real devices (deployed GitHub Pages URL, not localhost)
 Test on at least **one iPhone (Safari)** and **one Android phone (Chrome)**. If you don't have one of them, use BrowserStack's free trial or a friend's phone.
@@ -246,6 +285,7 @@ Test on at least **one iPhone (Safari)** and **one Android phone (Chrome)**. If 
 
 ### Launch checklist
 - [ ] You approved every seed employer entry
+- [ ] You checked every role in `data/ROLES-REVIEW.md`, especially the ⚑ ones and the LO questions, and the groups in `data/synonyms.json`
 - [ ] All links pass the link checker (or are on the reviewed allowlist)
 - [ ] Footer disclaimer is present
 - [ ] `USAJOBS_API_KEY` and `USAJOBS_EMAIL` repo secrets are set, and a manual deploy run logs `USAJOBS counts: 7/7`

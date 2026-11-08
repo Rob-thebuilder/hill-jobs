@@ -6,7 +6,7 @@ import { readFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
-import { apiParamsFromJobsUrl, fetchCounts } from './lib/usajobs.mjs';
+import { apiParamsFromJobsUrl, fetchUsajobs } from './lib/usajobs.mjs';
 import { launchChrome } from './lib/chrome.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -24,7 +24,7 @@ const entries = data.employers.filter((e) => apiParamsFromJobsUrl(e.jobsUrl));
 const BROWSER_UA = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/150.0.0.0 Safari/537.36';
 
 async function apiCount(e) {
-  const r = await fetchCounts([e], { key, email });
+  const r = await fetchUsajobs([e], { key, email });
   return r?.counts[e.id] ?? null;
 }
 

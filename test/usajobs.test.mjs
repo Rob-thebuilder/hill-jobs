@@ -1,7 +1,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
-import { apiParamsFromJobsUrl, fetchCounts, mountainDate } from '../scripts/lib/usajobs.mjs';
+import { apiParamsFromJobsUrl, fetchUsajobs, mountainDate } from '../scripts/lib/usajobs.mjs';
 
 const data = JSON.parse(await readFile(new URL('../data/employers.json', import.meta.url), 'utf8'));
 const FAKE_KEY = 'FAKE-KEY-123-do-not-log';
@@ -53,7 +53,7 @@ test('URLs that cannot be mapped exactly get no count', () => {
   }
 });
 
-// ---------- fetchCounts ----------
+// ---------- fetchUsajobs ----------
 
 const fed = data.employers;
 
@@ -62,7 +62,7 @@ test('no key or email: returns null and makes no requests', async () => {
   const fetchImpl = async () => { calls++; return json(countBody(1)); };
   for (const creds of [{ key: '', email: FAKE_EMAIL }, { key: FAKE_KEY, email: '' }, {}]) {
     const { log, lines } = captureLog();
-    assert.equal(await fetchCounts(fed, { ...creds, fetchImpl, log }), null);
+    assert.equal(await fetchUsajobs(fed, { ...creds, fetchImpl, log }), null);
     assert.match(lines.join('\n'), /skipped/);
   }
   assert.equal(calls, 0);
@@ -75,7 +75,7 @@ test('success: one request per eligible entry with exactly the documented header
     return json(countBody(seen.length * 2));
   };
   const { log } = captureLog();
-  const r = await fetchCounts(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log, now: new Date('2026-11-06T18:00:00Z') });
+  const r = await fetchUsajobs(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log, now: new Date('2026-11-06T18:00:00Z') });
   assert.equal(r.checkedAt, '2026-11-06');
   assert.equal(r.eligible, 7);
   assert.equal(seen.length, 7);
@@ -84,7 +84,7 @@ test('success: one request per eligible entry with exactly the documented header
   for (const s of seen) {
     assert.deepEqual(s.headers, { Host: 'data.usajobs.gov', 'User-Agent': FAKE_EMAIL, 'Authorization-Key': FAKE_KEY });
     assert.equal(s.url.origin + s.url.pathname, 'https://data.usajobs.gov/api/search');
-    assert.equal(s.url.searchParams.get('ResultsPerPage'), '1');
+    assert.equal(s.url.searchParams.get('ResultsPerPage'), '500');
     assert.equal(s.url.searchParams.get('LocationName'), 'Hill AFB, Utah');
   }
   const fss = seen.find((s) => s.url.searchParams.get('JobGradeCode'));
@@ -96,7 +96,7 @@ test('one failing entry does not stop the others', async () => {
   let i = 0;
   const fetchImpl = async () => (++i === 2 ? json({}, 500) : json(countBody(5)));
   const { log, lines } = captureLog();
-  const r = await fetchCounts(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log });
+  const r = await fetchUsajobs(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log });
   assert.equal(Object.keys(r.counts).length, 6);
   assert.match(lines.join('\n'), /HTTP 500/);
 });
@@ -106,7 +106,7 @@ test('401/403 stops early (bad key)', async () => {
     let calls = 0;
     const fetchImpl = async () => { calls++; return new Response('nope', { status }); };
     const { log, lines } = captureLog();
-    const r = await fetchCounts(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log });
+    const r = await fetchUsajobs(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log });
     assert.equal(calls, 1);
     assert.deepEqual(r.counts, {});
     assert.match(lines.join('\n'), new RegExp(`HTTP ${status}`));
@@ -128,7 +128,7 @@ test('network errors, timeouts and bad JSON skip just that entry', async () => {
   let i = 0;
   const fetchImpl = async (url, init) => responses[Math.min(i++, responses.length - 1)](init);
   const { log, lines } = captureLog();
-  const r = await fetchCounts(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log, timeoutMs: 30 });
+  const r = await fetchUsajobs(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log, timeoutMs: 30 });
   assert.equal(Object.keys(r.counts).length, 4);
   const text = lines.join('\n');
   assert.match(text, /network error|TypeError/);
@@ -141,7 +141,7 @@ test('only non-negative integer counts are accepted', async () => {
   let i = 0;
   const fetchImpl = async () => json(bodies[i++]);
   const { log } = captureLog();
-  const r = await fetchCounts(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log });
+  const r = await fetchUsajobs(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log });
   assert.deepEqual(Object.values(r.counts).sort(), [0, 7]);
 });
 
@@ -156,7 +156,7 @@ test('credentials never appear in log output, whatever fails', async () => {
   let i = 0;
   const fetchImpl = async () => failures[i++ % failures.length]();
   const { log, lines } = captureLog();
-  await fetchCounts(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log });
+  await fetchUsajobs(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log });
   const text = lines.join('\n');
   assert.ok(lines.length >= 5);
   assert.ok(!text.includes(FAKE_KEY), 'key leaked into logs');
@@ -167,4 +167,44 @@ test('checked date is the Mountain Time date', () => {
   assert.equal(mountainDate(new Date('2026-11-07T05:30:00Z')), '2026-11-06'); // 10:30 pm MST
   assert.equal(mountainDate(new Date('2026-11-07T07:30:00Z')), '2026-11-07'); // 12:30 am MST
   assert.equal(mountainDate(new Date('2026-07-01T05:30:00Z')), '2026-06-30'); // 11:30 pm MDT
+});
+
+// ---------- live job titles ----------
+
+import { cleanTitle } from '../scripts/lib/usajobs.mjs';
+
+test('job titles are cleaned up for display and search', () => {
+  const cases = {
+    'SUPERVISORY SYSTEMS ENGINEER - DIRECT HIRE AUTHORITY': 'Supervisory systems engineer',
+    'LOGISTICS MANAGEMENT SPECIALIST-DIRECT HIRE AUTHORITY': 'Logistics management specialist',
+    'Information Technology Specialist (SysAnalysis) Direct Hire Authority': 'Information Technology Specialist (SysAnalysis)',
+    'INTELLIGENCE SPECIALIST - ALTERNATE HIRING AUTHORITY': 'Intelligence specialist',
+    'IT SPECIALIST (INFOSEC)': 'IT specialist (INFOSEC)',
+    'INFORMATION TECHNOLOGY SPECIALIST NH-2210-03 - DIRECT HIRE AUTHORITY': 'Information technology specialist NH-2210-03',
+    'AIRCRAFT MECHANIC (F-35)': 'Aircraft mechanic (F-35)',
+    'F-35 LO TECHNICIAN': 'F-35 LO technician',
+    'Sales Store Checker': 'Sales Store Checker',
+    '  ': '',
+  };
+  for (const [raw, want] of Object.entries(cases)) assert.equal(cleanTitle(raw), want, raw);
+});
+
+test('titles come back per employer, cleaned and de-duplicated; failures give none', async () => {
+  const items = (...t) => t.map((x) => ({ MatchedObjectDescriptor: { PositionTitle: x } }));
+  let i = 0;
+  const fetchImpl = async () => {
+    i++;
+    if (i === 1) return json({ SearchResult: { SearchResultCountAll: 3, SearchResultItems: items('AIRCRAFT MECHANIC', 'AIRCRAFT MECHANIC - DIRECT HIRE AUTHORITY', 'PAINTER') } });
+    if (i === 2) return json({}, 500);
+    return json({ SearchResult: { SearchResultCountAll: 0, SearchResultItems: [] } });
+  };
+  const { log } = captureLog();
+  const r = await fetchUsajobs(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log });
+  const ids = Object.keys(r.counts);
+  assert.equal(ids.length, 6);
+  assert.deepEqual(r.titles[ids[0]], ['Aircraft mechanic', 'Painter']);
+  assert.equal(r.counts[ids[0]], 3); // count is the API total, not the number of distinct titles
+  const failedId = data.employers.filter((e) => apiParamsFromJobsUrl(e.jobsUrl))[1].id;
+  assert.ok(!(failedId in r.titles) && !(failedId in r.counts));
+  assert.deepEqual(r.titles[ids[1]], []);
 });

@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import http from 'node:http';
 import { spawn } from 'node:child_process';
 import { readFile, mkdtemp, rm } from 'node:fs/promises';
+import { readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -11,6 +12,7 @@ import { apiParamsFromJobsUrl } from '../scripts/lib/usajobs.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = async (rel) => readFile(path.join(ROOT, rel), 'utf8');
+const readFileSyncText = (rel) => readFileSync(path.join(ROOT, rel), 'utf8');
 const data = JSON.parse(await read('data/employers.json'));
 const site = JSON.parse(await read('data/site.json'));
 const template = await read('templates/base.html');
@@ -55,17 +57,43 @@ test('without counts the page is the same, minus the count lines', () => {
   assert.equal(withCounts.replace(/<p class="open-jobs">.*<\/p>\n/g, ''), without);
 });
 
-test('counts do not change what search matches', () => {
-  const html = render({ checkedAt: '2026-11-06', counts: { 'dla-hill': 11 } });
-  const dataText = cards(html)['dla-hill'].match(/data-text="([^"]*)"/)[1];
-  assert.ok(!/open job|11/.test(dataText));
+const searchDataOf = (html) => JSON.parse(html.match(/<script type="application\/json" id="search-data">([\s\S]*?)<\/script>/)[1]);
+
+test('search data: roles always, live titles only when fetched, never counts', () => {
+  const synonyms = JSON.parse(readFileSyncText('data/synonyms.json'));
+  const without = searchDataOf(renderBase('hill', data.bases.hill, data.employers, site, template, null, synonyms));
+  assert.equal(without.employers.length, data.employers.length);
+  assert.deepEqual(without.synonyms.groups, synonyms.groups);
+  for (const e of without.employers) {
+    const src = data.employers.find((x) => x.id === e.id);
+    assert.deepEqual(e.roles, src.roles);
+    assert.deepEqual(e.titles, []);
+    assert.equal(e.name, src.name);
+  }
+  const withTitles = searchDataOf(render({ checkedAt: '2026-11-06', counts: { 'dla-hill': 11 }, titles: { 'dla-hill': ['IT specialist (APPSW)'] } }));
+  assert.deepEqual(withTitles.employers.find((e) => e.id === 'dla-hill').titles, ['IT specialist (APPSW)']);
+  assert.ok(!JSON.stringify(withTitles).includes('11'), 'counts must not be in search data');
+});
+
+test('search data cannot break out of its <script> tag', () => {
+  const evil = [{ ...data.employers[0], name: 'Evil </script><script>alert(1)</script>', roles: ['a\u2028b', 'x</script>'] }];
+  const html = renderBase('hill', data.bases.hill, evil, site, template, null, { groups: [] });
+  assert.equal((html.match(/<\/script>/g) || []).length, (template.match(/<\/script>/g) || []).length);
+  assert.equal(searchDataOf(html).employers[0].name, 'Evil </script><script>alert(1)</script>');
+});
+
+test('every card has an empty, hidden "Matches" line and no old data-text', () => {
+  const html = render(null);
+  assert.equal((html.match(/<p class="why" hidden><\/p>/g) || []).length, data.employers.length);
+  assert.ok(!html.includes('data-text='));
 });
 
 // ---------- the build never fails because of the API ----------
 
+// --no-careers keeps these offline; careers sites are tested with fakes in careers.test.mjs.
 function runBuild(env, outDir) {
   return new Promise((resolve) => {
-    const child = spawn(process.execPath, [path.join(ROOT, 'scripts/build.mjs'), '--out', outDir], {
+    const child = spawn(process.execPath, [path.join(ROOT, 'scripts/build.mjs'), '--no-careers', '--out', outDir], {
       env: { ...process.env, ...env },
       stdio: ['ignore', 'pipe', 'pipe'],
     });
@@ -153,6 +181,24 @@ test('build with a working API: counts on the USAJOBS cards, sent with the right
     assert.equal(s.ua, FAKE_EMAIL);
     // Node's fetch sets Host from the URL (it's data.usajobs.gov against the real API).
     assert.equal(s.host, apiHost);
-    assert.equal(s.q.get('ResultsPerPage'), '1');
+    assert.equal(s.q.get('ResultsPerPage'), '500');
   }
+});
+
+// ---------- roles in the schema ----------
+
+test('schema requires 3–25 unique roles per employer', async () => {
+  const { validateData } = await import('../scripts/build.mjs');
+  const schema = JSON.parse(await read('data/employers.schema.json'));
+  const ok = structuredClone(data);
+  assert.deepEqual(validateData(ok, schema), []);
+  const bad = structuredClone(data);
+  delete bad.employers[0].roles;
+  bad.employers[1].roles = [];
+  bad.employers[2].roles = ['Painter', 'Painter', 'Machinist'];
+  bad.employers[3].roles = ['x', 'Machinist', 'Welder'];
+  bad.employers[4].roles = Array.from({ length: 26 }, (_, i) => `Role ${i}`);
+  bad.employers[5].roles = [' Painter', 'Machinist', 'Welder'];
+  const errors = validateData(bad, schema).join('\n');
+  for (const id of bad.employers.slice(0, 6).map((e) => e.id)) assert.match(errors, new RegExp(`"${id}"`), id);
 });

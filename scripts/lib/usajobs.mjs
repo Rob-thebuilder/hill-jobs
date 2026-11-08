@@ -1,4 +1,4 @@
-// Build-time open-job counts from the official USAJOBS Search API. Node built-ins only.
+// Build-time open-job counts and job titles from the official USAJOBS Search API. Node built-ins only.
 // Never log credentials: log lines carry only employer ids, HTTP statuses and error names.
 
 export const API_URL = 'https://data.usajobs.gov/api/search';
@@ -31,17 +31,45 @@ export function apiParamsFromJobsUrl(jobsUrl) {
   return params;
 }
 
+// Kept in capitals when an ALL-CAPS title is converted to sentence case.
+const ACRONYMS = new Set(['IT', 'LO', 'NDI', 'NDT', 'CNC', 'HVAC', 'QA', 'ICBM', 'AFB', 'DOD', 'DLA', 'F-35', 'F-22', 'F-16', 'A-10', 'C-130', 'MRO', 'OA', 'II', 'III', 'IV', 'US', 'USAF']);
+
+/**
+ * Tidies a USAJOBS position title for display and search: drops hiring-authority suffixes and
+ * turns ALL-CAPS titles into sentence case. Text in parentheses is left as is ("IT specialist (INFOSEC)").
+ */
+export function cleanTitle(raw) {
+  let t = String(raw ?? '')
+    .replace(/\s+/g, ' ')
+    .replace(/\s*[-–—]?\s*\b(direct|alternate|expedited)[\s-]+hir(e|ing)\s+authority\b.*$/i, '')
+    .replace(/\s*[-–—]\s*$/, '')
+    .trim();
+  if (!t) return '';
+  const letters = t.replace(/\([^)]*\)/g, '').replace(/[^A-Za-z]/g, '');
+  if (letters && letters === letters.toUpperCase()) {
+    let first = true;
+    t = t.replace(/\([^)]*\)|[A-Za-z0-9][A-Za-z0-9&'-]*/g, (tok) => {
+      if (tok.startsWith('(')) return tok;
+      const out = ACRONYMS.has(tok.toUpperCase()) || /\d/.test(tok) ? tok.toUpperCase() : first ? tok[0].toUpperCase() + tok.slice(1).toLowerCase() : tok.toLowerCase();
+      first = false;
+      return out;
+    });
+  }
+  return t;
+}
+
 /** YYYY-MM-DD in Mountain Time, the base's local date. */
 export function mountainDate(date) {
   return new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Denver', year: 'numeric', month: '2-digit', day: '2-digit' }).format(date);
 }
 
 /**
- * Fetches counts for every employer whose jobsUrl maps to API params.
- * Returns null when there are no credentials, else { checkedAt: 'YYYY-MM-DD', counts: { id: n }, eligible: n }.
+ * Fetches open-job counts and titles for every employer whose jobsUrl maps to API params.
+ * Returns null when there are no credentials, else
+ * { checkedAt: 'YYYY-MM-DD', counts: { id: n }, titles: { id: [title, ...] }, eligible: n }.
  * Never throws for network/API problems; failed entries are simply left out.
  */
-export async function fetchCounts(employers, { key, email, apiUrl = API_URL, fetchImpl = globalThis.fetch, timeoutMs = 10_000, now = new Date(), log = console } = {}) {
+export async function fetchUsajobs(employers, { key, email, apiUrl = API_URL, fetchImpl = globalThis.fetch, timeoutMs = 10_000, now = new Date(), log = console } = {}) {
   const eligible = employers
     .map((e) => ({ id: e.id, params: apiParamsFromJobsUrl(e.jobsUrl) }))
     .filter((e) => e.params);
@@ -51,10 +79,11 @@ export async function fetchCounts(employers, { key, email, apiUrl = API_URL, fet
   }
 
   const counts = {};
+  const titles = {};
   for (const { id, params } of eligible) {
     const url = new URL(apiUrl);
     for (const [k, v] of Object.entries(params)) url.searchParams.set(k, v);
-    url.searchParams.set('ResultsPerPage', '1');
+    url.searchParams.set('ResultsPerPage', '500'); // the API maximum; Hill searches return far fewer
     let res;
     try {
       res = await fetchImpl(url, {
@@ -76,9 +105,11 @@ export async function fetchCounts(employers, { key, email, apiUrl = API_URL, fet
       res.body?.cancel?.();
       continue;
     }
-    let n;
+    let n, items;
     try {
-      n = (await res.json())?.SearchResult?.SearchResultCountAll;
+      const body = await res.json();
+      n = body?.SearchResult?.SearchResultCountAll;
+      items = body?.SearchResult?.SearchResultItems;
     } catch {
       log.warn(`USAJOBS counts: ${id} failed (response was not JSON)`);
       continue;
@@ -90,6 +121,8 @@ export async function fetchCounts(employers, { key, email, apiUrl = API_URL, fet
       continue;
     }
     counts[id] = n;
+    const list = Array.isArray(items) ? items.map((i) => cleanTitle(i?.MatchedObjectDescriptor?.PositionTitle)).filter(Boolean) : [];
+    titles[id] = [...new Set(list)];
   }
-  return { checkedAt: mountainDate(now), counts, eligible: eligible.length };
+  return { checkedAt: mountainDate(now), counts, titles, eligible: eligible.length };
 }

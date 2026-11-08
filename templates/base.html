@@ -25,6 +25,7 @@
 <link rel="apple-touch-icon" href="{{prefix}}assets/apple-touch-icon.png">
 <link rel="stylesheet" href="{{prefix}}assets/styles.css">
 <script>document.documentElement.className = 'js';</script>
+<script src="{{prefix}}assets/search.js" defer></script>
 <script src="{{prefix}}assets/app.js" defer></script>
 </head>
 <body>
@@ -39,10 +40,10 @@
       <label for="q">Search employers</label>
       <div class="search-box">
         <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
-        <input id="q" name="q" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" placeholder="Try “F-35” or “software”" aria-describedby="q-hint">
+        <input id="q" name="q" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" placeholder="Try “painter” or “F-35”" aria-describedby="q-hint">
         <kbd class="slash" aria-hidden="true">/</kbd>
       </div>
-      <p id="q-hint" class="sr-only">Results update as you type.</p>
+      <p id="q-hint" class="sr-only">Search by employer or by job, like painter, LO, networking or admin. Results update as you type.</p>
     </form>
     {{recruiterLink}}
   </div>
@@ -74,8 +75,17 @@
       <button type="button" class="reset" id="reset" hidden>Clear filters</button>
     </div>
     <div id="empty" class="empty" hidden>
-      <p>No employers match.</p>
-      <button type="button" class="btn-clear" id="clear">Clear filters</button>
+      <p class="empty-title" id="empty-title">No employers match.</p>
+      <p class="empty-filtered" id="empty-filtered" hidden></p>
+      <p class="empty-try">Try a broader search:</p>
+      <div class="suggest-row">
+        <button type="button" class="suggest" data-q="mechanic">mechanic</button>
+        <button type="button" class="suggest" data-q="engineer">engineer</button>
+        <button type="button" class="suggest" data-q="IT">IT</button>
+        <button type="button" class="suggest" data-q="logistics">logistics</button>
+      </div>
+      <p class="empty-usajobs" id="empty-usajobs" hidden><a id="usajobs-link" href="https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah" target="_blank" rel="noopener">Search all federal jobs at Hill for <span id="usajobs-q"></span> on USAJOBS <span aria-hidden="true">→</span><span class="sr-only"> (opens in new tab)</span></a></p>
+      <button type="button" class="btn-clear" id="clear">Clear search and filters</button>
     </div>
     <ul class="grid" id="list">
 {{cards}}
@@ -90,5 +100,6 @@
     <p class="fine">Listings are sorted A–Z. No paid placement. Links go straight to each employer's careers site.</p>
   </div>
 </footer>
+<script type="application/json" id="search-data">{{searchData}}</script>
 </body>
 </html>
