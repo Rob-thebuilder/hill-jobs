@@ -1,0 +1,48 @@
+name: Weekly link check
+
+on:
+  schedule:
+    - cron: '0 14 * * 1' # Mondays 14:00 UTC (8 am Mountain)
+  workflow_dispatch:
+    inputs:
+      test_url:
+        description: 'Optional: an extra URL to check (use a broken one to test the issue flow)'
+        required: false
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Check links
+        id: check
+        continue-on-error: true
+        env:
+          TEST_URL: ${{ inputs.test_url }}
+        run: node scripts/check-links.mjs --report report.md ${TEST_URL:+--test-url "$TEST_URL"}
+      - name: Open or update the broken-links issue
+        if: steps.check.outcome == 'failure'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          test -f report.md || { echo "Link checker crashed before writing a report"; exit 1; }
+          title="Broken links: $(date -u +%F)"
+          gh label create broken-links --color d93f0b --description "Found by the weekly link check" 2>/dev/null || true
+          num=$(gh issue list --label broken-links --state open --limit 1 --json number --jq '.[0].number // empty')
+          if [ -n "$num" ]; then
+            gh issue edit "$num" --title "$title" --body-file report.md
+            echo "Updated issue #$num"
+          else
+            gh issue create --title "$title" --label broken-links --body-file report.md
+          fi
+      - name: Fail the run if links are broken
+        if: steps.check.outcome == 'failure'
+        run: exit 1

@@ -1,0 +1,60 @@
+name: Validate and deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+  schedule:
+    - cron: '15 13 * * *' # daily, ~6–7 am Mountain: refreshes the USAJOBS open-job counts
+
+permissions:
+  contents: read
+
+concurrency:
+  group: pages-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Validate data (schema, duplicate ids, https only)
+        run: node scripts/build.mjs --check
+      - name: Tests
+        run: node --test
+      - name: Build
+        # Secrets go only to trusted runs, never to pull requests. If they're missing or the
+        # API fails, the build still succeeds, just without open-job counts.
+        env:
+          USAJOBS_API_KEY: ${{ github.event_name != 'pull_request' && secrets.USAJOBS_API_KEY || '' }}
+          USAJOBS_EMAIL: ${{ github.event_name != 'pull_request' && secrets.USAJOBS_EMAIL || '' }}
+        run: node scripts/build.mjs
+      - name: Phone checks (headless Chrome)
+        env:
+          CHROME: /usr/bin/google-chrome
+          CHROME_FLAGS: --no-sandbox
+        run: node scripts/verify-page.mjs
+      - name: Upload Pages artifact
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: dist
+
+  deploy:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

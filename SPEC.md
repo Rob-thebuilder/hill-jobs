@@ -44,6 +44,7 @@ All four groups are first-class users. Copy and categories should serve each of 
 | Job categories | 1–5 tags from a fixed list: `Trades & Maintenance`, `Engineering`, `Software & IT`, `Logistics & Supply`, `Admin & Business`, `Internships & Entry-level`, `Base services` (clinic, commissary, Exchange) |
 | Primary link | "View jobs →" pointing to the careers page. If possible, the link is pre-filtered to Utah/Hill. |
 | Secondary link (optional) | Federal employers only: the agency's own hiring page, if one exists |
+| Open jobs (USAJOBS entries only) | "23 open jobs · checked Nov 6, 2026" ("1 open job", or "No open jobs right now" at 0), shown above "View jobs". It's fetched at build time and refreshed daily (see §4 *Open-job counts*). |
 | Verified date | Small text: "Link verified Nov 2026" |
 | Suggest a change | Small link to the recruiter feedback form, prefilled with the employer name (see §7) |
 
@@ -51,6 +52,20 @@ All four groups are first-class users. Copy and categories should serve each of 
 
 ### Federal / government employers
 The primary link is a **USAJOBS search pre-filtered to the agency and the Hill AFB location**. The agency's own hiring page is the secondary link when one exists. Confirm the exact USAJOBS query-string format during the build by running the search on usajobs.gov and copying the resulting URL. Don't guess parameter names or agency codes.
+
+### Open-job counts (USAJOBS)
+- Each card whose primary link is a USAJOBS search (`https://www.usajobs.gov/search/results/`) shows its current open-job count. The count comes from the official [USAJOBS Search API](https://developer.usajobs.gov/api-reference/get-api-search) (`https://data.usajobs.gov/api/search`).
+- **Requests:**
+  - Headers: `Host: data.usajobs.gov`, `User-Agent: <USAJOBS_EMAIL>`, `Authorization-Key: <USAJOBS_API_KEY>`.
+  - Each card's count is `SearchResult.SearchResultCountAll`, requested with `ResultsPerPage=1`.
+- **The count must match the "View jobs" link.**
+  - The API query is derived from that same URL: `l` → `LocationName`, `a` → `Organization`, `pp` → `JobGradeCode`. Several values are joined with `;`.
+  - If the URL has any other parameter, the card shows **no** count rather than one that could disagree.
+  - Checked against the live website on 2026-11-06: all 7 counts matched.
+- **Build time only.** The browser never calls the API, so the page still makes zero third-party requests.
+- **Never breaks the site.** If the key is missing or rejected, the API is down, or a response is malformed, the build continues and those cards simply show no count.
+- **The date** is the Mountain Time date the counts were fetched.
+- **The API key and email are secrets.** They are never logged, printed or written into the page.
 
 ### Data file: `data/employers.json`
 ```json
@@ -111,15 +126,24 @@ Everything runs in the browser, with no server.
 │   ├── employers.json
 │   └── employers.schema.json
 ├── scripts/
-│   ├── build.mjs           renders cards into the HTML per base (Node built-ins only)
-│   └── check-links.mjs     link checker (Node built-ins only)
+│   ├── build.mjs           renders cards into the HTML per base, with USAJOBS counts (Node built-ins only)
+│   ├── check-links.mjs     link checker (Node built-ins only)
+│   ├── verify-page.mjs     automated phone checks in headless Chrome
+│   ├── verify-usajobs.mjs  compares API counts with the live USAJOBS site (run by hand)
+│   └── lib/                usajobs.mjs (API counts), chrome.mjs (headless Chrome driver)
+├── test/                   node --test unit and build tests
 ├── templates/base.html
 └── .github/workflows/
     ├── deploy.yml
     └── link-check.yml
 ```
 
+- The generated pages are written to `dist/` (not committed), and that folder is what gets deployed.
 - `build.mjs` validates the data, then writes the full card list into static HTML for each base. The directory therefore works **without JavaScript** and search engines can index it; `app.js` only adds search and filtering on top. This is the only build step, and it needs only Node 20+.
+- **USAJOBS counts at build time:**
+  - The build reads `USAJOBS_API_KEY` and `USAJOBS_EMAIL` from the environment: `.env` locally (git-ignored), repo secrets in CI.
+  - `--no-counts` skips the fetch.
+  - A missing key or a failed API call never fails the build.
 - **Page weight budget:** under 100 KB transferred for the Hill page, excluding the favicon. There are no third-party requests at all.
 - **Meta:** `<title>`, meta description, Open Graph/Twitter tags with a static share image (`og.png`, 1200×630), a favicon, and a canonical URL. No `JobPosting` structured data: the site lists employers, not job postings.
 - **Adding a base later:** add an entry to `bases` with a `path` (e.g., `/tinker/`) plus its employers, then run the build. The root stays the Hill page while the site is called Work At Hill.
@@ -147,7 +171,11 @@ Everything runs in the browser, with no server.
   - Turn on "Enforce HTTPS" in the repo's Pages settings.
   - Verify the domain in the GitHub account settings so nobody else can claim it.
   - `www.workathill.com` redirects to the apex domain.
-- **Validation on every push and PR:** schema check, duplicate-id check, and all URLs must be `https://`. Any failure blocks the deploy.
+- **Validation on every push and PR:** schema check, duplicate-id check, all URLs must be `https://`, `node --test`, and the automated phone checks. Any failure blocks the deploy.
+- **Daily refresh:** `deploy.yml` also runs on a daily schedule (13:15 UTC, about 6–7 am Mountain) to rebuild and redeploy with fresh open-job counts.
+  - GitHub pauses scheduled workflows in a public repo after 60 days with no repo activity; re-enable it in the Actions tab if that happens.
+- **Secrets:** add `USAJOBS_API_KEY` and `USAJOBS_EMAIL` as repository Actions secrets (e.g. `gh secret set USAJOBS_API_KEY`, which prompts for the value).
+  - They're passed to the build step only for pushes, scheduled runs and manual runs, never for pull requests. PR builds run without counts.
 - **Weekly link check** (`link-check.yml`, cron every Monday plus a manual trigger):
   - Requests every `jobsUrl` and `secondaryUrl`. Uses HEAD and falls back to GET, follows redirects, and times out after 15 s. Sends a generic User-Agent such as `WorkAtHill-LinkCheck/1.0`.
   - A link is broken on 4xx/5xx or a failed connection. A redirect to a different domain is flagged for review but not counted as broken.
@@ -169,7 +197,7 @@ Everything runs in the browser, with no server.
 - Other bases' pages, and any base switcher in the UI (the data model is ready for them)
 - Company logos and photos
 - Clearance-required, veteran/SkillBridge, and headcount fields
-- Individual job postings, job feeds, scraping, or any third-party job API
+- Individual job postings, job feeds, scraping, or third-party job APIs, **except** the build-time open-job counts from the official USAJOBS Search API (§4)
 - User accounts, saved employers, and job alerts
 - Recruiter self-service editing, a CMS, or automatic updates from form submissions
 - Featured, paid, or sponsored placement
@@ -195,6 +223,9 @@ The site isn't done until every check below passes.
 - [ ] No horizontal page scroll at 320, 360, 390, and 414 px widths (Chrome DevTools device mode). Check `document.documentElement.scrollWidth <= window.innerWidth`.
 - [ ] Hill page transfer size under 100 KB, and 0 third-party requests (DevTools Network tab)
 - [ ] With JavaScript disabled, all employers and links are still visible and usable
+- [ ] `node --test` passes (USAJOBS mapping, failure handling, no credential leaks, rendering)
+- [ ] `node scripts/verify-usajobs.mjs`: every card's open-job count equals the count on its live "View jobs" USAJOBS page
+- [ ] Building without a key (or with a bad one) succeeds and gives the same page, just without counts
 
 ### On real devices (deployed GitHub Pages URL, not localhost)
 Test on at least **one iPhone (Safari)** and **one Android phone (Chrome)**. If you don't have one of them, use BrowserStack's free trial or a friend's phone.
@@ -207,6 +238,7 @@ Test on at least **one iPhone (Safari)** and **one Android phone (Chrome)**. If 
 - [ ] Opening a shared filtered URL (e.g., `?cat=trades-maintenance`) in a fresh tab shows the same filtered view
 - [ ] Back button after changing filters restores the previous view
 - [ ] "View jobs →" opens the careers page in a new tab for 5 randomly chosen employers, including at least 1 federal (USAJOBS) employer
+- [ ] On a federal card, the "N open jobs" count matches the number of results the "View jobs" page shows
 - [ ] "Suggest a change" opens the Google Form with Company prefilled
 - [ ] Dark mode on the phone shows the dark theme, and it stays readable
 - [ ] With VoiceOver (iOS) or TalkBack (Android) on, you can reach the search box, a chip, and a "View jobs" link, and the result count is announced
@@ -216,5 +248,6 @@ Test on at least **one iPhone (Safari)** and **one Android phone (Chrome)**. If 
 - [ ] You approved every seed employer entry
 - [ ] All links pass the link checker (or are on the reviewed allowlist)
 - [ ] Footer disclaimer is present
+- [ ] `USAJOBS_API_KEY` and `USAJOBS_EMAIL` repo secrets are set, and a manual deploy run logs `USAJOBS counts: 7/7`
 - [ ] Google Form is live, with the prefill link tested
 - [ ] Weekly link-check workflow ran at least once by manual trigger and opened a test issue for a deliberately broken URL. Then that test data is removed.

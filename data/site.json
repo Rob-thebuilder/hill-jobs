@@ -1,0 +1,12 @@
+{
+  "siteName": "Work At Hill",
+  "siteUrl": "https://workathill.com",
+  "form": null,
+  "_formExample": {
+    "formUrl": "https://docs.google.com/forms/d/e/FORM_ID/viewform",
+    "companyEntry": "entry.111111111",
+    "requestTypeEntry": "entry.222222222",
+    "addValue": "Add my company",
+    "fixValue": "Fix details"
+  }
+}
