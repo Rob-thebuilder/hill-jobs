@@ -112,6 +112,11 @@ test('accents, case, "A&P" and "F-35" are normalized', () => {
   assert.equal(hits('F-35', ['F-16 engineer'], { description: 'paint booth 35 feet' }), false); // "F-35" is one phrase
 });
 
+test('"sheetmetal" written as one word finds sheet metal jobs', () => {
+  assert.deepEqual(ids('sheetmetal'), ids('sheet metal'));
+  assert.ok(ids('sheetmetal').length >= 1);
+});
+
 test('every query part must match (AND)', () => {
   assert.equal(hits('sheet metal', ['Sheet metal mechanic']), true);
   assert.equal(hits('sheet painter', ['Sheet metal mechanic']), false);

@@ -2,6 +2,12 @@
   "siteName": "Work At Hill",
   "siteUrl": "https://workathill.com",
   "form": null,
+  "newsletter": {
+    "_note": "Fill these in after creating the Buttondown account. Until buttondownUsername and postalAddress are both set, the signup forms stay off the page. postalAddress goes in every email (CAN-SPAM); a PO box is fine. sendMode 'draft' leaves each weekly email in Buttondown for you to review and send; 'send' sends it automatically.",
+    "buttondownUsername": null,
+    "postalAddress": null,
+    "sendMode": "draft"
+  },
   "_formExample": {
     "formUrl": "https://docs.google.com/forms/d/e/FORM_ID/viewform",
     "companyEntry": "entry.111111111",

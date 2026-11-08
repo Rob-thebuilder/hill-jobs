@@ -1,0 +1,60 @@
+name: Weekly email
+
+on:
+  schedule:
+    - cron: '0 13 * * 1' # Mondays 13:00 UTC (6–7 am Mountain)
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  actions: read # to download last week's snapshot
+
+concurrency:
+  group: weekly-email
+  cancel-in-progress: false
+
+jobs:
+  email:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+
+      - name: Download last week's snapshot
+        continue-on-error: true # the first run has none
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          id=$(gh run list --workflow weekly-email.yml --status success --limit 1 --json databaseId --jq '.[0].databaseId // empty')
+          if [ -n "$id" ]; then gh run download "$id" --name job-snapshot --dir previous; fi
+          ls previous 2>/dev/null || echo "No previous snapshot"
+
+      - name: Build this week's snapshot
+        env:
+          USAJOBS_API_KEY: ${{ secrets.USAJOBS_API_KEY }}
+          USAJOBS_EMAIL: ${{ secrets.USAJOBS_EMAIL }}
+        run: node scripts/build.mjs --out _site --snapshot snapshot.json
+
+      - name: Draft (or send) the weekly email
+        env:
+          BUTTONDOWN_API_KEY: ${{ secrets.BUTTONDOWN_API_KEY }}
+        run: node scripts/weekly-email.mjs --current snapshot.json --previous previous/snapshot.json --out email.html
+
+      - name: Keep this week's snapshot for next week
+        uses: actions/upload-artifact@v4
+        with:
+          name: job-snapshot
+          path: snapshot.json
+          retention-days: 35
+
+      - name: Keep the email preview
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: email-preview
+          path: email.html
+          if-no-files-found: ignore
+          retention-days: 35

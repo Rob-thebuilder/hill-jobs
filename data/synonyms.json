@@ -4,6 +4,7 @@
     ["paint", "painter", "painting", "coater", "coating", "coatings", "lo", "low observable", "low observables", "low-observable", "stealth coatings"],
     ["networking", "network", "it", "information technology", "cyber", "cybersecurity"],
     ["admin", "administrative", "clerk", "office", "secretary"],
-    ["ap", "a&p", "airframe and powerplant", "aircraft mechanic"]
+    ["ap", "a&p", "airframe and powerplant", "aircraft mechanic"],
+    ["sheet metal", "sheetmetal"]
   ]
 }

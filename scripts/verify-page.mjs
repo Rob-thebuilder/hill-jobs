@@ -12,7 +12,8 @@ import { createRequire } from 'node:module';
 import { launchChrome } from './lib/chrome.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const DIST = path.join(ROOT, 'dist');
+// VERIFY_DIST=/path checks another build (e.g. one made with --site to preview the email signup).
+const DIST = process.env.VERIFY_DIST ? path.resolve(process.env.VERIFY_DIST) : path.join(ROOT, 'dist');
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 // ---------- results ----------
@@ -150,7 +151,7 @@ const CONTRAST = `(() => {
     for (const l of layers.reverse()) bg = blend(l, bg);
     return bg;
   };
-  const sels = ['h1', '.eyebrow', '.tagline', '.stat', '.stat strong', '.search label', '.chip-label', '.chip', '.count', '.badge', '.card h2', '.desc', '.tags li', '.btn-jobs', '.link-secondary', '.open-jobs', '.open-jobs .checked', '.meta span', '.meta a', '.site-footer p', '.recruiter', '.reset', '.empty p', '.btn-clear', '.search input', '.why', '.suggest', '.empty-usajobs a', '.tab', '.tab-n', '.nu-date', '.nu-title', '.nu-where', '.next-up-head h2', '.next-up-all', '.panel-intro h2', '.panel-intro p', '.group-n', '.note', '.kind', '.res-facts dt', '.res-facts dd', '.btn-outline', '.ev-mon', '.ev-day', '.ev-when', '.ev-repeats', '.ev-where', '.ev-host', '.ev-link', '.annual-timing', '.empty-note', '.more-cal a', '.fine-print'];
+  const sels = ['h1', '.eyebrow', '.tagline', '.stat', '.stat strong', '.search label', '.chip-label', '.chip', '.count', '.badge', '.card h2', '.desc', '.tags li', '.btn-jobs', '.link-secondary', '.open-jobs', '.open-jobs .checked', '.meta span', '.meta a', '.site-footer p', '.recruiter', '.reset', '.empty p', '.btn-clear', '.search input', '.why', '.suggest', '.empty-usajobs a', '.tab', '.tab-n', '.nu-date', '.nu-title', '.nu-where', '.next-up-head h2', '.next-up-all', '.panel-intro h2', '.panel-intro p', '.group-n', '.note', '.kind', '.res-facts dt', '.res-facts dd', '.btn-outline', '.ev-mon', '.ev-day', '.ev-when', '.ev-repeats', '.ev-where', '.ev-host', '.ev-link', '.annual-timing', '.empty-note', '.more-cal a', '.fine-print', '.alert-title', '.signup-fine', '.signup-fine a', '.btn-signup', '.signup-title', '.signup-lead', '.signup-row input'];
   const out = [];
   for (const sel of sels) for (const el of document.querySelectorAll(sel)) {
     const r = el.getBoundingClientRect();

@@ -85,6 +85,7 @@
       <p id="count" class="count" role="status" aria-live="polite" aria-atomic="true">{{count}}</p>
       <button type="button" class="reset" id="reset" hidden>Clear filters</button>
     </div>
+    {{alertBox}}
     <div id="empty" class="empty" hidden>
       <p class="empty-title" id="empty-title">No employers match.</p>
       <p class="empty-filtered" id="empty-filtered" hidden></p>
@@ -115,9 +116,10 @@
 
 <footer class="site-footer">
   <div class="wrap">
+    {{signupFooter}}
     {{recruiterLink}}
     <p class="disclaimer">Work At Hill is an independent directory and is not affiliated with or endorsed by the U.S. Air Force, the Department of Defense, or any listed employer.</p>
-    <p class="fine">Listings are sorted A–Z. No paid placement. Links go straight to each employer's careers site.</p>
+    <p class="fine">Listings are sorted A–Z. No paid placement. Links go straight to each employer's careers site. <a href="{{prefix}}privacy/">Privacy</a></p>
   </div>
 </footer>
 <script type="application/json" id="search-data">{{searchData}}</script>

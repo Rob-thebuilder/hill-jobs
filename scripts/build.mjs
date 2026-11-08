@@ -4,6 +4,8 @@
 //   --no-counts  skip the USAJOBS open-job counts and titles
 //   --no-careers skip the contractor careers-site job titles
 //   --no-events  skip reading public event calendars (curated events still show)
+//   --snapshot F write this build's live job titles and events to F (for scripts/weekly-email.mjs)
+//   --site F     use site settings from F instead of data/site.json (previews)
 //   --out DIR    write the site somewhere other than dist/
 // Env (from .env locally, Actions secrets in CI): USAJOBS_API_KEY, USAJOBS_EMAIL
 import { readFile, writeFile, mkdir, cp, rm } from 'node:fs/promises';
@@ -16,6 +18,7 @@ import { fetchUsajobs } from './lib/usajobs.mjs';
 import { fetchCareers } from './lib/careers.mjs';
 import { fetchEvents, upcoming, EVENT_TYPES } from './lib/events.mjs';
 import { mountainDate } from './lib/usajobs.mjs';
+import { newsletterReady, subscribeAction } from './lib/newsletter.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const BUDGET_BYTES = 100 * 1024;
@@ -193,6 +196,64 @@ export function searchData(employers, synonyms, jobCounts, careerTitles = null) 
   return JSON.stringify(data).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
 }
 
+
+// ---------- email signup (Buttondown) ----------
+
+const SIGNUP_FINE = (prefix) =>
+  `<p class="signup-fine">At most one email a week. You'll confirm by email first, and every email has an unsubscribe link. <a href="${prefix}privacy/">Privacy</a></p>`;
+
+/** "Email me when … jobs show up" form; app.js shows it during a search and fills in the saved-search tag. */
+export function renderAlertBox(site, prefix = './') {
+  if (!newsletterReady(site)) return '';
+  return `<form class="alert-box" id="alert-form" action="${esc(subscribeAction(site.newsletter.buttondownUsername))}" method="post" target="_blank" hidden>
+      <p class="alert-title" id="alert-title">Email me new jobs for this search</p>
+      <div class="signup-row">
+        <label for="alert-email" class="sr-only">Email address</label>
+        <input id="alert-email" type="email" name="email" required autocomplete="email" inputmode="email" placeholder="you@example.com" aria-describedby="alert-title">
+        <button type="submit" class="btn-signup">Email me<span class="sr-only"> (opens in new tab)</span></button>
+      </div>
+      <input type="hidden" name="tag" value="weekly">
+      <input type="hidden" name="tag" id="alert-tag" value="">
+      ${SIGNUP_FINE(prefix)}
+    </form>`;
+}
+
+export function renderSignupFooter(site, prefix = './') {
+  if (!newsletterReady(site)) return '';
+  return `<form class="signup" action="${esc(subscribeAction(site.newsletter.buttondownUsername))}" method="post" target="_blank" aria-labelledby="signup-title">
+      <h2 class="signup-title" id="signup-title">Get weekly updates</h2>
+      <p class="signup-lead">New jobs near Hill and upcoming job fairs and workshops, every Monday.</p>
+      <div class="signup-row">
+        <label for="signup-email" class="sr-only">Email address</label>
+        <input id="signup-email" type="email" name="email" required autocomplete="email" inputmode="email" placeholder="you@example.com">
+        <button type="submit" class="btn-signup">Sign up<span class="sr-only"> (opens in new tab)</span></button>
+      </div>
+      <input type="hidden" name="tag" value="weekly">
+      ${SIGNUP_FINE(prefix)}
+    </form>`;
+}
+
+export function renderPrivacy(site, template) {
+  const n = site.newsletter;
+  const contact = n?.postalAddress ? `Work At Hill, ${n.postalAddress}` : 'A contact address will be posted here when the weekly email starts.';
+  return fill(template, {
+    siteName: esc(site.siteName),
+    canonical: esc(site.siteUrl.replace(/\/$/, '') + '/privacy/'),
+    postalAddress: esc(contact),
+  });
+}
+
+export function validateNewsletter(site) {
+  const n = site?.newsletter;
+  if (!n) return [];
+  const errors = [];
+  if (n.buttondownUsername != null && !/^[A-Za-z0-9_-]{1,64}$/.test(n.buttondownUsername)) errors.push('buttondownUsername has unexpected characters');
+  if (n.buttondownUsername && !(typeof n.postalAddress === 'string' && n.postalAddress.trim().length >= 10)) {
+    errors.push('set postalAddress too: every email must include a postal address (CAN-SPAM); a PO box is fine');
+  }
+  if (!['draft', 'send'].includes(n.sendMode)) errors.push('sendMode must be "draft" or "send"');
+  return errors;
+}
 
 // ---------- resume help + events ----------
 
@@ -412,6 +473,8 @@ export function renderBase(baseId, base, allEmployers, site, template, jobCounts
     count: countText(employers.length),
     total: String(employers.length),
     recruiterLink,
+    alertBox: renderAlertBox(site, prefix),
+    signupFooter: renderSignupFooter(site, prefix),
     typeChips,
     catChips,
     cards: employers.map((e) => renderCard(e, site.form, jobCounts)).join('\n'),
@@ -460,7 +523,8 @@ async function main() {
   const [data, schema, site, synonyms, jobSources, places, resourcesFile, eventsFile, eventSources] = await Promise.all([
     readJson('data/employers.json'),
     readJson('data/employers.schema.json'),
-    readJson('data/site.json'),
+    // --site FILE swaps in other site settings (e.g. to preview the email signup before setup).
+    argv.includes('--site') ? JSON.parse(await readFile(path.resolve(argv[argv.indexOf('--site') + 1]), 'utf8')) : readJson('data/site.json'),
     readJson('data/synonyms.json'),
     readJson('data/job-sources.json'),
     readJson('data/locations.json'),
@@ -476,6 +540,7 @@ async function main() {
     ...validatePlaces(places).map((e) => `locations.json: ${e}`),
     ...validateResources(resourcesFile).map((e) => `resources.json: ${e}`),
     ...validateEvents(eventsFile, eventSources).map((e) => `events.json: ${e}`),
+    ...validateNewsletter(site).map((e) => `site.json newsletter: ${e}`),
   ];
   if (errors.length) {
     console.error(`✗ ${errors.length} data error(s):\n  - ${errors.join('\n  - ')}`);
@@ -543,6 +608,7 @@ async function main() {
   const extras = { resources: resourcesFile.resources, events: eventList, annual: eventsFile.annual, eventsChecked };
 
   if (!site.form) console.warn('WARN: data/site.json has no "form" config; "Suggest a change" and recruiter links are left out.');
+  if (!newsletterReady(site)) console.warn('WARN: data/site.json newsletter settings are not filled in; email signup forms are left out.');
 
   await rm(DIST, { recursive: true, force: true });
   await mkdir(DIST, { recursive: true });
@@ -568,6 +634,24 @@ async function main() {
     } else {
       console.log(`✓ wrote ${path.relative(ROOT, path.join(DIST, rel)) || rel} (${kb} KB gzipped incl. css/js/favicon)`);
     }
+  }
+  // Privacy page (always: it also covers what browsing collects, which is nothing).
+  const privacyTemplate = await readFile(path.join(ROOT, 'templates/privacy.html'), 'utf8');
+  await mkdir(path.join(DIST, 'privacy'), { recursive: true });
+  await writeFile(path.join(DIST, 'privacy', 'index.html'), renderPrivacy(site, privacyTemplate));
+
+  // Snapshot for the weekly email: this build's live job titles and upcoming events.
+  const snapshotOut = argv.includes('--snapshot') ? argv[argv.indexOf('--snapshot') + 1] : null;
+  if (snapshotOut) {
+    const snapshot = {
+      date: today,
+      employers: data.employers
+        .filter((e) => e.base === 'hill')
+        .map((e) => ({ id: e.id, name: e.name, jobsUrl: e.jobsUrl, titles: jobCounts?.titles?.[e.id] || careerTitles?.[e.id] || [] })),
+      events: eventList.map(({ title, start, city, type, url }) => ({ title, start, city, type, url })),
+    };
+    await writeFile(path.resolve(snapshotOut), JSON.stringify(snapshot, null, 1));
+    console.log(`✓ wrote snapshot ${snapshotOut}`);
   }
   if (failed) process.exit(1);
 }

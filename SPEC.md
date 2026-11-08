@@ -197,12 +197,14 @@ Everything runs in the browser, with no server.
 │   ├── check-links.mjs     link checker (Node built-ins only)
 │   ├── verify-page.mjs     automated phone checks in headless Chrome
 │   ├── verify-usajobs.mjs  compares API counts with the live USAJOBS site (run by hand)
-│   └── lib/                usajobs.mjs (USAJOBS counts/titles), careers.mjs (contractor titles), events.mjs (event calendars), chrome.mjs (headless Chrome)
+│   ├── weekly-email.mjs    builds the weekly email and creates it in Buttondown
+│   └── lib/                usajobs.mjs (USAJOBS counts/titles), careers.mjs (contractor titles), events.mjs (event calendars), newsletter.mjs (weekly email), chrome.mjs (headless Chrome)
 ├── test/                   node --test unit and build tests
-├── templates/base.html
+├── templates/base.html, privacy.html
 └── .github/workflows/
     ├── deploy.yml
-    └── link-check.yml
+    ├── link-check.yml
+    └── weekly-email.yml
 ```
 
 - The generated pages are written to `dist/` (not committed), and that folder is what gets deployed.
@@ -221,7 +223,7 @@ Everything runs in the browser, with no server.
   - The build reads `USAJOBS_API_KEY` and `USAJOBS_EMAIL` from the environment: `.env` locally (git-ignored), repo secrets in CI.
   - `--no-counts` skips the fetch.
   - A missing key or a failed API call never fails the build.
-- **Page weight budget:** under 100 KB transferred for the Hill page, excluding the favicon. There are no third-party requests at all.
+- **Page weight budget:** under 100 KB transferred for the Hill page, excluding the favicon. The page makes no third-party requests. The only exception is an email signup form, which posts to Buttondown when someone submits it (§7a).
 - **Meta:** `<title>`, meta description, Open Graph/Twitter tags with a static share image (`og.png`, 1200×630), a favicon, and a canonical URL. No `JobPosting` structured data: the site lists employers, not job postings.
 - **Adding a base later:** add an entry to `bases` with a `path` (e.g., `/tinker/`) plus its employers, then run the build. The root stays the Hill page while the site is called Work At Hill.
 
@@ -239,6 +241,42 @@ Everything runs in the browser, with no server.
 - The footer and hero have a "Recruiter? Add or update your company" link that opens the form with Request type set to "Add my company".
 - Links open in a new tab with `rel="noopener"`.
 - **Workflow:** a submission comes in → you check it → you edit `employers.json` (or ask Claude to) → push → the site redeploys.
+
+## 7a. Weekly email and saved-search alerts
+
+Job seekers can sign up for one weekly email: new jobs near Hill, upcoming events, and new matches for any searches they saved. The site itself stores no emails.
+
+- **Email service:** [Buttondown](https://buttondown.com). It stores the list, sends a confirmation email before adding anyone (double opt-in), and adds an unsubscribe link to every email. Free up to 100 subscribers, then paid. Its open/click tracking must be turned **off**, to keep the site's no-tracking promise.
+- **Settings:** `data/site.json` → `newsletter`:
+  - `buttondownUsername`
+  - `postalAddress`: required in every commercial email by CAN-SPAM; a PO box is fine.
+  - `sendMode`: `draft` (default; you review each email in Buttondown and send it) or `send`.
+  - Until both the username and the address are set, the signup forms are left off the page and the build prints a warning.
+- **Signup forms:**
+  - Plain HTML forms post straight to Buttondown's `embed-subscribe` endpoint in a new tab. That's a request only when the person submits.
+  - Every signup gets the tag `weekly`.
+  - **"Get weekly updates"** sits in the footer on every tab.
+  - **"Email me new jobs for this search":** while a search is active, a box above the results offers an alert. With no results it reads "Nothing for “welder” right now. Want an email when a job shows up?"; with results it offers new postings. It adds the tag `search:<term>`, with the term normalized like the search (lowercase, accents and punctuation removed, ≤40 characters).
+- **Privacy page** (`/privacy/`, from `templates/privacy.html`):
+  - Browsing collects nothing.
+  - Signups keep only the email address and saved searches, held by Buttondown.
+  - How to confirm, unsubscribe and ask for deletion; the contact address.
+  - Linked from the footer and every signup form.
+- **The weekly email** (`.github/workflows/weekly-email.yml`, Mondays 13:00 UTC, plus manual runs):
+  1. It builds with `--snapshot`: this week's live job titles (USAJOBS and contractors) and upcoming events.
+  2. "New jobs" means titles that weren't in last week's snapshot, which is kept as a workflow artifact for 35 days. The first run has no list.
+  3. `scripts/weekly-email.mjs` reads subscribers' saved-search tags from the Buttondown API.
+  4. It then creates **one** email for everyone:
+     - events in the next month
+     - new jobs by employer (up to 8 titles each, then "…and N more")
+     - a section per saved search, wrapped in `{% if 'search:<term>' in subscriber.tags %}` so each person sees only their own; "No new matches this week" when none
+     - the footer with the disclaimer, privacy link and postal address
+  5. Alerts match new titles with the same search rules as the site (synonyms included).
+  6. Without `BUTTONDOWN_API_KEY` (a repo secret), it only writes a preview, which is also kept as a workflow artifact.
+- **Safety:**
+  - Saved-search tags come from subscribers, so only tags exactly matching the normalized `search:<words>` form are used (at most 100). Anything else could inject template code into everyone's email.
+  - Job titles and event text are HTML-escaped, and braces are encoded, so nothing from a careers site can act as template code.
+  - The API key is never printed.
 
 ## 8. Hosting, CI and link upkeep
 
@@ -278,10 +316,10 @@ Everything runs in the browser, with no server.
   - open-job counts and titles from the official USAJOBS Search API (§4)
   - contractor job *titles* for search, read politely from public careers pages (§6)
   - job-related events from public event calendars (§4a)
-- User accounts, saved employers, and job alerts
+- User accounts and saved employers (weekly email and saved-search alerts are in scope through Buttondown, §7a)
 - Recruiter self-service editing, a CMS, or automatic updates from form submissions
 - Featured, paid, or sponsored placement, for employers, resume professionals or events
-- Analytics and tracking of any kind, including outbound click counts
+- Analytics and tracking of any kind, including outbound click counts and email open/click tracking
 - Map view, commute or distance filters
 - Languages other than English
 - A backend, database, or serverless functions
@@ -310,6 +348,11 @@ The site isn't done until every check below passes.
 - [ ] Building without a key (or with a bad one) succeeds and gives the same page, just without counts
 - [ ] The build log shows contractor job titles from every source in `data/job-sources.json`, and building with `--no-careers` (or with a careers site down) still succeeds
 - [ ] Tabs: Employers, Resume help and Events switch, show in the URL, work with Back and arrow keys, all fit at 320 px, and all three sections show without JavaScript
+- [ ] Email signup (checked on a `--site` preview build until Buttondown is set up):
+  - no forms before setup
+  - after setup: the footer form, and the search alert box with the right `search:` tag, in both the no-results and has-results states
+  - contrast and 44 px tap targets pass (`VERIFY_DIST=… node scripts/verify-page.mjs`)
+  - `node scripts/weekly-email.mjs --current … --dry-run` writes a correct preview
 - [ ] The build log shows every event calendar read; past events are gone and a repeating series shows once; `--no-events` still shows curated and yearly events
 
 ### On real devices (deployed GitHub Pages URL, not localhost)
@@ -333,6 +376,12 @@ Test on at least **one iPhone (Safari)** and **one Android phone (Chrome)**. If 
 - [ ] You approved every seed employer entry
 - [ ] You checked every role in `data/ROLES-REVIEW.md`, especially the ⚑ ones and the LO questions, and the groups in `data/synonyms.json`
 - [ ] You approved every resume help listing and event source in `data/RESOURCES-REVIEW.md`
+- [ ] Buttondown account created:
+  - double opt-in on, open/click tracking off
+  - `newsletter` settings in `data/site.json` filled in
+  - the `BUTTONDOWN_API_KEY` repo secret added
+  - a manual run of the weekly-email workflow left a draft in Buttondown that you reviewed
+  - a test signup from the "no results" box arrived with its `search:` tag
 - [ ] All links pass the link checker (or are on the reviewed allowlist)
 - [ ] Footer disclaimer is present
 - [ ] `USAJOBS_API_KEY` and `USAJOBS_EMAIL` repo secrets are set, and a manual deploy run logs `USAJOBS counts: 7/7`

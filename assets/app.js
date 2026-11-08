@@ -16,6 +16,9 @@
   const usajobsLink = $('#usajobs-link');
   const usajobsQ = $('#usajobs-q');
   const resetBtn = $('#reset');
+  const alertForm = $('#alert-form'); // only present once the email list is set up
+  const alertTitle = $('#alert-title');
+  const alertTag = $('#alert-tag');
   const tabLinks = $$('.tab[data-tab]');
   const panels = $$('.panel[data-panel]');
   const tabsRow = $('.tabs-row');
@@ -129,6 +132,17 @@
       }
     }
     resetBtn.hidden = !(q || filtersOn);
+    if (alertForm) {
+      // Saved-search tag, normalized the same way as scripts/lib/newsletter.mjs alertTag().
+      const term = Search.normalize(q).slice(0, 40).trim();
+      alertForm.hidden = !term;
+      if (term) {
+        alertTag.value = `search:${term}`;
+        alertTitle.textContent = shown === 0
+          ? `Nothing for “${q}” right now. Want an email when a job shows up?`
+          : `Email me when new “${q}” jobs are posted near Hill`;
+      }
+    }
     for (const chip of typeChips) chip.setAttribute('aria-pressed', String(chip.dataset.type === state.type));
     for (const chip of catChips) chip.setAttribute('aria-pressed', String(state.cats.has(chip.dataset.cat)));
     if (input.value !== state.q && document.activeElement !== input) input.value = state.q;

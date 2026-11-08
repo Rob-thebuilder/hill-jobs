@@ -437,6 +437,45 @@ button { font: inherit; }
 .more-cal a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
 .fine-print { margin-top: 1.5rem; font-size: .85rem; color: var(--muted); }
 
+/* ---------- email signup ---------- */
+.alert-box {
+  margin: 0 0 1rem;
+  padding: .9rem 1rem;
+  background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--amber);
+  border-radius: 12px;
+}
+.alert-title { font-weight: 800; overflow-wrap: anywhere; }
+.signup-row { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .6rem; }
+.signup-row input {
+  flex: 1 1 14rem; min-width: 0; min-height: 48px;
+  padding: 0 .9rem; border-radius: 10px;
+  border: 1.5px solid var(--chip-border); background: var(--bg); color: var(--text);
+  font: inherit; font-size: 1.0625rem; /* ≥16px: no iOS zoom */
+}
+.btn-signup {
+  flex: 0 0 auto; min-height: 48px; padding: 0 1.25rem;
+  border: 0; border-radius: 10px; cursor: pointer;
+  background: var(--amber); color: var(--on-amber); font-weight: 800;
+}
+.signup-fine { margin-top: .5rem; font-size: .8rem; color: var(--muted); }
+/* Small "Privacy" links still get a full 44px tap target. */
+.signup-fine a, .fine a { display: inline-flex; align-items: center; min-height: 44px; min-width: 44px; vertical-align: middle; }
+.signup { margin-bottom: 1.75rem; max-width: 640px; }
+.signup-title { font-size: 1.3rem; font-weight: 900; color: #fff; }
+.signup-lead { margin-top: .25rem; }
+.site-footer .signup-row input { background: #fff; color: #0f1b2d; border-color: #b8c1cf; }
+.site-footer .signup-fine, .site-footer .signup-fine a { color: #b4c0d3; }
+.site-footer a { color: #cfe0ff; }
+
+/* ---------- privacy page ---------- */
+.hero-small { padding-bottom: 2rem; }
+.hero-small h1 { font-size: clamp(2rem, 8vw, 3rem); }
+.back-home { color: var(--amber); text-decoration: none; }
+.prose { padding-top: 1.5rem; padding-bottom: 3rem; max-width: 760px; }
+.prose h2 { margin-top: 1.75rem; font-size: 1.25rem; font-weight: 900; }
+.prose p, .prose ul { margin-top: .6rem; }
+.prose li { margin-top: .35rem; }
+
 /* ---------- footer ---------- */
 .site-footer {
   background: var(--navy); color: #d3dceb;
