@@ -93,7 +93,7 @@ test('every card has an empty, hidden "Matches" line and no old data-text', () =
 // --no-careers keeps these offline; careers sites are tested with fakes in careers.test.mjs.
 function runBuild(env, outDir) {
   return new Promise((resolve) => {
-    const child = spawn(process.execPath, [path.join(ROOT, 'scripts/build.mjs'), '--no-careers', '--out', outDir], {
+    const child = spawn(process.execPath, [path.join(ROOT, 'scripts/build.mjs'), '--no-careers', '--no-events', '--out', outDir], {
       env: { ...process.env, ...env },
       stdio: ['ignore', 'pipe', 'pipe'],
     });
@@ -128,7 +128,7 @@ async function buildCase(env) {
   }
 }
 
-const articleCount = (html) => (html.match(/<article /g) || []).length;
+const articleCount = (html) => (html.match(/<article class="card" /g) || []).length; // employer cards only
 
 test('build with an empty key: succeeds, full page, no counts', async () => {
   // Empty env vars beat .env, so this works on a machine that has a real key in .env.

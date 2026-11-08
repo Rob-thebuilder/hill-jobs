@@ -16,6 +16,9 @@
   const usajobsLink = $('#usajobs-link');
   const usajobsQ = $('#usajobs-q');
   const resetBtn = $('#reset');
+  const tabLinks = $$('.tab[data-tab]');
+  const panels = $$('.panel[data-panel]');
+  const tabsRow = $('.tabs-row');
   const typeChips = $$('.chip[data-type]');
   const catChips = $$('.chip[data-cat]');
   if (!Search || !input || !list) return;
@@ -39,12 +42,28 @@
   const CATS = new Set(catChips.map((c) => c.dataset.cat));
   const USAJOBS_BASE = usajobsLink.href;
 
+  // ---- tabs (plain links without JS; real tabs with it) ----
+  const TABS = new Set(tabLinks.map((t) => t.dataset.tab));
+  const HASH_TO_TAB = Object.fromEntries(tabLinks.map((t) => [t.getAttribute('href'), t.dataset.tab]));
+  if (tabsRow) {
+    tabsRow.setAttribute('role', 'tablist');
+    tabsRow.setAttribute('aria-label', 'Sections');
+    for (const t of tabLinks) {
+      const panel = $(t.getAttribute('href'));
+      t.setAttribute('role', 'tab');
+      t.setAttribute('aria-controls', panel.id);
+      panel.setAttribute('role', 'tabpanel');
+      panel.setAttribute('aria-labelledby', t.id);
+    }
+  }
+
   // ---- state <-> URL ----
   const fromUrl = () => {
     const p = new URLSearchParams(location.search);
     const type = p.get('type') || '';
     const cats = p.getAll('cat').flatMap((v) => v.split(',')).filter((c) => CATS.has(c));
-    return { q: p.get('q') || '', type: TYPES.has(type) ? type : '', cats: new Set(cats) };
+    const tab = TABS.has(p.get('tab')) ? p.get('tab') : HASH_TO_TAB[location.hash] || 'employers';
+    return { q: p.get('q') || '', type: TYPES.has(type) ? type : '', cats: new Set(cats), tab };
   };
   const toUrl = (s) => {
     const p = new URLSearchParams();
@@ -53,17 +72,28 @@
     // Keep chip order so the same filters always give the same URL.
     const cats = catChips.map((c) => c.dataset.cat).filter((c) => s.cats.has(c));
     if (cats.length) p.set('cat', cats.join(','));
+    if (s.tab && s.tab !== 'employers') p.set('tab', s.tab);
     const qs = p.toString().replace(/%2C/g, ',');
-    return location.pathname + (qs ? `?${qs}` : '') + location.hash;
+    return location.pathname + (qs ? `?${qs}` : '');
   };
-  const current = () => location.pathname + location.search + location.hash;
+  const current = () => location.pathname + location.search;
 
   let state = fromUrl();
 
   // ---- render ----
   const passesChips = (c) => (!state.type || c.type === state.type) && (!state.cats.size || c.cats.some((cat) => state.cats.has(cat)));
 
+  const renderTabs = () => {
+    for (const t of tabLinks) {
+      const on = t.dataset.tab === state.tab;
+      t.setAttribute('aria-selected', String(on));
+      t.tabIndex = on ? 0 : -1;
+    }
+    for (const p of panels) p.hidden = p.dataset.panel !== state.tab;
+  };
+
   const render = () => {
+    renderTabs();
     const q = state.q.trim();
     const { results } = Search.search(index, q);
     let shown = 0;
@@ -119,6 +149,7 @@
     clearTimeout(debounce);
     debounce = setTimeout(() => {
       state.q = input.value;
+      state.tab = 'employers'; // the search box searches employers
       render();
       commit(inBurst ? 'replace' : 'push');
       inBurst = true;
@@ -170,8 +201,37 @@
     });
   }
 
+  const showTab = (tab, { focusTab = false } = {}) => {
+    if (!TABS.has(tab)) return;
+    state.tab = tab;
+    endBurst();
+    render();
+    commit('push');
+    if (focusTab) tabLinks.find((t) => t.dataset.tab === tab)?.focus();
+  };
+  for (const t of tabLinks) {
+    t.addEventListener('click', (e) => {
+      e.preventDefault();
+      showTab(t.dataset.tab);
+    });
+    t.addEventListener('keydown', (e) => {
+      const i = tabLinks.indexOf(t);
+      const next = { ArrowRight: i + 1, ArrowLeft: i - 1, Home: 0, End: tabLinks.length - 1 }[e.key];
+      if (next === undefined) return;
+      e.preventDefault();
+      showTab(tabLinks[(next + tabLinks.length) % tabLinks.length].dataset.tab, { focusTab: true });
+    });
+  }
+  for (const a of $$('[data-tab-link]')) {
+    a.addEventListener('click', (e) => {
+      e.preventDefault();
+      showTab(a.dataset.tabLink);
+      tabsRow?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+    });
+  }
+
   const clearAll = () => {
-    state = { q: '', type: '', cats: new Set() };
+    state = { q: '', type: '', cats: new Set(), tab: 'employers' };
     input.value = '';
     endBurst();
     render();
@@ -194,6 +254,7 @@
     const t = e.target;
     if (t.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return;
     e.preventDefault();
+    if (state.tab !== 'employers') showTab('employers');
     input.focus();
     input.select();
   });

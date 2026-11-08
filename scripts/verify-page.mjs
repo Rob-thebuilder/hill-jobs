@@ -150,7 +150,7 @@ const CONTRAST = `(() => {
     for (const l of layers.reverse()) bg = blend(l, bg);
     return bg;
   };
-  const sels = ['h1', '.eyebrow', '.tagline', '.stat', '.stat strong', '.search label', '.chip-label', '.chip', '.count', '.badge', '.card h2', '.desc', '.tags li', '.btn-jobs', '.link-secondary', '.open-jobs', '.open-jobs .checked', '.meta span', '.meta a', '.site-footer p', '.recruiter', '.reset', '.empty p', '.btn-clear', '.search input', '.why', '.suggest', '.empty-usajobs a'];
+  const sels = ['h1', '.eyebrow', '.tagline', '.stat', '.stat strong', '.search label', '.chip-label', '.chip', '.count', '.badge', '.card h2', '.desc', '.tags li', '.btn-jobs', '.link-secondary', '.open-jobs', '.open-jobs .checked', '.meta span', '.meta a', '.site-footer p', '.recruiter', '.reset', '.empty p', '.btn-clear', '.search input', '.why', '.suggest', '.empty-usajobs a', '.tab', '.tab-n', '.nu-date', '.nu-title', '.nu-where', '.next-up-head h2', '.next-up-all', '.panel-intro h2', '.panel-intro p', '.group-n', '.note', '.kind', '.res-facts dt', '.res-facts dd', '.btn-outline', '.ev-mon', '.ev-day', '.ev-when', '.ev-repeats', '.ev-where', '.ev-host', '.ev-link', '.annual-timing', '.empty-note', '.more-cal a', '.fine-print'];
   const out = [];
   for (const sel of sels) for (const el of document.querySelectorAll(sel)) {
     const r = el.getBoundingClientRect();
@@ -209,7 +209,58 @@ try {
     check('no-JS: every card has a visible https "View jobs" link', r.links === total, `${r.links}/${total}`);
     check('no-JS: search box and chips hidden', !r.searchShown && !r.filtersShown);
     check('no-JS: count shows full total', r.count === `${total} employers`, r.count);
+    const panels = await p.evaluate(`[...document.querySelectorAll('.panel')].map(s => s.id + ':' + (s.getClientRects().length > 0))`);
+    check('no-JS: all three sections (employers, resume help, events) are visible', panels.join() === 'employers:true,resume-help:true,events:true', panels.join());
     await p.close();
+  }
+
+  // 3b. Tabs: switch, URL, Back, keyboard, and links into the Events tab.
+  {
+    const TABSTATE = `(() => ({
+      visible: [...document.querySelectorAll('.panel')].filter(s => s.getClientRects().length > 0).map(s => s.id).join(),
+      selected: document.querySelector('.tab[aria-selected="true"]')?.dataset.tab,
+      search: location.search,
+      roles: document.querySelector('.tabs-row').getAttribute('role') + '/' + document.querySelector('.tab').getAttribute('role') + '/' + document.querySelector('.panel').getAttribute('role'),
+    }))()`;
+    const p = await openPage(H, { width: 390 });
+    let t = await p.evaluate(TABSTATE);
+    check('tabs: Employers is the default tab, with ARIA tab roles', t.visible === 'employers' && t.selected === 'employers' && t.roles === 'tablist/tab/tabpanel', JSON.stringify(t));
+    await p.evaluate(click('#tab-resume'));
+    t = await p.evaluate(TABSTATE);
+    check('tabs: Resume help shows only its panel and goes in the URL', t.visible === 'resume-help' && t.selected === 'resume' && t.search === '?tab=resume', JSON.stringify(t));
+    await p.evaluate(click('#tab-events'));
+    t = await p.evaluate(TABSTATE);
+    check('tabs: Events shows only its panel', t.visible === 'events' && t.search === '?tab=events', JSON.stringify(t));
+    await p.evaluate(`(() => { const w = ${nextPop}; history.back(); return w; })()`);
+    t = await p.evaluate(TABSTATE);
+    const back1 = t.visible;
+    await p.evaluate(`(() => { const w = ${nextPop}; history.back(); return w; })()`);
+    t = await p.evaluate(TABSTATE);
+    check('tabs: Back steps through the tabs you visited', back1 === 'resume-help' && t.visible === 'employers' && t.search === '', `${back1} → ${t.visible}`);
+    await p.evaluate(`document.querySelector('#tab-employers').focus()`);
+    await p.evaluate(`document.querySelector('#tab-employers').dispatchEvent(new KeyboardEvent('keydown', { key: 'ArrowRight', bubbles: true }))`);
+    t = await p.evaluate(TABSTATE);
+    const focused = await p.evaluate('document.activeElement.id');
+    check('tabs: arrow keys move between tabs', t.selected === 'resume' && focused === 'tab-resume', `${t.selected}, focus ${focused}`);
+    await p.evaluate(click('#tab-employers'));
+    await p.evaluate(click('[data-tab-link="events"]'));
+    t = await p.evaluate(TABSTATE);
+    check('"All events" in the Upcoming strip opens the Events tab', t.visible === 'events', t.visible);
+    await p.type('mechanic');
+    t = await p.evaluate(TABSTATE);
+    check('typing a search from another tab switches to Employers', t.visible === 'employers' && /q=mechanic/.test(t.search), JSON.stringify(t));
+    await p.close();
+
+    const e = await openPage(H + '?tab=events', { width: 390 });
+    t = await e.evaluate(TABSTATE);
+    check('a shared ?tab=events link opens the Events tab', t.visible === 'events', t.visible);
+    const r = await e.evaluate(`({ upcoming: document.querySelectorAll('.event-card').length, annual: document.querySelectorAll('.annual-card').length, empty: !!document.querySelector('.empty-note') })`);
+    check('events tab lists upcoming events (or says none) and the yearly events', (r.upcoming > 0 || r.empty) && r.annual >= 3, JSON.stringify(r));
+    await e.close();
+    const h = await openPage(H + '#resume-help', { width: 390 });
+    t = await h.evaluate(TABSTATE);
+    check('an old #resume-help link opens the Resume help tab', t.visible === 'resume-help', t.visible);
+    await h.close();
   }
 
   // 4. Search + chips combine with AND; empty state; Clear filters.
@@ -378,7 +429,7 @@ try {
 
   // 9. Contrast in both themes (with a pressed chip and the empty state rendered too).
   for (const scheme of ['light', 'dark']) {
-    for (const qs of ['?cat=engineering', '?q=zzqqxx']) {
+    for (const qs of ['?cat=engineering', '?q=zzqqxx', '?tab=resume', '?tab=events']) {
       const p = await openPage(H + qs, { width: 390, scheme });
       const res = await p.evaluate(CONTRAST);
       const bad = res.filter((x) => !x.ok);

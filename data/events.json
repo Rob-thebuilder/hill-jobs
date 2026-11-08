@@ -1,0 +1,60 @@
+{
+  "_note": "Curated events (job fairs, resume workshops, meet-and-greets) near Hill AFB. Dates are Mountain Time. Past events drop off the page automatically at the next build. Events read from public calendars (event-sources.json) are added at build time. 'annual' lists recurring events whose next date isn't posted yet.",
+  "events": [],
+  "annual": [
+    {
+      "id": "hill-hiring-event",
+      "title": "Hill AFB / Ogden Air Logistics Complex hiring event",
+      "type": "job-fair",
+      "timing": "Once a year, usually winter or spring, at the Davis Conference Center in Layton",
+      "host": "Hill AFB civilian recruiting",
+      "url": "https://afciviliancareers.com/events/",
+      "sourceUrl": "https://www.hill.af.mil/News/Article-Display/Article/4041732/hill-hiring-event-connects-recruiters-with-job-seekers/"
+    },
+    {
+      "id": "utah-virtual-job-fair",
+      "title": "Utah Statewide Virtual Job Fair",
+      "type": "job-fair",
+      "timing": "Several times a year (2026: January, March, July, September, November), with a prep workshop the day before",
+      "host": "Utah Department of Workforce Services",
+      "url": "https://jobs.utah.gov/",
+      "sourceUrl": "https://jobs.utah.gov/department/press/2026/010526.html"
+    },
+    {
+      "id": "davis-tech-career-fair",
+      "title": "Davis Tech Career Fair",
+      "type": "job-fair",
+      "timing": "Twice a year, usually March and October, in Kaysville",
+      "host": "Davis Technical College",
+      "url": "https://www.davistech.edu/career-fair",
+      "sourceUrl": "https://www.davistech.edu/career-fair"
+    },
+    {
+      "id": "weber-career-fairs",
+      "title": "Weber State career and internship fairs",
+      "type": "job-fair",
+      "timing": "Fall fairs in September and October; spring dates posted on Weber's events page",
+      "host": "Weber State University Career Services",
+      "url": "https://www.weber.edu/careerservices/events/",
+      "sourceUrl": "https://www.weber.edu/careerservices/events/"
+    },
+    {
+      "id": "otech-career-fairs",
+      "title": "Ogden-Weber Tech industry career fairs",
+      "type": "job-fair",
+      "timing": "A week of industry career fairs in early November",
+      "host": "Ogden-Weber Technical College",
+      "url": "https://www.otech.edu/events/",
+      "sourceUrl": "https://www.otech.edu/wp-json/tribe/events/v1/events"
+    },
+    {
+      "id": "federal-resume-workshop",
+      "title": "Two-page federal resume workshop",
+      "type": "workshop",
+      "timing": "Offered from time to time at the Clearfield Employment Center; announced by Layton City Economic Development",
+      "host": "Utah Department of Workforce Services",
+      "url": "https://lcecon.laytoncityutah.gov/tag/job-seekers/",
+      "sourceUrl": "https://lcecon.laytoncityutah.gov/?p=9183"
+    }
+  ]
+}

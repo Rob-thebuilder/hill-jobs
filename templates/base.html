@@ -29,7 +29,7 @@
 <script src="{{prefix}}assets/app.js" defer></script>
 </head>
 <body>
-<a class="skip" href="#results">Skip to employers</a>
+<a class="skip" href="#main">Skip to content</a>
 <header class="hero">
   <div class="wrap hero-inner">
     <p class="eyebrow">{{baseName}}</p>
@@ -56,7 +56,18 @@
   </svg>
 </header>
 
-<main id="main">
+<nav class="tabs" aria-label="Sections">
+  <div class="wrap tabs-row">
+    <a class="tab" id="tab-employers" href="#employers" data-tab="employers">Employers <span class="tab-n">{{total}}</span></a>
+    <a class="tab" id="tab-resume" href="#resume-help" data-tab="resume">Resume help <span class="tab-n">{{resourceCount}}</span></a>
+    <a class="tab" id="tab-events" href="#events" data-tab="events">Events <span class="tab-n">{{eventCount}}</span></a>
+  </div>
+</nav>
+
+<main id="main" tabindex="-1">
+<section id="employers" class="panel" data-panel="employers" aria-labelledby="tab-employers">
+  <h2 class="sr-only">Employers</h2>
+  {{nextUp}}
   <nav class="filters wrap" aria-label="Filter employers">
     <div class="chip-group">
       <h2 class="chip-label" id="type-label">Employer type</h2>
@@ -70,7 +81,7 @@
 
   <section id="results" class="wrap results" aria-labelledby="results-heading" tabindex="-1">
     <div class="results-bar">
-      <h2 id="results-heading" class="sr-only">Employers</h2>
+      <h2 id="results-heading" class="sr-only">Employer results</h2>
       <p id="count" class="count" role="status" aria-live="polite" aria-atomic="true">{{count}}</p>
       <button type="button" class="reset" id="reset" hidden>Clear filters</button>
     </div>
@@ -91,6 +102,15 @@
 {{cards}}
     </ul>
   </section>
+</section>
+
+<section id="resume-help" class="panel wrap" data-panel="resume" aria-labelledby="resume-heading">
+{{resourcesPanel}}
+</section>
+
+<section id="events" class="panel wrap" data-panel="events" aria-labelledby="events-heading">
+{{eventsPanel}}
+</section>
 </main>
 
 <footer class="site-footer">

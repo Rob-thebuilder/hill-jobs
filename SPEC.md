@@ -101,6 +101,45 @@ The primary link is a **USAJOBS search pre-filtered to the agency and the Hill A
 ### Seed data
 I will draft ~25–40 employers: federal employers (e.g., Ogden Air Logistics Complex / OO-ALC and other units at Hill that hire civilians), prime contractors (e.g., Northrop Grumman, Boeing, Lockheed Martin, L3Harris), and major subcontractors and services firms. **You approve every entry before launch.** Each entry needs a working link and a Hill-specific description. Drop any employer that has no verifiable Hill/Northern Utah presence.
 
+## 4a. Tabs, resume help and events
+
+The page has three tabs below the hero: **Employers** (the default), **Resume help** and **Events**. Each tab shows a count.
+
+- **Tabs and links:**
+  - Without JavaScript, the tabs are plain links to three sections that are all visible.
+  - With JavaScript, they're ARIA tabs: arrow keys move between them, and the open tab goes in the URL (`?tab=resume`, `?tab=events`), so Back works and a tab can be shared.
+  - Old `#resume-help` / `#events` links open the right tab.
+  - The hero search searches employers, so typing in it switches to Employers.
+  - On phones under 400 px the count badges are hidden, so all three tabs fit.
+
+### Resume help (`data/resources.json`)
+- **Who is listed:**
+  - Free help near Hill comes first: the base Military & Family Readiness Center, Utah Workforce Services job centers in Clearfield and Ogden, its veteran services, and Weber State, Davis Tech and Ogden-Weber Tech career centers.
+  - Paid local resume professionals in Davis and Weber counties follow, under a note that Work At Hill doesn't endorse them and nobody pays to be listed.
+  - National firms with "local" landing pages and Salt Lake County firms are left out.
+- **Fields:**
+  - `id`, `name`, `cost` (`free`/`paid`), `kind` (Military & family, State job center, Veterans, College career center, Private resume writer), `description` (≤160), `services` (1–6), `who` (eligibility), `city`, `url`, `verified` (YYYY-MM).
+  - `sourceUrl` is internal, never shown, and required.
+- **Approval:** `data/RESOURCES-REVIEW.md` records evidence and confidence, and you approve every listing.
+
+### Events (`data/events.json`, `data/event-sources.json`)
+- **Covers:** job fairs, resume workshops and meet-and-greets at Hill AFB or in Northern Utah (the same `data/locations.json` rule as §6). Types: Job fair, Workshop, Meet & greet.
+- **Where events come from:**
+  - **Curated events** in `data/events.json`, with `start` as `YYYY-MM-DD` or `YYYY-MM-DDTHH:MM` Mountain Time.
+  - **Calendars read at every build:** public calendars using The Events Calendar REST API (Ogden-Weber Tech, Utah Veterans and Military Affairs, Air Force Civilian Service). An event is kept only if its title or category is job-related (`keywords`) and it's nearby, or its title names Hill AFB.
+  - **The same polite reading rules as §6:** robots.txt first, a named user agent, timeouts. A failure only drops that calendar.
+- **What shows:**
+  - Past events drop off at each build (the daily deploy).
+  - The same event listed twice is shown once.
+  - A repeating series shows its next date with "repeats (N more dates)".
+- **The Events tab** lists:
+  - upcoming events (date, type, time, place, host, details link)
+  - "Yearly events to watch for" (the `annual` list: the Hill AFB hiring event, Utah's virtual job fair, college fairs, the federal resume workshop)
+  - links to more event calendars
+  - when the calendars were last checked
+  - When nothing is dated, it says so plainly rather than showing a blank list.
+- **"Upcoming events" strip:** the Employers tab starts with up to 3 upcoming events and an "All events →" link to the Events tab.
+
 ## 5. Search and filtering
 
 Everything runs in the browser, with no server.
@@ -148,13 +187,17 @@ Everything runs in the browser, with no server.
 │   ├── synonyms.json       search synonym groups
 │   ├── job-sources.json    contractor careers sites read for live job titles
 │   ├── locations.json      what counts as Hill AFB and Northern Utah
+│   ├── resources.json      resume help listings (free and paid)
+│   ├── events.json         curated events and yearly events to watch for
+│   ├── event-sources.json  public event calendars read at build time
+│   ├── RESOURCES-REVIEW.md evidence for resume help and events
 │   └── ROLES-REVIEW.md     evidence for each employer's roles
 ├── scripts/
 │   ├── build.mjs           renders cards into the HTML per base, with USAJOBS counts (Node built-ins only)
 │   ├── check-links.mjs     link checker (Node built-ins only)
 │   ├── verify-page.mjs     automated phone checks in headless Chrome
 │   ├── verify-usajobs.mjs  compares API counts with the live USAJOBS site (run by hand)
-│   └── lib/                usajobs.mjs (USAJOBS counts/titles), careers.mjs (contractor titles), chrome.mjs (headless Chrome)
+│   └── lib/                usajobs.mjs (USAJOBS counts/titles), careers.mjs (contractor titles), events.mjs (event calendars), chrome.mjs (headless Chrome)
 ├── test/                   node --test unit and build tests
 ├── templates/base.html
 └── .github/workflows/
@@ -188,7 +231,7 @@ Everything runs in the browser, with no server.
   - Your name
   - Work email
   - Company
-  - Request type (Add my company / Fix a link / Fix details / Remove listing)
+  - Request type (Add my company / Fix a link / Fix details / Remove listing / Add my resume service / Add an event)
   - Details
   - Correct URL (optional)
 - Responses go to a linked Google Sheet that you review by hand. Nothing updates on the site automatically.
@@ -234,9 +277,10 @@ Everything runs in the browser, with no server.
 - Individual job postings, job feeds, scraping, or third-party job APIs, **except** these, read at build time only:
   - open-job counts and titles from the official USAJOBS Search API (§4)
   - contractor job *titles* for search, read politely from public careers pages (§6)
+  - job-related events from public event calendars (§4a)
 - User accounts, saved employers, and job alerts
 - Recruiter self-service editing, a CMS, or automatic updates from form submissions
-- Featured, paid, or sponsored placement
+- Featured, paid, or sponsored placement, for employers, resume professionals or events
 - Analytics and tracking of any kind, including outbound click counts
 - Map view, commute or distance filters
 - Languages other than English
@@ -265,6 +309,8 @@ The site isn't done until every check below passes.
 - [ ] `node scripts/verify-usajobs.mjs`: every card's open-job count equals the count on its live "View jobs" USAJOBS page
 - [ ] Building without a key (or with a bad one) succeeds and gives the same page, just without counts
 - [ ] The build log shows contractor job titles from every source in `data/job-sources.json`, and building with `--no-careers` (or with a careers site down) still succeeds
+- [ ] Tabs: Employers, Resume help and Events switch, show in the URL, work with Back and arrow keys, all fit at 320 px, and all three sections show without JavaScript
+- [ ] The build log shows every event calendar read; past events are gone and a repeating series shows once; `--no-events` still shows curated and yearly events
 
 ### On real devices (deployed GitHub Pages URL, not localhost)
 Test on at least **one iPhone (Safari)** and **one Android phone (Chrome)**. If you don't have one of them, use BrowserStack's free trial or a friend's phone.
@@ -286,6 +332,7 @@ Test on at least **one iPhone (Safari)** and **one Android phone (Chrome)**. If 
 ### Launch checklist
 - [ ] You approved every seed employer entry
 - [ ] You checked every role in `data/ROLES-REVIEW.md`, especially the ⚑ ones and the LO questions, and the groups in `data/synonyms.json`
+- [ ] You approved every resume help listing and event source in `data/RESOURCES-REVIEW.md`
 - [ ] All links pass the link checker (or are on the reviewed allowlist)
 - [ ] Footer disclaimer is present
 - [ ] `USAJOBS_API_KEY` and `USAJOBS_EMAIL` repo secrets are set, and a manual deploy run logs `USAJOBS counts: 7/7`

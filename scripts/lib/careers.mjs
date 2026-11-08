@@ -83,12 +83,13 @@ export function robotsAllows(rules, pathWithQuery) {
 
 // ---------- polite fetch ----------
 
-function makeClient(fetchImpl, timeoutMs) {
+/** A fetch that checks robots.txt first, identifies itself and times out. Shared with events.mjs. */
+export function makeClient(fetchImpl, timeoutMs, userAgent = USER_AGENT) {
   const robotsCache = new Map();
   async function rulesFor(origin) {
     if (!robotsCache.has(origin)) {
       robotsCache.set(origin, (async () => {
-        const res = await fetchImpl(`${origin}/robots.txt`, { headers: { 'User-Agent': USER_AGENT }, signal: AbortSignal.timeout(timeoutMs) });
+        const res = await fetchImpl(`${origin}/robots.txt`, { headers: { 'User-Agent': userAgent }, signal: AbortSignal.timeout(timeoutMs) });
         if (res.status === 401 || res.status === 403) return { blocked: true };
         if (res.status >= 500) return { blocked: true }; // RFC 9309: server error means don't crawl
         if (!res.ok) return { rules: [] }; // no robots.txt: allowed
@@ -105,7 +106,7 @@ function makeClient(fetchImpl, timeoutMs) {
     const res = await fetchImpl(url, {
       method,
       body,
-      headers: { 'User-Agent': USER_AGENT, Accept: json ? 'application/json' : 'text/html,application/xml;q=0.9,*/*;q=0.8', ...headers },
+      headers: { 'User-Agent': userAgent, Accept: json ? 'application/json' : 'text/html,application/xml;q=0.9,*/*;q=0.8', ...headers },
       signal: AbortSignal.timeout(timeoutMs),
     });
     if (!res.ok) {
@@ -118,7 +119,7 @@ function makeClient(fetchImpl, timeoutMs) {
 
 // ---------- adapters: each returns [{ title, locations: [..] }] ----------
 
-const decode = (s) =>
+export const decode = (s) =>
   String(s)
     .replace(/<[^>]+>/g, ' ')
     .replace(/&amp;/g, '&').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&quot;/g, '"').replace(/&#0?39;|&apos;/g, "'").replace(/&nbsp;/g, ' ')

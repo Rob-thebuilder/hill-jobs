@@ -1,0 +1,122 @@
+{
+  "_note": "Resume help near Hill AFB. Free services are listed first, then paid local professionals. Listing is not an endorsement and nobody pays to be listed. Every entry needs a sourceUrl (internal, never shown). Review flags live in RESOURCES-REVIEW.md.",
+  "resources": [
+    {
+      "id": "hill-mfrc",
+      "name": "Hill AFB Military & Family Readiness Center",
+      "cost": "free",
+      "kind": "military",
+      "description": "Free one-on-one resume reviews, federal resume help, the Transition Assistance Program (TAP) and spouse employment help.",
+      "services": ["Resume reviews", "Federal resumes", "Transition Assistance Program", "Spouse employment"],
+      "who": "Service members, spouses, retirees and others with base access",
+      "city": "Hill AFB",
+      "url": "https://installations.militaryonesource.mil/military-installation/hill-afb/military-and-family-support-center/employment",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.hill.af.mil/News/Article-Display/Article/397845/employment-help-is-available-at-airman-and-family-readiness-center"
+    },
+    {
+      "id": "dws-clearfield",
+      "name": "Workforce Services – Clearfield Employment Center",
+      "cost": "free",
+      "kind": "state",
+      "description": "Utah's state job center: job coaching, resume and interview help, and workshops such as the two-page federal resume class.",
+      "services": ["Job coaching", "Resume help", "Interview help", "Federal resume workshops"],
+      "who": "Anyone looking for work",
+      "city": "Clearfield",
+      "url": "https://jobs.utah.gov/jobseeker/workshops/north/",
+      "verified": "2026-11",
+      "sourceUrl": "https://lcecon.laytoncityutah.gov/?p=9183"
+    },
+    {
+      "id": "dws-ogden",
+      "name": "Workforce Services – Ogden Employment Center",
+      "cost": "free",
+      "kind": "state",
+      "description": "Utah's state job center in downtown Ogden: job coaching, job search workshops, and resume and interview help.",
+      "services": ["Job coaching", "Resume help", "Interview help", "Workshops"],
+      "who": "Anyone looking for work",
+      "city": "Ogden",
+      "url": "https://jobs.utah.gov/jobseeker/workshops/north/",
+      "verified": "2026-11",
+      "sourceUrl": "https://jobs.utah.gov/department/press/2026/010526.html"
+    },
+    {
+      "id": "dws-veterans",
+      "name": "Workforce Services Veteran & Military Employment",
+      "cost": "free",
+      "kind": "veterans",
+      "description": "Veteran employment representatives and free live online workshops on civilian resumes that translate military experience.",
+      "services": ["Military-to-civilian resumes", "Online workshops", "Veteran job help"],
+      "who": "Veterans, service members and military spouses",
+      "city": "Online and statewide",
+      "url": "https://jobs.utah.gov/veteran/",
+      "verified": "2026-11",
+      "sourceUrl": "https://jobs.utah.gov/veteran/"
+    },
+    {
+      "id": "weber-career-services",
+      "name": "Weber State University Career Services",
+      "cost": "free",
+      "kind": "college",
+      "description": "Resume and interview help, career mentoring and career fairs for Weber State students and alumni.",
+      "services": ["Resume help", "Interview practice", "Career fairs"],
+      "who": "Weber State students and alumni",
+      "city": "Ogden",
+      "url": "https://www.weber.edu/careerservices",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.weber.edu/careerservices/events/"
+    },
+    {
+      "id": "davis-tech-career",
+      "name": "Davis Tech Career Placement Services",
+      "cost": "free",
+      "kind": "college",
+      "description": "Appointments and walk-in help creating and reviewing resumes and cover letters, plus interview practice and LinkedIn help.",
+      "services": ["Resume and cover letter reviews", "Interview practice", "LinkedIn"],
+      "who": "Davis Technical College students and graduates",
+      "city": "Kaysville",
+      "url": "https://www.davistech.edu/career-placement-services",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.davistech.edu/career-placement-services"
+    },
+    {
+      "id": "otech-success-center",
+      "name": "Ogden-Weber Tech Student Success Center",
+      "cost": "free",
+      "kind": "college",
+      "description": "Career services specialists review resumes, run interview practice and help with the OTECH job board.",
+      "services": ["Resume reviews", "Interview practice", "Job board"],
+      "who": "Ogden-Weber Technical College students and graduates",
+      "city": "Ogden",
+      "url": "https://www.otech.edu/current-students/student-success-center/job-coach/",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.otech.edu/current-students/student-success-center/job-coach/"
+    },
+    {
+      "id": "empire-resume",
+      "name": "Empire Resume",
+      "cost": "paid",
+      "kind": "private",
+      "description": "Ogden-area resume writing service: resumes, cover letters and LinkedIn profiles, including military and federal resumes.",
+      "services": ["Resume writing", "Federal and military resumes", "Cover letters", "LinkedIn profiles"],
+      "who": "Anyone",
+      "city": "Ogden",
+      "url": "https://www.empireresume.com/",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.yelp.com/biz/empire-resume-ogden"
+    },
+    {
+      "id": "notus-human-capital",
+      "name": "Notus Human Capital",
+      "cost": "paid",
+      "kind": "private",
+      "description": "Davis County career management and outplacement firm offering resume services and career counseling.",
+      "services": ["Resume services", "Career counseling", "Outplacement"],
+      "who": "Anyone",
+      "city": "Farmington",
+      "url": "https://getnotus.com/",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.bbb.org/us/ut/farmington/category/recruitment-services"
+    }
+  ]
+}

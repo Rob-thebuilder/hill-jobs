@@ -1,0 +1,9 @@
+{
+  "_note": "Public event calendars read at build time (The Events Calendar REST API). Only events whose title matches 'keywords' and that are at Hill AFB or in Northern Utah (data/locations.json) are kept; 'defaultCity' is used when an event has no venue. robots.txt is checked first.",
+  "keywords": "job|career|hiring|resume|résumé|interview|employment|employer|workforce|networking|recruit|meet (and|&) greet|open house|transition",
+  "sources": [
+    { "id": "otech", "name": "Ogden-Weber Technical College", "type": "tribe", "base": "https://www.otech.edu", "defaultCity": "Ogden, UT" },
+    { "id": "utah-veterans", "name": "Utah Department of Veterans and Military Affairs", "type": "tribe", "base": "https://veterans.utah.gov" },
+    { "id": "afcs", "name": "Air Force Civilian Service", "type": "tribe", "base": "https://afciviliancareers.com" }
+  ]
+}
