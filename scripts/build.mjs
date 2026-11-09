@@ -591,7 +591,7 @@ async function main() {
   // Events: curated ones plus job-related events read from public calendars. Never stops the build.
   const today = mountainDate(new Date());
   let pulled = [];
-  let eventsChecked = 'Only hand-picked events are shown in this build.';
+  let eventsChecked = 'Only Hand-Picked Events Shown';
   if (!argv.includes('--no-events')) {
     try {
       const r = await fetchEvents(eventSources, places, { today });
