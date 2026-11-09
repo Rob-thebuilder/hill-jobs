@@ -100,7 +100,7 @@ Your review template still had placeholders for these items, so they're unchange
 
 #### RTX (Pratt & Whitney) — confidence: **low**
 
-- F135 engine field service engineers on base supporting the 388th Fighter Wing and Ogden ALC on the F-35
+- F-35 engine (F135) field service engineers on base supporting the 388th Fighter Wing and Ogden ALC
 - Categories: engineering, trades-maintenance
 - Jobs: https://careers.rtx.com/global/en/search-results?keywords=Hill%20AFB — ⚠️ 403 — browser check still needed
 - Source: https://www.career.com/job/pratt-whitney/f135-field-service-engineer-hill-afb-ut-onsite/j202606022356108717760 — ⚠️ 403 — browser check still needed
