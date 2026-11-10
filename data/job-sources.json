@@ -11,13 +11,30 @@
     "systems-implementers": { "type": "applicantpro", "host": "systemsimplementers.isolvedhire.com", "domainId": 1445 },
     "es3": { "type": "es3", "url": "https://www.es3inc.com/employment/opportunities/" },
     "boeing": { "type": "radancy-sitemap", "sitemap": "https://jobs.boeing.com/sitemap.xml" },
-    "l3harris": { "type": "radancy-sitemap", "sitemap": "https://careers.l3harris.com/sitemap.xml" }
+    "l3harris": { "type": "radancy-sitemap", "sitemap": "https://careers.l3harris.com/sitemap.xml" },
+    "kbr": { "type": "workday", "host": "trinzic.wd115.myworkdayjobs.com", "tenant": "trinzic", "site": "Trinzic_Careers", "searchText": "Utah" },
+    "booz-allen": { "type": "workday", "host": "bah.wd1.myworkdayjobs.com", "tenant": "bah", "site": "BAH_Jobs", "searchText": "Hill AFB" },
+    "aerospace-corp": { "type": "workday", "host": "aero.wd5.myworkdayjobs.com", "tenant": "aero", "site": "External", "searchText": "Hill AFB" },
+    "draper": { "type": "workday", "host": "draper.wd5.myworkdayjobs.com", "tenant": "draper", "site": "Draper_Careers", "searchText": "Utah" },
+    "parc-hill": { "type": "workday", "host": "servicesourceinc.wd1.myworkdayjobs.com", "tenant": "servicesourceinc", "site": "ServiceSource_Staff", "searchText": "Hill" },
+    "mitre": { "type": "phenom", "url": "https://careers.mitre.org/us/en/search-results", "keywords": "Hill AFB" }
   },
   "skipped": {
     "saic": "jobs.saic.com refuses automated requests (HTTP 403, even for robots.txt).",
     "rtx-pratt-whitney": "careers.rtx.com refuses automated requests (HTTP 403, even for robots.txt).",
     "amentum": "amentumcareers.com has no working location filter, and its search API is disallowed by robots.txt; reading all ~2,800 jobs daily is too heavy.",
     "sts-systems-defense": "The Dayforce job board loads only through scripts, and it may belong to a sibling company (see ROLES-REVIEW.md).",
-    "aafes-hill-exchange": "No public job feed found on applymyexchange.com."
+    "aafes-hill-exchange": "No public job feed found on applymyexchange.com.",
+    "swri": "Custom careers app (resapp.swri.org) with no location filter; not a supported platform yet.",
+    "jhu-apl": "iCIMS Jibe careers site; not a supported platform yet.",
+    "hx5": "No company careers site (hx5.com is parked); the card links its ClearanceJobs page.",
+    "rmc": "Its Workable account slug couldn't be found; the card links the jobs.workable.com company page.",
+    "city-light-power": "JobScore board; not a supported platform yet.",
+    "american-water-hill": "SAP SuccessFactors site that only renders in a browser.",
+    "command-cyber-solutions": "Taleo Business Edition; its location filter needs a form POST.",
+    "asrc-federal-netcentric": "Dayforce portal; its search API refuses automated requests (403).",
+    "tecolote-research": "Custom careers app that only renders in a browser.",
+    "summit-technologies": "TriNet Hire board; not a supported platform yet.",
+    "nurses-etc-staffing": "Sourceflow job board whose search isn't in the page HTML."
   }
 }

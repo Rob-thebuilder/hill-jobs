@@ -1,0 +1,59 @@
+{
+  "_note": "More ways to find Hill jobs: programs and job boards that are not single employers. Shown at the bottom of the Employers tab. sourceUrl is internal (never shown). Evidence and the maybe/skip list are in data/PROGRAMS-REVIEW.md.",
+  "programs": [
+    {
+      "id": "pathways-students",
+      "name": "Pathways jobs for students (USAJOBS)",
+      "kind": "program",
+      "who": "Current students looking for paid federal internships and trainee jobs at Hill",
+      "url": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&hp=student",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&hp=student"
+    },
+    {
+      "id": "pathways-recent-graduates",
+      "name": "Pathways jobs for recent graduates (USAJOBS)",
+      "kind": "program",
+      "who": "People who finished a degree or certificate in the last 2 years (6 for veterans)",
+      "url": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&hp=graduates",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&hp=graduates"
+    },
+    {
+      "id": "dod-skillbridge",
+      "name": "DoD SkillBridge",
+      "kind": "program",
+      "who": "Service members in their last 180 days: internships with civilian employers (pick Utah)",
+      "url": "https://www.skillbridge.mil/locations",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.skillbridge.mil/"
+    },
+    {
+      "id": "utah-aerospace-pathway",
+      "name": "Utah Aerospace Pathway",
+      "kind": "program",
+      "who": "High school juniors and seniors: aerospace manufacturing certificate and guaranteed interviews",
+      "url": "https://talentready.ushe.edu/aerospace-pathway/",
+      "verified": "2026-11",
+      "sourceUrl": "https://talentready.ushe.edu/aerospace-pathway/"
+    },
+    {
+      "id": "clearancejobs-hill",
+      "name": "ClearanceJobs: Hill AFB, UT",
+      "kind": "job-board",
+      "who": "People with (or able to get) a security clearance looking for contractor jobs at Hill",
+      "url": "https://www.clearancejobs.com/jobs/hill-afb-ut",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.clearancejobs.com/jobs/hill-afb-ut"
+    },
+    {
+      "id": "otech-job-board",
+      "name": "Ogden-Weber Tech job board",
+      "kind": "college",
+      "who": "OTECH students and grads; public listings include trades jobs near Hill",
+      "url": "https://jobs.otech.edu/",
+      "verified": "2026-11",
+      "sourceUrl": "https://jobs.otech.edu/"
+    }
+  ]
+}

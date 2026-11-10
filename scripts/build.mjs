@@ -255,6 +255,57 @@ export function validateNewsletter(site) {
   return errors;
 }
 
+// ---------- more ways to find Hill jobs ----------
+
+export const PROGRAM_KINDS = {
+  program: 'Programs',
+  'job-board': 'Job boards',
+  'state-service': 'State services',
+  'on-base-help': 'On-base help',
+  college: 'College job boards',
+};
+const PROGRAM_KEYS = ['id', 'name', 'kind', 'who', 'url', 'verified', 'sourceUrl'];
+
+export function validatePrograms(file) {
+  const errors = [];
+  if (!Array.isArray(file?.programs)) return ['"programs" must be a list'];
+  const seen = new Set();
+  for (const p of file.programs) {
+    const at = `program "${p?.id}"`;
+    for (const k of PROGRAM_KEYS) if (!(k in (p || {}))) errors.push(`${at}: missing "${k}"`);
+    for (const k of Object.keys(p || {})) if (!PROGRAM_KEYS.includes(k)) errors.push(`${at}: unknown field "${k}"`);
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(p?.id || '') || seen.has(p?.id)) errors.push(`${at}: missing, bad or duplicate id`);
+    seen.add(p?.id);
+    if (!(p?.kind in PROGRAM_KINDS)) errors.push(`${at}: unknown kind "${p?.kind}"`);
+    if (typeof p?.name !== 'string' || !p.name.trim() || p.name.length > 80) errors.push(`${at}: name must be 1–80 characters`);
+    if (typeof p?.who !== 'string' || !p.who.trim() || p.who.length > 100) errors.push(`${at}: "who" must be 1–100 characters`);
+    if (!/^https:\/\/\S+$/.test(p?.url || '') || !/^https:\/\/\S+$/.test(p?.sourceUrl || '')) errors.push(`${at}: url and sourceUrl must be https`);
+    if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(p?.verified || '')) errors.push(`${at}: verified must be YYYY-MM`);
+  }
+  return errors;
+}
+
+/** The section, plus the links to it from the empty state and the footer ('' when there are no programs). */
+export function renderMoreWays(programs) {
+  if (!programs?.length) return { section: '', emptyLink: '', footerLink: '' };
+  const groups = Object.keys(PROGRAM_KINDS)
+    .map((kind) => [kind, programs.filter((p) => p.kind === kind).sort((a, b) => a.name.localeCompare(b.name))])
+    .filter(([, list]) => list.length);
+  const section = `<section class="more-ways wrap" id="more-ways" aria-labelledby="more-ways-heading" tabindex="-1">
+    <h2 id="more-ways-heading">More ways to find Hill jobs</h2>
+    <p class="more-ways-lead">Programs and job boards that cover many employers at once.</p>
+${groups.map(([kind, list]) => `    <h3 class="group-title">${esc(PROGRAM_KINDS[kind])} <span class="group-n">${list.length}</span></h3>
+    <ul class="ways-list">
+${list.map((p) => `      <li><a class="way-name" href="${esc(p.url)}" target="_blank" rel="noopener">${esc(p.name)}${NEW_TAB}</a><p class="way-who">${esc(p.who)}</p><p class="way-checked">Checked ${verifiedLabel(p.verified)}</p></li>`).join('\n')}
+    </ul>`).join('\n')}
+  </section>`;
+  return {
+    section,
+    emptyLink: `<p class="empty-more"><a href="#more-ways" data-tab-link="employers">More ways to find Hill jobs <span aria-hidden="true">↓</span></a></p>`,
+    footerLink: `<a href="#more-ways" data-tab-link="employers">More ways to find Hill jobs</a> · `,
+  };
+}
+
 // ---------- resume help + events ----------
 
 export const RESOURCE_KINDS = {
@@ -462,6 +513,7 @@ export function renderBase(baseId, base, allEmployers, site, template, jobCounts
     : '';
   const canonical = site.siteUrl.replace(/\/$/, '') + base.path;
   const description = `${countText(employers.length)} hiring at ${base.name}, ${base.state}: defense contractors and federal employers, with direct links to each careers page.`;
+  const moreWays = renderMoreWays(extras.programs || []);
   return fill(template, {
     title: esc(`${site.siteName}: who's hiring at ${base.name}`),
     description: esc(description),
@@ -483,6 +535,9 @@ export function renderBase(baseId, base, allEmployers, site, template, jobCounts
     eventCount: String((extras.events || []).length),
     nextUp: renderNextUp(extras.events || []),
     resourcesPanel: renderResourcesPanel(extras.resources || []),
+    moreWays: moreWays.section,
+    moreWaysEmptyLink: moreWays.emptyLink,
+    moreWaysFooterLink: moreWays.footerLink,
     eventsPanel: renderEventsPanel(extras.events || [], extras.annual || [], extras.eventsChecked || ''),
   });
 }
@@ -520,7 +575,7 @@ async function main() {
   const checkOnly = argv.includes('--check');
   const outArg = argv.includes('--out') ? argv[argv.indexOf('--out') + 1] : null;
   const DIST = outArg ? path.resolve(outArg) : path.join(ROOT, 'dist');
-  const [data, schema, site, synonyms, jobSources, places, resourcesFile, eventsFile, eventSources] = await Promise.all([
+  const [data, schema, site, synonyms, jobSources, places, resourcesFile, eventsFile, eventSources, programsFile] = await Promise.all([
     readJson('data/employers.json'),
     readJson('data/employers.schema.json'),
     // --site FILE swaps in other site settings (e.g. to preview the email signup before setup).
@@ -531,6 +586,7 @@ async function main() {
     readJson('data/resources.json'),
     readJson('data/events.json'),
     readJson('data/event-sources.json'),
+    readJson('data/programs.json'),
   ]);
 
   const errors = [
@@ -539,6 +595,7 @@ async function main() {
     ...validateJobSources(jobSources, data).map((e) => `job-sources.json: ${e}`),
     ...validatePlaces(places).map((e) => `locations.json: ${e}`),
     ...validateResources(resourcesFile).map((e) => `resources.json: ${e}`),
+    ...validatePrograms(programsFile).map((e) => `programs.json: ${e}`),
     ...validateEvents(eventsFile, eventSources).map((e) => `events.json: ${e}`),
     ...validateNewsletter(site).map((e) => `site.json newsletter: ${e}`),
   ];
@@ -605,7 +662,7 @@ async function main() {
   }
   const curated = eventsFile.events.map((e) => ({ ...e, start: e.start, end: e.end || null, allDay: !/T/.test(e.start), venue: e.venue || '' }));
   const eventList = upcoming([...curated, ...pulled], today);
-  const extras = { resources: resourcesFile.resources, events: eventList, annual: eventsFile.annual, eventsChecked };
+  const extras = { resources: resourcesFile.resources, events: eventList, annual: eventsFile.annual, eventsChecked, programs: programsFile.programs };
 
   if (!site.form) console.warn('WARN: data/site.json has no "form" config; "Suggest a change" and recruiter links are left out.');
   if (!newsletterReady(site)) console.warn('WARN: data/site.json newsletter settings are not filled in; email signup forms are left out.');

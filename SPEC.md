@@ -101,6 +101,20 @@ The primary link is a **USAJOBS search pre-filtered to the agency and the Hill A
 ### Seed data
 I will draft ~25–40 employers: federal employers (e.g., Ogden Air Logistics Complex / OO-ALC and other units at Hill that hire civilians), prime contractors (e.g., Northrop Grumman, Boeing, Lockheed Martin, L3Harris), and major subcontractors and services firms. **You approve every entry before launch.** Each entry needs a working link and a Hill-specific description. Drop any employer that has no verifiable Hill/Northern Utah presence.
 
+### Finding more employers (`data/CANDIDATES.md`)
+- **Sources, searched systematically:**
+  - USAspending.gov contract awards with place of performance at Hill AFB (ZIP 84056), ranked by value over the last 3 years.
+  - A separate list for nearby ZIPs (Roy, Clearfield, Sunset, Layton, Kaysville, Ogden), counting only Air Force awards from Hill's contracting offices.
+  - Falcon Hill Aerospace Research Park tenants, Utah Defense Alliance members, and on-base support employers.
+- **Each candidate records:**
+  - a source showing a Hill workforce
+  - an official careers link
+  - roles with evidence
+  - confidence
+  - a recommendation
+- **Not added:** supply-only contractors (fuel, parts, software licenses) are left out because they have no Hill workforce. Construction contractors are flagged, since their crews are temporary.
+- **Approval:** candidates wait in `data/CANDIDATES.md` until you approve them, and only then are they added to `employers.json`.
+
 ## 4a. Tabs, resume help and events
 
 The page has three tabs below the hero: **Employers** (the default), **Resume help** and **Events**. Each tab shows a count.
@@ -139,6 +153,16 @@ The page has three tabs below the hero: **Employers** (the default), **Resume he
   - when the calendars were last checked
   - When nothing is dated, it says so plainly rather than showing a blank list.
 - **"Upcoming events" strip:** the Employers tab starts with up to 3 upcoming events and an "All events →" link to the Events tab.
+
+## 4b. More ways to find Hill jobs (`data/programs.json`)
+- **What's listed:** programs and job boards that cover many employers, for example Pathways searches at Hill on USAJOBS, DoD SkillBridge, the Utah Aerospace Pathway, ClearanceJobs' Hill AFB search, and Ogden-Weber Tech's public job board.
+- **Where:** a section at the bottom of the Employers tab, after the employer grid. That keeps three tabs, which all fit at 320 px.
+  - It's linked from the search empty state ("More ways to find Hill jobs ↓") and from the footer; both links open the Employers tab at the section.
+  - Without JavaScript, it shows as part of the Employers section.
+- **Each entry:** grouped by kind (Programs, Job boards, State services, On-base help, College job boards), A–Z, with a name link (new tab), a one-line "who it's for" (≤100 characters) and the month it was checked.
+- **Fields:** `id`, `name`, `kind`, `who`, `url`, `verified` (YYYY-MM), and `sourceUrl`, which is internal and never shown. The build validates them.
+- **No duplicates:** offices already on the Resume help tab appear here only for separate *job* help, such as a public job board.
+- **Review sheet:** `data/PROGRAMS-REVIEW.md` holds the evidence and the maybe/skip list.
 
 ## 5. Search and filtering
 
@@ -191,6 +215,8 @@ Everything runs in the browser, with no server.
 │   ├── events.json         curated events and yearly events to watch for
 │   ├── event-sources.json  public event calendars read at build time
 │   ├── RESOURCES-REVIEW.md evidence for resume help and events
+│   ├── programs.json       "More ways to find Hill jobs" (PROGRAMS-REVIEW.md has the evidence)
+│   ├── CANDIDATES.md       employers found but not yet approved
 │   └── ROLES-REVIEW.md     evidence for each employer's roles
 ├── scripts/
 │   ├── build.mjs           renders cards into the HTML per base, with USAJOBS counts (Node built-ins only)
@@ -292,7 +318,7 @@ Job seekers can sign up for one weekly email: new jobs near Hill, upcoming event
 - **Secrets:** add `USAJOBS_API_KEY` and `USAJOBS_EMAIL` as repository Actions secrets (e.g. `gh secret set USAJOBS_API_KEY`, which prompts for the value).
   - They're passed to the build step only for pushes, scheduled runs and manual runs, never for pull requests. PR builds run without counts.
 - **Weekly link check** (`link-check.yml`, cron every Monday plus a manual trigger):
-  - Requests every `jobsUrl` and `secondaryUrl`. Uses HEAD and falls back to GET, follows redirects, and times out after 15 s. Sends a generic User-Agent such as `WorkAtHill-LinkCheck/1.0`.
+  - Requests every outbound link: each employer's `jobsUrl` and `secondaryUrl`, plus the resume help, "More ways" programs and event links. `--extra FILE` also checks a list under review, such as candidates. Uses HEAD and falls back to GET, follows redirects, and times out after 15 s. Sends a generic User-Agent such as `WorkAtHill-LinkCheck/1.0`.
   - A link is broken on 4xx/5xx or a failed connection. A redirect to a different domain is flagged for review but not counted as broken.
   - If anything fails, the workflow opens or updates **one** GitHub issue titled "Broken links: <date>" that lists each employer, URL, and status. It doesn't open duplicates.
   - Some careers sites block bots (Workday, Taleo, and others). An allowlist of known false positives can be checked by hand.
@@ -348,6 +374,7 @@ The site isn't done until every check below passes.
 - [ ] Building without a key (or with a bad one) succeeds and gives the same page, just without counts
 - [ ] The build log shows contractor job titles from every source in `data/job-sources.json`, and building with `--no-careers` (or with a careers site down) still succeeds
 - [ ] Tabs: Employers, Resume help and Events switch, show in the URL, work with Back and arrow keys, all fit at 320 px, and all three sections show without JavaScript
+- [ ] "More ways to find Hill jobs" shows only on the Employers tab, and the empty-state and footer links jump to it
 - [ ] Email signup (checked on a `--site` preview build until Buttondown is set up):
   - no forms before setup
   - after setup: the footer form, and the search alert box with the right `search:` tag, in both the no-results and has-results states
@@ -376,6 +403,8 @@ Test on at least **one iPhone (Safari)** and **one Android phone (Chrome)**. If 
 - [ ] You approved every seed employer entry
 - [ ] You checked every role in `data/ROLES-REVIEW.md`, especially the ⚑ ones and the LO questions, and the groups in `data/synonyms.json`
 - [ ] You approved every resume help listing and event source in `data/RESOURCES-REVIEW.md`
+- [ ] You reviewed `data/PROGRAMS-REVIEW.md` and marked each candidate in `data/CANDIDATES.md` add / fix / skip
+- [ ] `node scripts/check-links.mjs` passes for every outbound link: employers, resume help, programs and events
 - [ ] Buttondown account created:
   - double opt-in on, open/click tracking off
   - `newsletter` settings in `data/site.json` filled in

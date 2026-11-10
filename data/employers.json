@@ -618,6 +618,388 @@
       "secondaryUrl": "https://elblakecorp.com/careers/",
       "verified": "2026-11",
       "sourceUrl": "https://www.defensedaily.com/contract-awards/contract-award-elb-services-llc-columbus-georgia-600000000"
+    },
+    {
+      "id": "kbr",
+      "base": "hill",
+      "name": "KBR (Trinzic)",
+      "type": "services",
+      "description": "Engineers supporting Air Force weapon-system program offices (A-10, F-16, Sentinel) at Hill AFB",
+      "categories": [
+        "engineering",
+        "software-it"
+      ],
+      "roles": [
+        "Reliability engineer",
+        "Mechanical engineer (A-10 SPO)",
+        "Sentinel modeling & simulation engineer",
+        "Senior software engineer",
+        "Principal systems security engineer",
+        "Maintenance & reliability engineering manager (F-16)"
+      ],
+      "jobsUrl": "https://careers.trinzic.com/us/en/search-results?keywords=Hill%20AFB",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://careers.trinzic.com/us/en/job/R2129737"
+    },
+    {
+      "id": "swri",
+      "base": "hill",
+      "name": "Southwest Research Institute",
+      "type": "services",
+      "description": "On-base structural engineers and avionics techs supporting A-10 and T-38 aircraft life programs at Hill AFB",
+      "categories": [
+        "engineering",
+        "trades-maintenance"
+      ],
+      "roles": [
+        "Aerospace structures engineer",
+        "Aerospace systems engineer",
+        "Avionics technician (A-10)",
+        "Avionics engineering technologist"
+      ],
+      "jobsUrl": "https://resapp.swri.org/resapp/Job_Search_Results.aspx?TYPE=HOURLY",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.swri.org/contact/locations"
+    },
+    {
+      "id": "jhu-apl",
+      "base": "hill",
+      "name": "Johns Hopkins APL",
+      "type": "services",
+      "description": "APL field office at Hill AFB with engineers and analysts supporting the Sentinel ICBM program",
+      "categories": [
+        "engineering"
+      ],
+      "roles": [
+        "Flight systems test engineer",
+        "Lead engineer, systems engineering integration & test",
+        "Rad-hard electrical engineer",
+        "Strategic deterrent nuclear survivability analyst",
+        "Missile navigation analyst",
+        "Contractor program security officer"
+      ],
+      "jobsUrl": "https://careers.jhuapl.edu/jobs?keywords=Hill%20AFB",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://careers.jhuapl.edu/jobs/59005"
+    },
+    {
+      "id": "hx5",
+      "base": "hill",
+      "name": "HX5",
+      "type": "services",
+      "description": "Engineering, logistics and program support staff for Air Force program offices at Hill AFB",
+      "categories": [
+        "engineering",
+        "logistics-supply",
+        "admin-business"
+      ],
+      "roles": [
+        "Electrical engineer (C3BM)",
+        "Program manager",
+        "Logistics equipment specialist",
+        "Technical order manager",
+        "Security assistant",
+        "Information system security officer",
+        "Operations manager"
+      ],
+      "jobsUrl": "https://www.clearancejobs.com/jobs/hx5-llc/utah",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.clearancejobs.com/jobs/hx5-llc/utah"
+    },
+    {
+      "id": "parc-hill",
+      "base": "hill",
+      "name": "PARC Community Partnership Foundation (ServiceSource)",
+      "type": "services",
+      "description": "AbilityOne nonprofit providing custodial crews across Hill AFB buildings",
+      "categories": [
+        "base-services",
+        "internships-entry"
+      ],
+      "roles": [
+        "Janitor / custodian",
+        "Lead janitor",
+        "Lead worker",
+        "Janitorial supervisor",
+        "Van driver (crew transport)"
+      ],
+      "jobsUrl": "https://servicesourceinc.wd1.myworkdayjobs.com/en-US/ServiceSource_Staff?q=Hill",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://defensedaily.com/contract-awards/contract-award-parc-community-partnership-foundation-clearfield-utah-92946958"
+    },
+    {
+      "id": "rmc",
+      "base": "hill",
+      "name": "Resource Management Concepts",
+      "type": "services",
+      "description": "Radar and network technicians supporting the 84th Radar Evaluation Squadron at Hill AFB",
+      "categories": [
+        "engineering",
+        "software-it"
+      ],
+      "roles": [
+        "Radar technician",
+        "Radar technical advisor",
+        "Network administrator"
+      ],
+      "jobsUrl": "https://jobs.workable.com/companies/chjfRDfAfQJs9EQSR11s4h",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://jobs.workable.com/jobs/d31331b7-9047-458c-85f8-e3e76c9049e9"
+    },
+    {
+      "id": "city-light-power",
+      "base": "hill",
+      "name": "City Light & Power",
+      "type": "services",
+      "description": "Owns and runs Hill AFB's electrical distribution system; hires linemen and utility managers",
+      "categories": [
+        "trades-maintenance"
+      ],
+      "roles": [
+        "Journeyman lineman (maintenance electrical worker)",
+        "Installation manager - electric utility",
+        "Project manager - electric utility"
+      ],
+      "jobsUrl": "https://careers.jobscore.com/careers/clpinc",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.defensedaily.com/contract-awards/contract-award-city-light-power-inc-greenwood-village-colorado-23470368"
+    },
+    {
+      "id": "booz-allen",
+      "base": "hill",
+      "name": "Booz Allen Hamilton",
+      "type": "services",
+      "description": "Engineers and analysts on base supporting Sentinel ICBM, F-35 depot planning and Hill IT systems",
+      "categories": [
+        "engineering",
+        "software-it",
+        "logistics-supply"
+      ],
+      "roles": [
+        "Virtual desktop infrastructure engineer",
+        "Cybersecurity engineering analyst",
+        "Aircraft maintenance and logistics analyst (F-35 depot)",
+        "ICBM physical security systems engineer",
+        "Electrical engineer",
+        "Air vehicle component execution & induction manager"
+      ],
+      "jobsUrl": "https://bah.wd1.myworkdayjobs.com/en-US/BAH_Jobs?q=Hill%20AFB",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://bah.wd1.myworkdayjobs.com/en-US/BAH_Jobs/job/Hill-AFB-UT/Virtual-Desktop-Infrastructure-Engineer--Mid_R0253222"
+    },
+    {
+      "id": "american-water-hill",
+      "base": "hill",
+      "name": "American Water (Military Services Group)",
+      "type": "services",
+      "description": "Owns and operates Hill AFB's water and wastewater systems under a 50-year utility contract",
+      "categories": [
+        "trades-maintenance",
+        "admin-business"
+      ],
+      "roles": [
+        "Water treatment plant operator",
+        "General maintenance worker",
+        "GIS technician",
+        "Administrative assistant"
+      ],
+      "jobsUrl": "https://jobs.amwater.com/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.waterworld.com/wastewater-treatment/article/16214894/american-water-awarded-water-wastewater-contract-for-utah-air-force-base"
+    },
+    {
+      "id": "command-cyber-solutions",
+      "base": "hill",
+      "name": "Command Cyber Solutions",
+      "type": "services",
+      "description": "Runs IT operations, cloud and cybersecurity for Hill AFB's consolidated enterprise data center",
+      "categories": [
+        "software-it"
+      ],
+      "roles": [
+        "Senior systems engineer",
+        "Computer systems engineer",
+        "Computer hardware engineer",
+        "Senior VMware engineer",
+        "Cloud solutions architect",
+        "Information systems security officer",
+        "Security analyst",
+        "Senior configuration manager"
+      ],
+      "jobsUrl": "https://phf.tbe.taleo.net/phf01/ats/careers/v2/jobSearch?act=redirectCwsV2&cws=51&org=PFS",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://phf.tbe.taleo.net/phf01/ats/careers/v2/viewRequisition?org=PFS&cws=51&rid=4376"
+    },
+    {
+      "id": "asrc-federal-netcentric",
+      "base": "hill",
+      "name": "ASRC Federal (NetCentric Technologies)",
+      "type": "services",
+      "description": "Software and test engineers on the A-10 flight software team at Hill AFB's 309th Software Engineering Group",
+      "categories": [
+        "software-it",
+        "engineering"
+      ],
+      "roles": [
+        "Junior software engineer",
+        "Journeyman software engineer",
+        "Senior software engineer",
+        "Systems engineer",
+        "Test engineer",
+        "Technical writer"
+      ],
+      "jobsUrl": "https://us242.dayforcehcm.com/CandidatePortal/en-US/asrcfh",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.clearancejobs.com/jobs/asrc-federal/utah"
+    },
+    {
+      "id": "aerospace-corp",
+      "base": "hill",
+      "name": "The Aerospace Corporation",
+      "type": "services",
+      "description": "Federally funded R&D center engineers supporting the Sentinel ICBM program office at Falcon Hill.",
+      "categories": [
+        "engineering",
+        "software-it"
+      ],
+      "roles": [
+        "Sentinel SE&I Sr. Project Engineer",
+        "Sr. Sentinel Payloads Engineer",
+        "Sr. Guidance, Navigation and Control Engineer",
+        "Software Acquisition Engineer",
+        "Sr. Engineer - Solid Propulsion",
+        "Booster Senior Aerospace/Mechanical Engineer"
+      ],
+      "jobsUrl": "https://aero.wd5.myworkdayjobs.com/en-US/External?q=Hill%20AFB",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.fox13now.com/news/local-news/expanded-offices-to-help-deter-nuclear-threats-opened-thursday-at-hill-af-base"
+    },
+    {
+      "id": "mitre",
+      "base": "hill",
+      "name": "MITRE",
+      "type": "services",
+      "description": "Nonprofit systems engineers supporting Air Force nuclear/Sentinel program offices from MITRE's Falcon Hill site.",
+      "categories": [
+        "engineering",
+        "software-it",
+        "admin-business"
+      ],
+      "roles": [
+        "Facility Security Officer",
+        "Nuclear Codes and Crypto Engineer Lead",
+        "Sentinel Enterprise Engineer",
+        "Multidisciplinary Systems Engineer",
+        "Lead Communications Engineer",
+        "Systems Engineer (Cryptography)"
+      ],
+      "jobsUrl": "https://careers.mitre.org/us/en/search-results?keywords=Hill%20AFB",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://careers.mitre.org/us/en/job/R117892"
+    },
+    {
+      "id": "draper",
+      "base": "hill",
+      "name": "Draper",
+      "type": "subcontractor",
+      "description": "Nonprofit R&D lab building a 30k+ SF engineering center at Falcon Hill (open fall 2026) for ICBM guidance work.",
+      "categories": [
+        "engineering",
+        "software-it"
+      ],
+      "roles": [
+        "Senior Software Engineer",
+        "Principal Digital Electronics Engineer",
+        "Senior FPGA Design Engineer",
+        "Senior Integration and Test Engineer",
+        "Principal System Quality Engineer",
+        "Program Manager / Program Director, Air Force & Missile Defe"
+      ],
+      "jobsUrl": "https://draper.wd5.myworkdayjobs.com/en-US/Draper_Careers?q=Clearfield",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.draper.com/media-center/news-releases/detail/27315/draper-breaks-ground-on-new-building-at-hill-air-force-base"
+    },
+    {
+      "id": "tecolote-research",
+      "base": "hill",
+      "name": "Tecolote Research",
+      "type": "services",
+      "description": "Cost-estimating and program-control analysts supporting Air Force program offices from Falcon Hill Bldg 1580.",
+      "categories": [
+        "admin-business",
+        "engineering"
+      ],
+      "roles": [
+        "Budget Analyst (Junior)",
+        "Senior Cost Analyst",
+        "Journeyman Cost Analyst",
+        "Senior Cost Engineer Analyst",
+        "Schedule Analyst",
+        "Construction Cost Engineer",
+        "Cost Estimating Analyst"
+      ],
+      "jobsUrl": "https://www.tecolote.com/careers/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.clearancejobs.com/jobs/tecolote-research/hill-afb-ut"
+    },
+    {
+      "id": "summit-technologies",
+      "base": "hill",
+      "name": "Summit Technologies",
+      "type": "subcontractor",
+      "description": "Veteran-owned small business HQ'd at Falcon Hill providing mission planning, FMS logistics and IT support.",
+      "categories": [
+        "software-it",
+        "logistics-supply",
+        "admin-business"
+      ],
+      "roles": [
+        "Mission Planning Subject Matter Expert (MPSC)",
+        "Mission Planning SME Team Lead",
+        "Foreign Military Sales (FMS) Logistics Specialist",
+        "FMS Subject Matter Expert",
+        "Configuration Management Specialist",
+        "MPC Software Test Engineer / QA",
+        "System Support Representative"
+      ],
+      "jobsUrl": "https://app.trinethire.com/companies/20517-summit-technologies-inc/jobs",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://defensedaily.com/contract-awards/contract-award-summit-technologies-inc-navarre-florida-40000000"
+    },
+    {
+      "id": "nurses-etc-staffing",
+      "base": "hill",
+      "name": "Nurses Etc. Staffing",
+      "type": "services",
+      "description": "Government-contract clinical staff (pharmacy, dental) at the 75th Medical Group clinic on Hill AFB",
+      "categories": [
+        "base-services"
+      ],
+      "roles": [
+        "Clinical Pharmacist",
+        "Dental Hygienist",
+        "Dental Assistant"
+      ],
+      "jobsUrl": "https://careerportal.nursesetc.net/jobs/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://careerportal.nursesetc.net/jobs/192562/"
     }
   ]
 }

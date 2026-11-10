@@ -240,7 +240,13 @@
     a.addEventListener('click', (e) => {
       e.preventDefault();
       showTab(a.dataset.tabLink);
-      tabsRow?.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+      // Scroll to the link's target inside the tab (e.g. #more-ways), or to the top of the tab.
+      const target = $(a.getAttribute('href'));
+      const behavior = matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+      if (target && !target.classList.contains('panel')) {
+        target.scrollIntoView({ block: 'start', behavior });
+        target.focus({ preventScroll: true });
+      } else tabsRow?.scrollIntoView({ block: 'start', behavior });
     });
   }
 

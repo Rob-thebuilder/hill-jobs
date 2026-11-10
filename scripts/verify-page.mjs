@@ -151,7 +151,7 @@ const CONTRAST = `(() => {
     for (const l of layers.reverse()) bg = blend(l, bg);
     return bg;
   };
-  const sels = ['h1', '.eyebrow', '.tagline', '.stat', '.stat strong', '.search label', '.chip-label', '.chip', '.count', '.badge', '.card h2', '.desc', '.tags li', '.btn-jobs', '.link-secondary', '.open-jobs', '.open-jobs .checked', '.meta span', '.meta a', '.site-footer p', '.recruiter', '.reset', '.empty p', '.btn-clear', '.search input', '.why', '.suggest', '.empty-usajobs a', '.tab', '.tab-n', '.nu-date', '.nu-title', '.nu-where', '.next-up-head h2', '.next-up-all', '.panel-intro h2', '.panel-intro p', '.group-n', '.note', '.kind', '.res-facts dt', '.res-facts dd', '.btn-outline', '.ev-mon', '.ev-day', '.ev-when', '.ev-repeats', '.ev-where', '.ev-host', '.ev-link', '.annual-timing', '.empty-note', '.more-cal a', '.fine-print', '.alert-title', '.signup-fine', '.signup-fine a', '.btn-signup', '.signup-title', '.signup-lead', '.signup-row input'];
+  const sels = ['h1', '.eyebrow', '.tagline', '.stat', '.stat strong', '.search label', '.chip-label', '.chip', '.count', '.badge', '.card h2', '.desc', '.tags li', '.btn-jobs', '.link-secondary', '.open-jobs', '.open-jobs .checked', '.meta span', '.meta a', '.site-footer p', '.recruiter', '.reset', '.empty p', '.btn-clear', '.search input', '.why', '.suggest', '.empty-usajobs a', '.tab', '.tab-n', '.nu-date', '.nu-title', '.nu-where', '.next-up-head h2', '.next-up-all', '.panel-intro h2', '.panel-intro p', '.group-n', '.note', '.kind', '.res-facts dt', '.res-facts dd', '.btn-outline', '.ev-mon', '.ev-day', '.ev-when', '.ev-repeats', '.ev-where', '.ev-host', '.ev-link', '.annual-timing', '.empty-note', '.more-cal a', '.fine-print', '.alert-title', '.signup-fine', '.signup-fine a', '.btn-signup', '.signup-title', '.signup-lead', '.signup-row input', '.more-ways h2', '.more-ways-lead', '.way-name', '.way-who', '.way-checked', '.empty-more a'];
   const out = [];
   for (const sel of sels) for (const el of document.querySelectorAll(sel)) {
     const r = el.getBoundingClientRect();
@@ -397,6 +397,29 @@ try {
     const without = expected({ q: 'painter' });
     check('empty state says when the chips are hiding matches', expected({ q: 'painter', type: 'services' }) === 0 && msg.includes(`${without} employer`), msg || '(nothing shown)');
     await f.close();
+  }
+
+  // 6d. "More ways to find Hill jobs": only on the Employers tab; the empty-state link jumps to it.
+  {
+    const p = await openPage(H + '?q=zzqqxx', { width: 390 });
+    const has = await p.evaluate(`!!document.querySelector('#more-ways')`);
+    if (!has) {
+      check('"More ways to find Hill jobs" section (no programs listed yet, skipped)', true);
+    } else {
+      const vis = `document.querySelector('#more-ways').getClientRects().length > 0`;
+      check('"More ways" section shows on the Employers tab', await p.evaluate(vis));
+      await p.evaluate(click('.empty-more a'));
+      await sleep(400);
+      const r = await p.evaluate(`(() => { const b = document.querySelector('#more-ways').getBoundingClientRect(); return { top: Math.round(b.top), focus: document.activeElement.id }; })()`);
+      check('"More ways ↓" in the empty state jumps to the section', r.top < 200 && r.focus === 'more-ways', JSON.stringify(r));
+      await p.evaluate(click('#tab-events'));
+      check('"More ways" section is hidden on other tabs', !(await p.evaluate(vis)));
+      await p.evaluate(click('.fine a[href="#more-ways"]'));
+      await sleep(400);
+      const t = await p.evaluate(`({ tab: document.querySelector('.tab[aria-selected="true"]').dataset.tab, shown: ${vis} })`);
+      check('footer "More ways" link opens the Employers tab at the section', t.tab === 'employers' && t.shown, JSON.stringify(t));
+    }
+    await p.close();
   }
 
   // 7. Shared filtered URLs open in the same view.

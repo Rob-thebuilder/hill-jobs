@@ -437,6 +437,25 @@ button { font: inherit; }
 .more-cal a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
 .fine-print { margin-top: 1.5rem; font-size: .85rem; color: var(--muted); }
 
+/* ---------- more ways to find Hill jobs ---------- */
+.more-ways { padding-top: 1rem; padding-bottom: 3rem; border-top: 1px solid var(--line); scroll-margin-top: 4.5rem; }
+.more-ways:focus { outline: none; }
+.more-ways h2 { font-size: clamp(1.35rem, 5vw, 1.75rem); font-weight: 900; margin-top: 1.25rem; }
+.more-ways-lead { margin-top: .35rem; color: var(--muted); }
+.ways-list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: minmax(0, 1fr); gap: .6rem; }
+@media (min-width: 640px) { .ways-list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1024px) { .ways-list { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.ways-list li {
+  min-width: 0; padding: .35rem 1rem .6rem;
+  background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--navy); border-radius: 12px;
+}
+@media (prefers-color-scheme: dark) { .ways-list li { border-left-color: var(--amber); } }
+.way-name { display: inline-flex; align-items: center; min-height: 44px; font-weight: 800; font-size: 1.05rem; overflow-wrap: anywhere; }
+.way-who { color: var(--text); }
+.way-checked { margin-top: .2rem; font-size: .8rem; color: var(--muted); }
+.empty-more { margin-top: .25rem; font-size: 1rem !important; font-weight: 700 !important; }
+.empty-more a { display: inline-flex; align-items: center; min-height: 44px; }
+
 /* ---------- email signup ---------- */
 .alert-box {
   margin: 0 0 1rem;
