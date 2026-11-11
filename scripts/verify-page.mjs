@@ -411,8 +411,9 @@ try {
       check('"More ways" section shows on the Employers tab', await p.evaluate(vis));
       await p.evaluate(click('.empty-more a'));
       await sleep(400);
-      const r = await p.evaluate(`(() => { const b = document.querySelector('#more-ways').getBoundingClientRect(); return { top: Math.round(b.top), focus: document.activeElement.id }; })()`);
-      check('"More ways ↓" in the empty state jumps to the section', r.top < 200 && r.focus === 'more-ways', JSON.stringify(r));
+      const r = await p.evaluate(`(() => { const b = document.querySelector('#more-ways').getBoundingClientRect(); return { top: Math.round(b.top), third: Math.round(innerHeight / 3), focus: document.activeElement.id }; })()`);
+      // The section should land near the top of the screen (exact spot varies with smooth scrolling and the sticky tabs).
+      check('"More ways ↓" in the empty state jumps to the section', r.top >= 0 && r.top <= r.third && r.focus === 'more-ways', JSON.stringify(r));
       await p.evaluate(click('#tab-events'));
       check('"More ways" section is hidden on other tabs', !(await p.evaluate(vis)));
       await p.evaluate(click('.fine a[href="#more-ways"]'));
