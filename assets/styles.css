@@ -486,10 +486,30 @@ button { font: inherit; }
 .site-footer .signup-fine, .site-footer .signup-fine a { color: #b4c0d3; }
 .site-footer a { color: #cfe0ff; }
 
+/* ---------- hero link to the guide ---------- */
+.guide-link {
+  display: inline-flex; align-items: center; gap: .3rem; min-height: 44px; margin-top: .5rem; margin-right: 1.25rem;
+  color: #fff; font-weight: 700;
+  text-decoration-color: var(--amber); text-decoration-thickness: 2px; text-underline-offset: 4px;
+}
+.guide-link:hover { color: var(--amber); }
+
+/* ---------- "How hiring at Hill works" guide ---------- */
+.guide .toc { margin-top: .5rem; padding: .75rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.guide .toc h2 { margin-top: 0; font-size: 1rem; }
+.guide .toc ol { margin: .25rem 0 0; padding-left: 1.25rem; }
+.guide .toc li { margin-top: 0; }
+.guide .toc a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
+.guide section { scroll-margin-top: 1rem; }
+.guide h3 { margin-top: 1.1rem; font-size: 1.05rem; font-weight: 800; }
+.guide ul { padding-left: 1.25rem; }
+.guide li a, .guide p a { font-weight: 600; }
+.guide-note { margin-top: 2rem; padding: .75rem 1rem; border-left: 4px solid var(--amber); background: var(--surface); border-radius: 0 8px 8px 0; }
+
 /* ---------- privacy page ---------- */
 .hero-small { padding-bottom: 2rem; }
 .hero-small h1 { font-size: clamp(2rem, 8vw, 3rem); }
-.back-home { color: var(--amber); text-decoration: none; }
+.back-home { display: inline-flex; align-items: center; min-height: 44px; color: var(--amber); text-decoration: none; }
 .prose { padding-top: 1.5rem; padding-bottom: 3rem; max-width: 760px; }
 .prose h2 { margin-top: 1.75rem; font-size: 1.25rem; font-weight: 900; }
 .prose p, .prose ul { margin-top: .6rem; }

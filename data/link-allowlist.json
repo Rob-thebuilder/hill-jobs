@@ -1,4 +1,10 @@
 {
   "_note": "URLs (or URL prefixes) whose sites block automated checks. Each was checked by hand in a browser; re-check when 'verified' is updated.",
-  "entries": []
+  "entries": [
+    {
+      "url": "https://www.hill.af.mil/News/Article-Display/Article/3737475/new-visitor-access-procedures-at-hill-afb/",
+      "why": "hill.af.mil returns 403 to automated requests. Used on the How hiring at Hill works page (Getting on base).",
+      "checkedBy": "PENDING: site owner to open in a browser and confirm, then replace this with your name and the date"
+    }
+  ]
 }

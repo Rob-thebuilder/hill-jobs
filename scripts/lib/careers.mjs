@@ -127,6 +127,20 @@ export const decode = (s) =>
     .replace(/\s+/g, ' ')
     .trim();
 
+/**
+ * Fetches one page of a paged list. If a later page fails (e.g. a slow site times out), the
+ * titles already read are kept and paging stops; only a failure on the first page drops the source.
+ */
+async function pageOrStop(page, out, fetchPage) {
+  try {
+    return await fetchPage();
+  } catch (err) {
+    if (page === 0) throw err;
+    out.partial = true;
+    return null;
+  }
+}
+
 const adapters = {
   // Eightfold (Northrop Grumman, Lockheed Martin, CACI): results come sorted by distance from Hill,
   // so stop at the first page with no nearby jobs.
@@ -134,7 +148,8 @@ const adapters = {
     const out = [];
     for (let page = 0; page < MAX_PAGES; page++) {
       const url = `https://${src.host}/api/pcsx/search?domain=${encodeURIComponent(src.domain)}&query=&location=${encodeURIComponent('Hill AFB, UT')}&start=${page * 10}&sort_by=distance`;
-      const data = await get(url, { json: true });
+      const data = await pageOrStop(page, out, () => get(url, { json: true }));
+      if (!data) break;
       const positions = data?.data?.positions || [];
       const jobs = positions.map((p) => ({ title: p.name, locations: [...(p.locations || []), ...(p.standardizedLocations || [])] }));
       out.push(...jobs);
@@ -148,12 +163,15 @@ const adapters = {
     const base = `https://${src.host}/wday/cxs/${src.tenant}/${src.site}`;
     const out = [];
     for (let page = 0; page < MAX_PAGES; page++) {
-      const data = await get(`${base}/jobs`, {
-        method: 'POST',
-        json: true,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ appliedFacets: {}, limit: 20, offset: page * 20, searchText: src.searchText }),
-      });
+      const data = await pageOrStop(page, out, () =>
+        get(`${base}/jobs`, {
+          method: 'POST',
+          json: true,
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ appliedFacets: {}, limit: 20, offset: page * 20, searchText: src.searchText }),
+        }),
+      );
+      if (!data) break;
       const postings = data?.jobPostings || [];
       for (const p of postings) {
         let locations = [p.locationsText];
@@ -177,7 +195,8 @@ const adapters = {
     const out = [];
     for (let page = 0; page < MAX_PAGES; page++) {
       // Note: adding "&s=1" makes Phenom ignore the keywords, so it's left off.
-      const html = await get(`${src.url}?keywords=${encodeURIComponent(src.keywords)}&from=${page * 20}`);
+      const html = await pageOrStop(page, out, () => get(`${src.url}?keywords=${encodeURIComponent(src.keywords)}&from=${page * 20}`));
+      if (html === null) break;
       const block = extractJsonAfter(html, '"eagerLoadRefineSearch":');
       const jobs = block?.data?.jobs || [];
       out.push(...jobs.map((j) => ({ title: j.title, locations: [j.location, ...(j.multi_location || [])] })));
@@ -271,7 +290,8 @@ export async function fetchCareers(config, places, { fetchImpl = globalThis.fetc
       const jobs = await adapter(src, get, places);
       const nearby = jobs.filter((j) => j.title && (j.locations || []).some((l) => isNearby(l, places)));
       titles[id] = [...new Set(nearby.map((j) => cleanTitle(j.title)).filter(Boolean))];
-      counts[id] = { seen: jobs.length, nearby: nearby.length };
+      counts[id] = { seen: jobs.length, nearby: nearby.length, partial: !!jobs.partial };
+      if (jobs.partial) log.warn(`Careers titles: ${id} partly read (a later page failed; kept ${titles[id].length} titles)`);
     } catch (err) {
       failed[id] = err?.name === 'TimeoutError' ? 'timed out' : err?.message || err?.name || 'error';
       log.warn(`Careers titles: ${id} skipped (${failed[id]})`);

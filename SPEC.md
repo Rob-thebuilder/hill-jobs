@@ -164,6 +164,22 @@ The page has three tabs below the hero: **Employers** (the default), **Resume he
 - **No duplicates:** offices already on the Resume help tab appear here only for separate *job* help, such as a public job board.
 - **Review sheet:** `data/PROGRAMS-REVIEW.md` holds the evidence and the maybe/skip list.
 
+## 4c. How hiring at Hill works (`/how-hiring-works/`)
+- **What it is:** a short, plain-language page (about 850 words) in five sections:
+  - federal vs. contractor jobs
+  - how pay works: GS ("Rest of U.S." locality), WG (Utah wage area 139), NH pay bands, and Service Contract Act pay for contractors
+  - security clearances, including what "required" and "able to obtain" mean in postings
+  - getting on base for an interview (REAL ID, plus a link to Hill's own visitor page)
+  - veteran and military spouse preferences (including that veterans' preference doesn't apply under Direct Hire Authority, and VEVRAA for contractors)
+- **Where:** its own page, built from `templates/guide.html` with no JavaScript. Linked from the hero ("New to Hill hiring? How it works →"), the footer and the Resume help tab.
+- **Official sources only:**
+  - Every fact links to a .gov or .mil page, and a test fails if any source link is on another domain.
+  - `data/GUIDE-SOURCES.md` records each claim with its source URL and a short quote.
+  - Claims without an official source are cut. Sites that block automated reading (hill.af.mil) are linked but not restated.
+- **Kept current:**
+  - The weekly link check covers every source link.
+  - Re-check the facts each January, when the GS pay tables and WG schedules change, and update "Last checked" on the page.
+
 ## 5. Search and filtering
 
 Everything runs in the browser, with no server.
@@ -217,6 +233,7 @@ Everything runs in the browser, with no server.
 │   ├── RESOURCES-REVIEW.md evidence for resume help and events
 │   ├── programs.json       "More ways to find Hill jobs" (PROGRAMS-REVIEW.md has the evidence)
 │   ├── CANDIDATES.md       employers found but not yet approved
+│   ├── GUIDE-SOURCES.md    official source and quote for every fact on the hiring guide
 │   └── ROLES-REVIEW.md     evidence for each employer's roles
 ├── scripts/
 │   ├── build.mjs           renders cards into the HTML per base, with USAJOBS counts (Node built-ins only)
@@ -226,7 +243,7 @@ Everything runs in the browser, with no server.
 │   ├── weekly-email.mjs    builds the weekly email and creates it in Buttondown
 │   └── lib/                usajobs.mjs (USAJOBS counts/titles), careers.mjs (contractor titles), events.mjs (event calendars), newsletter.mjs (weekly email), chrome.mjs (headless Chrome)
 ├── test/                   node --test unit and build tests
-├── templates/base.html, privacy.html
+├── templates/base.html, privacy.html, guide.html
 └── .github/workflows/
     ├── deploy.yml
     ├── link-check.yml
@@ -404,6 +421,7 @@ Test on at least **one iPhone (Safari)** and **one Android phone (Chrome)**. If 
 - [ ] You checked every role in `data/ROLES-REVIEW.md`, especially the ⚑ ones and the LO questions, and the groups in `data/synonyms.json`
 - [ ] You approved every resume help listing and event source in `data/RESOURCES-REVIEW.md`
 - [ ] You reviewed `data/PROGRAMS-REVIEW.md` and marked each candidate in `data/CANDIDATES.md` add / fix / skip
+- [ ] You read the hiring guide against `data/GUIDE-SOURCES.md`, opened the hill.af.mil visitor link in a browser, and replaced "PENDING" in `data/link-allowlist.json` with your name and the date
 - [ ] `node scripts/check-links.mjs` passes for every outbound link: employers, resume help, programs and events
 - [ ] Buttondown account created:
   - double opt-in on, open/click tracking off

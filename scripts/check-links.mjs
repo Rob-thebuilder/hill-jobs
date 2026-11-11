@@ -9,6 +9,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import { guideSourceLinks } from './build.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const UA = 'WorkAtHill-LinkCheck/1.0 (+https://workathill.com)';
@@ -17,7 +18,7 @@ const MAX_HOPS = 10;
 const CONCURRENCY = 5;
 
 /** Every outbound link shown on the site, as [{ id, name, field, url }]. Missing files are skipped. */
-export function collectLinks({ employers = [], resources = [], programs = [], events = [], annual = [] }) {
+export function collectLinks({ employers = [], resources = [], programs = [], events = [], annual = [], guide = [] }) {
   return [
     ...employers.flatMap((e) => [
       { id: e.id, name: e.name, field: 'jobsUrl', url: e.jobsUrl },
@@ -27,6 +28,7 @@ export function collectLinks({ employers = [], resources = [], programs = [], ev
     ...programs.map((p) => ({ id: p.id, name: p.name, field: 'more ways', url: p.url })),
     ...events.map((e) => ({ id: e.id, name: e.title, field: 'event', url: e.url })),
     ...annual.map((a) => ({ id: a.id, name: a.title, field: 'yearly event', url: a.url })),
+    ...guide.map((g, i) => ({ id: `guide-${i}`, name: g.label, field: 'guide source', url: g.url })),
   ].filter((l) => typeof l.url === 'string' && l.url);
 }
 
@@ -45,6 +47,7 @@ async function loadSiteLinks(employersPath) {
       programs: await read('data/programs.json', 'programs'),
       events: eventsFile.events || [],
       annual: eventsFile.annual || [],
+      guide: existsSync(path.join(ROOT, 'templates/guide.html')) ? guideSourceLinks(await readFile(path.join(ROOT, 'templates/guide.html'), 'utf8')) : [],
     }),
   };
 }

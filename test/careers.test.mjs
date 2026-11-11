@@ -90,7 +90,7 @@ test('Eightfold: keeps nearby jobs and stops at the first page with none', async
   const r = await fetchCareers(only('lockheed-martin'), places, { fetchImpl, log: quiet });
   assert.equal(r.titles['lockheed-martin'].length, 15);
   assert.equal(r.titles['lockheed-martin'][0], 'Job 0-0'); // ALL-CAPS titles are tidied
-  assert.deepEqual(r.counts['lockheed-martin'], { seen: 30, nearby: 15 });
+  assert.deepEqual(r.counts['lockheed-martin'], { seen: 30, nearby: 15, partial: false });
   assert.ok(fetchImpl.calls.every((c) => c.ua === USER_AGENT));
 });
 
@@ -196,4 +196,24 @@ test('job-sources.json covers every non-federal employer, as a source or a docum
   assert.match(validateJobSources({ sources: { nobody: { type: 'workable' } } }, data).join(), /not an employer/);
   assert.match(validateJobSources({ sources: { kihomac: { type: 'carrier-pigeon' } } }, data).join(), /unknown type/);
   assert.match(validateJobSources({ sources: { 'dla-hill': { type: 'workable' } } }, data).join(), /federal/);
+});
+
+test('a slow later page keeps the titles already read; a failed first page drops the source', async () => {
+  const page = (n) => Array.from({ length: 10 }, (_, i) => ({ name: `Job ${n}-${i}`, locations: ['Clearfield, UT, US'] }));
+  const timeout = () => { throw Object.assign(new Error('timed out'), { name: 'TimeoutError' }); };
+  const lines = [];
+  const fetchImpl = fakeFetch([
+    [/start=0&/, () => json({ data: { positions: page(0) } })],
+    [/start=10&/, () => json({ data: { positions: page(1) } })],
+    [/start=20&/, timeout],
+  ]);
+  const r = await fetchCareers(only('northrop-grumman'), places, { fetchImpl, log: { warn: (m) => lines.push(m) } });
+  assert.equal(r.titles['northrop-grumman'].length, 20);
+  assert.equal(r.counts['northrop-grumman'].partial, true);
+  assert.ok(!('northrop-grumman' in r.failed));
+  assert.match(lines.join('\n'), /partly read/);
+
+  const first = await fetchCareers(only('northrop-grumman'), places, { fetchImpl: fakeFetch([[/start=0&/, timeout]]), log: quiet });
+  assert.equal(first.failed['northrop-grumman'], 'timed out');
+  assert.ok(!('northrop-grumman' in first.titles));
 });

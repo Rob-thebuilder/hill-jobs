@@ -243,6 +243,23 @@ export function renderPrivacy(site, template) {
   });
 }
 
+export function renderGuide(site, template) {
+  const root = site.siteUrl.replace(/\/$/, '');
+  return fill(template, {
+    siteName: esc(site.siteName),
+    canonical: esc(`${root}/how-hiring-works/`),
+    ogImage: esc(`${root}/assets/og.png`),
+  });
+}
+
+/** Official source links on the guide page (links marked class="src"). */
+export function guideSourceLinks(template) {
+  return [...template.matchAll(/<a class="src" href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)].map((m) => ({
+    url: m[1].replace(/&amp;/g, '&'),
+    label: m[2].replace(/<[^>]+>/g, '').replace(/\s*\(opens in new tab\)\s*/, '').trim(),
+  }));
+}
+
 export function validateNewsletter(site) {
   const n = site?.newsletter;
   if (!n) return [];
@@ -329,13 +346,14 @@ function renderResource(r) {
 </article></li>`;
 }
 
-export function renderResourcesPanel(resources) {
+export function renderResourcesPanel(resources, prefix = './') {
   const free = resources.filter((r) => r.cost === 'free');
   const paid = resources.filter((r) => r.cost === 'paid');
   const byName = (a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base', numeric: true });
   return `<div class="panel-intro">
 <h2 id="resume-heading">Resume help near Hill</h2>
 <p>Free help comes first: the base, the state job centers and local colleges review resumes, explain federal resumes and run workshops at no cost. Paid local resume professionals are listed after.</p>
+<p>Applying for a federal job for the first time? Read <a href="${prefix}how-hiring-works/">how hiring at Hill works</a>: pay, clearances, getting on base and hiring preferences.</p>
 </div>
 <h3 class="group-title">Free help <span class="group-n">${free.length}</span></h3>
 <ul class="res-grid">
@@ -534,7 +552,7 @@ export function renderBase(baseId, base, allEmployers, site, template, jobCounts
     resourceCount: String((extras.resources || []).length),
     eventCount: String((extras.events || []).length),
     nextUp: renderNextUp(extras.events || []),
-    resourcesPanel: renderResourcesPanel(extras.resources || []),
+    resourcesPanel: renderResourcesPanel(extras.resources || [], prefix),
     moreWays: moreWays.section,
     moreWaysEmptyLink: moreWays.emptyLink,
     moreWaysFooterLink: moreWays.footerLink,
@@ -696,6 +714,11 @@ async function main() {
   const privacyTemplate = await readFile(path.join(ROOT, 'templates/privacy.html'), 'utf8');
   await mkdir(path.join(DIST, 'privacy'), { recursive: true });
   await writeFile(path.join(DIST, 'privacy', 'index.html'), renderPrivacy(site, privacyTemplate));
+
+  // "How hiring at Hill works" guide (every fact sourced; see data/GUIDE-SOURCES.md).
+  const guideTemplate = await readFile(path.join(ROOT, 'templates/guide.html'), 'utf8');
+  await mkdir(path.join(DIST, 'how-hiring-works'), { recursive: true });
+  await writeFile(path.join(DIST, 'how-hiring-works', 'index.html'), renderGuide(site, guideTemplate));
 
   // Snapshot for the weekly email: this build's live job titles and upcoming events.
   const snapshotOut = argv.includes('--snapshot') ? argv[argv.indexOf('--snapshot') + 1] : null;

@@ -73,10 +73,10 @@ async function cleanup() {
   server.close();
 }
 const hardStop = setTimeout(async () => {
-  console.error('FAIL  verify timed out after 120 s');
+  console.error('FAIL  verify timed out after 300 s');
   await cleanup();
   process.exit(1);
-}, 120_000);
+}, 300_000);
 
 /** Opens a fresh tab with the given emulation and returns helpers bound to it. */
 async function openPage(url, { width = 390, height = 844, js = true, scheme = 'light', reducedMotion = false } = {}) {
@@ -120,6 +120,7 @@ async function openPage(url, { width = 390, height = 844, js = true, scheme = 'l
       await s('Input.insertText', { text });
       await sleep(250); // > 100 ms debounce
     },
+    nextLoad: () => waitFor(sessionId, 'Page.loadEventFired'),
     close: async () => { listeners.delete(onNet); await send('Target.closeTarget', { targetId }); },
   };
 }
@@ -492,6 +493,42 @@ try {
     const missing = await p.evaluate(`Promise.all([...document.querySelectorAll('link[rel~=icon], link[rel=apple-touch-icon], link[rel=stylesheet]')].map(l => fetch(l.href).then(r => r.ok ? null : l.getAttribute('href'))))`);
     check('linked css/icons all load', missing.every((x) => !x), missing.filter(Boolean).join(', '));
     await p.close();
+  }
+
+  // 11b. The "How hiring at Hill works" guide page.
+  {
+    const G = `${ORIGIN}/how-hiring-works/`;
+    for (const w of [320, 390, 414]) {
+      const p = await openPage(G, { width: w });
+      const r = await p.evaluate(`({ sw: document.documentElement.scrollWidth, iw: innerWidth, h1: document.querySelectorAll('h1').length, sections: document.querySelectorAll('main section').length })`);
+      check(`guide page: no sideways scroll at ${w}px, one h1, five sections`, r.sw <= r.iw && r.h1 === 1 && r.sections === 5, JSON.stringify(r));
+      await p.close();
+    }
+    const guideSels = "const sels = ['h1', '.eyebrow a', '.tagline', '.guide h2', '.guide h3', '.guide p', '.guide li', '.guide a', '.guide-note', '.site-footer p', '.site-footer a'];";
+    const GUIDE_CONTRAST = CONTRAST.replace(/const sels = \[[^\]]*\];/, guideSels);
+    for (const scheme of ['light', 'dark']) {
+      const p = await openPage(G, { width: 390, scheme });
+      const res = await p.evaluate(GUIDE_CONTRAST);
+      const bad = res.filter((x) => !x.ok);
+      check(`guide page contrast WCAG AA, ${scheme} theme`, bad.length === 0 && res.length > 20, bad.length ? [...new Map(bad.map((b) => [b.sel, b])).values()].map((b) => `${b.sel} ${b.ratio}:1`).join('; ') : `${res.length} elements`);
+      await p.close();
+    }
+    {
+      const p = await openPage(G, { width: 390 });
+      // Inline links inside sentences are exempt (WCAG 2.5.8); navigation links must be 44px.
+      const small = await p.evaluate(`[...document.querySelectorAll('.toc a, .back-home, .site-footer a')].map(a => { const b = a.getBoundingClientRect(); return { t: a.textContent.trim(), h: Math.round(b.height), w: Math.round(b.width) }; }).filter(x => x.h < 44 || x.w < 44)`);
+      check('guide page: navigation links are at least 44px tap targets', small.length === 0, small.map((x) => `${x.t} ${x.w}×${x.h}`).join('; '));
+      await p.close();
+    }
+    {
+      const p = await openPage(H, { width: 390 });
+      const loaded = p.nextLoad();
+      await p.evaluate(click('.guide-link'));
+      await loaded;
+      const path = await p.evaluate('location.pathname');
+      check('the hero "How it works" link opens the guide', path === '/how-hiring-works/', path);
+      await p.close();
+    }
   }
 
   // 12. Semantics and link hygiene.
