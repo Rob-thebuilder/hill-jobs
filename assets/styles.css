@@ -341,7 +341,9 @@ button { font: inherit; }
   touch-action: manipulation;
 }
 @media (min-width: 480px) { .tab { padding: 0 .9rem; gap: .45rem; font-size: 1rem; } }
-@media (max-width: 399px) { .tab-n { display: none; } } /* all three tabs fit on small phones */
+/* All three tabs fit on phones: no count badges below 480px, and tighter tabs on the smallest screens. */
+@media (max-width: 539px) { .tab-n { display: none; } }
+@media (max-width: 359px) { .tab { font-size: .85rem; padding: 0 .25rem; } }
 .tab:hover { color: var(--text); }
 .tab[aria-selected="true"] { color: var(--text); border-bottom-color: var(--amber); }
 .tab-n {

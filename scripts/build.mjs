@@ -351,15 +351,15 @@ export function renderResourcesPanel(resources, prefix = './') {
   const paid = resources.filter((r) => r.cost === 'paid');
   const byName = (a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base', numeric: true });
   return `<div class="panel-intro">
-<h2 id="resume-heading">Resume help near Hill</h2>
-<p>Free help comes first: the base, the state job centers and local colleges review resumes, explain federal resumes and run workshops at no cost. Paid local resume professionals are listed after.</p>
+<h2 id="resume-heading">Resume Resources Near Hill</h2>
+<p>Free resume resources are available at the base, state job centers and local colleges. They review and explain federal resumes and run workshops. Paid local resume professionals are listed after.</p>
 <p>Applying for a federal job for the first time? Read <a href="${prefix}how-hiring-works/">how hiring at Hill works</a>: pay, clearances, getting on base and hiring preferences.</p>
 </div>
-<h3 class="group-title">Free help <span class="group-n">${free.length}</span></h3>
+<h3 class="group-title">Resources <span class="group-n">${free.length}</span></h3>
 <ul class="res-grid">
 ${free.sort(byName).map(renderResource).join('\n')}
 </ul>
-<h3 class="group-title">Paid resume professionals <span class="group-n">${paid.length}</span></h3>
+<h3 class="group-title">Resume Professionals <span class="group-n">${paid.length}</span></h3>
 <p class="note">Listed for convenience: Work At Hill doesn't endorse them, and nobody pays to be listed. Ask for samples (especially federal resumes) and check reviews before you buy.</p>
 <ul class="res-grid">
 ${paid.sort(byName).map(renderResource).join('\n')}
