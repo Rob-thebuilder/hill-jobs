@@ -321,6 +321,18 @@ Job seekers can sign up for one weekly email: new jobs near Hill, upcoming event
   - Job titles and event text are HTML-escaped, and braces are encoded, so nothing from a careers site can act as template code.
   - The API key is never printed.
 
+## 7b. "Let's Connect" contact form
+
+A short form at the bottom of the home page (name, email, message) for questions, ideas and corrections. Messages go to **rob@workathill.com**.
+
+- **Form service:** [Web3Forms](https://web3forms.com). It emails each message to the address its access key was created with, so that address never appears in the page. The free plan allows 250 messages a month.
+- **Settings:** `data/site.json` → `contact.web3formsKey`. The key is meant to be public: it can only send messages to that one inbox. Until it's set, the form is left off the page and the build prints a warning.
+- **How it sends:**
+  - With JavaScript, `app.js` posts the message in the background and shows "sent" or "didn't send" under the button.
+  - Without JavaScript, it's a plain HTML post, and Web3Forms returns the visitor to `/thanks/` (not indexed by search engines).
+- **Spam:** Web3Forms' own filtering, plus a hidden `botcheck` field. If spam becomes a problem, hCaptcha can be added, but it loads a third-party script and the privacy page would need to say so.
+- **Privacy:** the privacy page explains what's sent and how it's used, only while the form is live. Messages are never added to the weekly email list.
+
 ## 8. Hosting, CI and link upkeep
 
 - **Hosting:** GitHub Pages from this repo, deployed with GitHub Actions on every push to `main` (`deploy.yml`: validate → build → upload artifact → deploy). The site is served at **https://workathill.com** through a custom domain on GitHub Pages:

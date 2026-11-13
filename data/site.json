@@ -8,6 +8,10 @@
     "postalAddress": null,
     "sendMode": "draft"
   },
+  "contact": {
+    "_note": "Let's Connect form in the footer. Create a free Web3Forms access key at https://web3forms.com using rob@workathill.com (messages go to the email the key was made with), then paste it here. The key is meant to be public: it can only send messages to that inbox. Until it's set, the form stays off the page.",
+    "web3formsKey": "9b9a8afc-59c0-4573-b361-b4007c200b3a"
+  },
   "_formExample": {
     "formUrl": "https://docs.google.com/forms/d/e/FORM_ID/viewform",
     "companyEntry": "entry.111111111",

@@ -282,3 +282,36 @@
   input.value = state.q;
   render();
 })();
+
+// "Let's Connect" form: send in the background and show the result here, instead of leaving the page.
+// Without JavaScript the form still posts normally and Web3Forms returns to /thanks/.
+(() => {
+  const form = document.getElementById('contact-form');
+  const status = document.getElementById('contact-status');
+  if (!form || !status || !window.fetch) return;
+  const button = form.querySelector('button[type="submit"]');
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const data = Object.fromEntries(new FormData(form));
+    delete data.redirect;
+    button.disabled = true;
+    status.className = 'contact-status';
+    status.textContent = 'Sending…';
+    try {
+      const res = await fetch(form.action, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(data),
+      });
+      const body = await res.json().catch(() => ({}));
+      if (!res.ok || body.success === false) throw new Error(body.message || `HTTP ${res.status}`);
+      form.reset();
+      status.textContent = "Thanks! Your message was sent. We'll reply by email.";
+    } catch {
+      status.classList.add('err');
+      status.textContent = "Sorry, your message didn't send. Please try again in a minute.";
+    } finally {
+      button.disabled = false;
+    }
+  });
+})();

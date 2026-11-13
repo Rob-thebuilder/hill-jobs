@@ -488,6 +488,26 @@ button { font: inherit; }
 .site-footer .signup-fine, .site-footer .signup-fine a { color: #b4c0d3; }
 .site-footer a { color: #cfe0ff; }
 
+/* ---------- "Let's Connect" contact form ---------- */
+.contact { margin-bottom: 1.75rem; max-width: 640px; }
+.contact .hp { display: none; }
+.contact-row { display: flex; flex-wrap: wrap; gap: 0 .75rem; }
+.contact-row .field { flex: 1 1 14rem; min-width: 0; }
+.contact .field { margin-top: .75rem; }
+.contact label { display: block; margin-bottom: .3rem; font-weight: 700; color: #fff; }
+.contact input:not([type="hidden"]):not(.hp), .contact textarea {
+  display: block; width: 100%; min-height: 48px; padding: .7rem .9rem; border-radius: 10px;
+  border: 1.5px solid #b8c1cf; background: #fff; color: #0f1b2d;
+  font: inherit; font-size: 1.0625rem; /* 16px or more: no iOS zoom */
+}
+.contact textarea { min-height: 8rem; resize: vertical; }
+.contact .btn-signup { margin-top: .9rem; }
+.contact .btn-signup:disabled { opacity: .7; cursor: progress; }
+.contact-status:empty { display: none; }
+.contact-status { margin-top: .6rem; font-weight: 700; color: #fff; }
+.contact-status.err { color: #ffd2cc; }
+.site-footer .contact .signup-fine, .site-footer .contact .signup-fine a { color: #b4c0d3; }
+
 /* ---------- hero link to the guide ---------- */
 .guide-link {
   display: inline-flex; align-items: center; gap: .3rem; min-height: 44px; margin-top: .5rem; margin-right: 1.25rem;

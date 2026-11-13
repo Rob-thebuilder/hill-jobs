@@ -233,6 +233,59 @@ export function renderSignupFooter(site, prefix = './') {
     </form>`;
 }
 
+// ---------- "Let's Connect" contact form (Web3Forms) ----------
+
+export const WEB3FORMS_ACTION = 'https://api.web3forms.com/submit';
+const WEB3FORMS_KEY = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+
+/** True once data/site.json has a Web3Forms access key. Web3Forms emails each message to the key's account. */
+export const contactReady = (site) => WEB3FORMS_KEY.test(site?.contact?.web3formsKey || '');
+
+export function validateContact(site) {
+  const key = site?.contact?.web3formsKey;
+  return key != null && !WEB3FORMS_KEY.test(key) ? ['web3formsKey should look like xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'] : [];
+}
+
+/**
+ * Footer contact form. A plain HTML post works without JavaScript: Web3Forms emails the
+ * message and redirects to /thanks/. app.js sends it in the background instead and shows the result inline.
+ */
+export function renderContact(site, prefix = './') {
+  if (!contactReady(site)) return '';
+  const root = site.siteUrl.replace(/\/$/, '');
+  return `<form class="contact" id="contact-form" action="${WEB3FORMS_ACTION}" method="post" aria-labelledby="contact-title">
+      <h2 class="signup-title" id="contact-title">Let's Connect</h2>
+      <p class="signup-lead">Questions, ideas or a correction? Send a message.</p>
+      <input type="hidden" name="access_key" value="${esc(site.contact.web3formsKey)}">
+      <input type="hidden" name="subject" value="New message from ${esc(new URL(root).host)}">
+      <input type="hidden" name="from_name" value="${esc(site.siteName)}">
+      <input type="hidden" name="redirect" value="${esc(root)}/thanks/">
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="contact-row">
+        <p class="field"><label for="contact-name">Name</label><input id="contact-name" name="name" required autocomplete="name" maxlength="100"></p>
+        <p class="field"><label for="contact-email">Email</label><input id="contact-email" type="email" name="email" required autocomplete="email" inputmode="email" maxlength="200"></p>
+      </div>
+      <p class="field"><label for="contact-message">Message</label><textarea id="contact-message" name="message" required rows="5" maxlength="4000"></textarea></p>
+      <button type="submit" class="btn-signup">Send message</button>
+      <p class="contact-status" id="contact-status" role="status" aria-live="polite"></p>
+      <p class="signup-fine">Your email is used only to reply to you. <a href="${prefix}privacy/">Privacy</a></p>
+    </form>`;
+}
+
+export function renderThanks(site, template) {
+  return fill(template, { siteName: esc(site.siteName) });
+}
+
+const PRIVACY_CONTACT = `
+  <h2>The Let's Connect form (optional)</h2>
+  <ul>
+    <li><strong>What's sent:</strong> the name, email address and message you type. Nothing is sent until you press "Send message".</li>
+    <li><strong>How it's sent:</strong> <a href="https://web3forms.com/privacy" rel="noopener">Web3Forms</a>, a form service, emails your message to Work At Hill. Work At Hill keeps it in its email inbox.</li>
+    <li><strong>How it's used:</strong> only to read and reply to your message. It's never added to the weekly email list, sold, rented or shared.</li>
+    <li><strong>Deleting it:</strong> ask in a message, and it will be deleted.</li>
+  </ul>
+`;
+
 export function renderPrivacy(site, template) {
   const n = site.newsletter;
   const contact = n?.postalAddress ? `Work At Hill, ${n.postalAddress}` : 'A contact address will be posted here when the weekly email starts.';
@@ -240,6 +293,7 @@ export function renderPrivacy(site, template) {
     siteName: esc(site.siteName),
     canonical: esc(site.siteUrl.replace(/\/$/, '') + '/privacy/'),
     postalAddress: esc(contact),
+    contactForm: contactReady(site) ? PRIVACY_CONTACT : '',
   });
 }
 
@@ -545,6 +599,7 @@ export function renderBase(baseId, base, allEmployers, site, template, jobCounts
     recruiterLink,
     alertBox: renderAlertBox(site, prefix),
     signupFooter: renderSignupFooter(site, prefix),
+    contactForm: renderContact(site, prefix),
     typeChips,
     catChips,
     cards: employers.map((e) => renderCard(e, site.form, jobCounts)).join('\n'),
@@ -616,6 +671,7 @@ async function main() {
     ...validatePrograms(programsFile).map((e) => `programs.json: ${e}`),
     ...validateEvents(eventsFile, eventSources).map((e) => `events.json: ${e}`),
     ...validateNewsletter(site).map((e) => `site.json newsletter: ${e}`),
+    ...validateContact(site).map((e) => `site.json contact: ${e}`),
   ];
   if (errors.length) {
     console.error(`✗ ${errors.length} data error(s):\n  - ${errors.join('\n  - ')}`);
@@ -683,6 +739,7 @@ async function main() {
   const extras = { resources: resourcesFile.resources, events: eventList, annual: eventsFile.annual, eventsChecked, programs: programsFile.programs };
 
   if (!site.form) console.warn('WARN: data/site.json has no "form" config; "Suggest a change" and recruiter links are left out.');
+  if (!contactReady(site)) console.warn('WARN: data/site.json has no contact.web3formsKey; the Let\'s Connect form is left out.');
   if (!newsletterReady(site)) console.warn('WARN: data/site.json newsletter settings are not filled in; email signup forms are left out.');
 
   await rm(DIST, { recursive: true, force: true });
@@ -714,6 +771,11 @@ async function main() {
   const privacyTemplate = await readFile(path.join(ROOT, 'templates/privacy.html'), 'utf8');
   await mkdir(path.join(DIST, 'privacy'), { recursive: true });
   await writeFile(path.join(DIST, 'privacy', 'index.html'), renderPrivacy(site, privacyTemplate));
+
+  // Thank-you page the contact form returns to when JavaScript is off.
+  const thanksTemplate = await readFile(path.join(ROOT, 'templates/thanks.html'), 'utf8');
+  await mkdir(path.join(DIST, 'thanks'), { recursive: true });
+  await writeFile(path.join(DIST, 'thanks', 'index.html'), renderThanks(site, thanksTemplate));
 
   // "How hiring at Hill works" guide (every fact sourced; see data/GUIDE-SOURCES.md).
   const guideTemplate = await readFile(path.join(ROOT, 'templates/guide.html'), 'utf8');
