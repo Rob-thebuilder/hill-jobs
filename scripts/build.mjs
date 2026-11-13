@@ -425,7 +425,7 @@ export function renderEventsPanel(list, annual, checkedLabel) {
     ? `<ul class="event-list">\n${list.map(renderEvent).join('\n')}\n</ul>`
     : `<p class="empty-note">No dated events are posted right now. The yearly events below are the ones to watch for.</p>`;
   return `<div class="panel-intro">
-<h2 id="events-heading">Job fairs, workshops and meet-and-greets</h2>
+<h2 id="events-heading">Job Fairs, Workshops and Meet-and-Greets</h2>
 <p>Events at Hill AFB and in Northern Utah. Dates and details come from each host; check the event page before you go.</p>
 </div>
 <h3 class="group-title">Coming up <span class="group-n">${list.length}</span></h3>
