@@ -197,4 +197,5 @@ test('the page has three tabs and three panels, with counts', async () => {
   assert.match(html, /<h2 id="resume-heading">Resume Resources Near Hill<\/h2>/);
   assert.match(html, /data-tab="events">Events <span class="tab-n">1<\/span>/);
   assert.equal((html.match(/<h1>/g) || []).length, 1);
+  assert.match(html, /<p class="eyebrow">Hill AFB, Utah<\/p>/);
 });

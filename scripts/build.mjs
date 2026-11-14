@@ -233,6 +233,9 @@ export function renderSignupFooter(site, prefix = './') {
     </form>`;
 }
 
+/** Full state names for the label at the top of a base's page ("Hill AFB, Utah"). */
+const STATE_NAMES = { UT: 'Utah' };
+
 // ---------- "Let's Connect" contact form (Web3Forms) ----------
 
 export const WEB3FORMS_ACTION = 'https://api.web3forms.com/submit';
@@ -594,6 +597,7 @@ export function renderBase(baseId, base, allEmployers, site, template, jobCounts
     prefix,
     siteName: esc(site.siteName),
     baseName: esc(base.name),
+    baseLabel: esc(`${base.name}, ${STATE_NAMES[base.state] || base.state}`),
     count: countText(employers.length),
     total: String(employers.length),
     recruiterLink,
