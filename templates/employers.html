@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="en" class="no-js">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Employer Directory · {{siteName}}</title>
+<meta name="description" content="{{description}}">
+<link rel="canonical" href="{{canonical}}">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0b1f3a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{siteName}}">
+<meta property="og:title" content="Employer Directory: {{baseLabel}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:image" content="{{ogImage}}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/styles.css">
+<script>document.documentElement.className = 'js';</script>
+<script src="../assets/search.js" defer></script>
+<script src="../assets/directory.js" defer></script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="hero hero-small">
+  <div class="wrap hero-inner">
+    <p class="eyebrow"><a class="back-home" href="../">← {{siteName}}</a></p>
+    <h1>Employer Directory</h1>
+    <p class="tagline">Every employer near {{baseLabel}}, grouped by type.</p>
+    <form class="search" role="search" action="">
+      <label for="dq">Search employers</label>
+      <div class="search-box">
+        <svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M15.5 15.5 21 21" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"/></svg>
+        <input id="dq" name="q" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" placeholder="Name, work or job, like “painter”">
+      </div>
+    </form>
+  </div>
+</header>
+
+<main id="main" tabindex="-1">
+  <nav class="filters wrap" aria-label="Filter employers">
+    <div class="chip-group">
+      <h2 class="chip-label" id="dtype-label">Employer type</h2>
+      <div class="chip-row" role="group" aria-labelledby="dtype-label">{{typeChips}}</div>
+    </div>
+  </nav>
+  <div class="wrap results">
+    <div class="results-bar">
+      <p id="dcount" class="count" role="status" aria-live="polite" aria-atomic="true">{{count}}</p>
+    </div>
+    <p id="dempty" class="empty-title" hidden>No employers match. Try a broader search, or pick “All”.</p>
+{{groups}}
+  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="disclaimer">Work At Hill is an independent directory and is not affiliated with or endorsed by the U.S. Air Force, the Department of Defense, or any listed employer.</p>
+    <p class="fine">Listings are sorted A–Z within each group. No paid placement. Links go straight to each employer's careers site. <a href="../">Home</a> · <a href="./">Employers</a> · <a href="../how-hiring-works/">How hiring at Hill works</a> · <a href="../privacy/">Privacy</a></p>
+  </div>
+</footer>
+<script type="application/json" id="search-data">{{searchData}}</script>
+</body>
+</html>

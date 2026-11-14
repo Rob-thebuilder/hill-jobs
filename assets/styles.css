@@ -271,7 +271,7 @@ button { font: inherit; }
 .badge-federal { background: var(--b-federal-bg); color: var(--b-federal); }
 .badge-services { background: var(--b-services-bg); color: var(--b-services); }
 .badge-subcontractor { background: var(--b-subcontractor-bg); color: var(--b-subcontractor); }
-.card h2 {
+.card h2, .card h3 {
   margin-top: .6rem;
   font-size: 1.35rem; line-height: 1.15; font-weight: 900; letter-spacing: -0.01em;
   overflow-wrap: anywhere;
@@ -530,6 +530,10 @@ button { font: inherit; }
 
 /* ---------- privacy page ---------- */
 .hero-small { padding-bottom: 2rem; }
+/* ---------- Employer Directory page ---------- */
+.dir-group { margin-top: 1.75rem; scroll-margin-top: 1rem; }
+.dir-group .group-title { margin-bottom: .75rem; }
+.results .empty-title { padding: 1rem 0; font-weight: 800; }
 .hero-small h1 { font-size: clamp(2rem, 8vw, 3rem); }
 .back-home { display: inline-flex; align-items: center; min-height: 44px; color: var(--amber); text-decoration: none; }
 .prose { padding-top: 1.5rem; padding-bottom: 3rem; max-width: 760px; }

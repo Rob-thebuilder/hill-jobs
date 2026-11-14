@@ -142,13 +142,13 @@ export function openJobsLine(id, jobCounts) {
   return `<p class="open-jobs">${what} <span class="checked">· checked <time datetime="${esc(jobCounts.checkedAt)}">${dateLabel(jobCounts.checkedAt)}</time></span></p>\n`;
 }
 
-function renderCard(e, form, jobCounts) {
+function renderCard(e, form, jobCounts, h = 'h2') {
   const typeLabel = LABELS.types[e.type];
   const catLabels = e.categories.map((c) => LABELS.categories[c]);
   const suggest = formUrl(form, form?.fixValue, e.name);
   return `<li><article class="card" data-type="${esc(e.type)}" data-cats="${esc(e.categories.join(' '))}" data-id="${esc(e.id)}" aria-labelledby="e-${esc(e.id)}">
 <div class="card-top"><span class="badge badge-${esc(e.type)}">${esc(typeLabel)}</span></div>
-<h2 id="e-${esc(e.id)}">${esc(e.name)}</h2>
+<${h} id="e-${esc(e.id)}">${esc(e.name)}</${h}>
 <p class="desc">${esc(e.description)}</p>
 <ul class="tags" aria-label="Job categories">${catLabels.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
 <p class="why" hidden></p>
@@ -196,6 +196,46 @@ export function searchData(employers, synonyms, jobCounts, careerTitles = null) 
   return JSON.stringify(data).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
 }
 
+
+// ---------- Employer Directory page (/employers/) ----------
+
+/** Plural headings for the directory's groups, in LABELS.types order. */
+export const GROUP_TITLES = {
+  prime: 'Prime contractors',
+  subcontractor: 'Subcontractors & suppliers',
+  federal: 'Federal civilian employers',
+  services: 'Services & support',
+};
+
+/** All employers for a base on one page, grouped by type, A–Z within each group. Built at deploy time. */
+export function renderDirectory(baseId, base, allEmployers, site, template, jobCounts = null, synonyms = null, careerTitles = null) {
+  const employers = allEmployers
+    .filter((e) => e.base === baseId)
+    .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base', numeric: true }));
+  const root = site.siteUrl.replace(/\/$/, '');
+  const label = `${base.name}, ${STATE_NAMES[base.state] || base.state}`;
+  const groups = Object.keys(LABELS.types)
+    .map((t) => [t, employers.filter((e) => e.type === t)])
+    .filter(([, list]) => list.length)
+    .map(([t, list]) => `    <section class="dir-group" id="type-${t}" aria-labelledby="g-${t}">
+      <h2 class="group-title" id="g-${t}">${esc(GROUP_TITLES[t])} <span class="group-n">${list.length}</span></h2>
+      <ul class="grid">
+${list.map((e) => renderCard(e, site.form, jobCounts, 'h3')).join('\n')}
+      </ul>
+    </section>`)
+    .join('\n');
+  return fill(template, {
+    siteName: esc(site.siteName),
+    baseLabel: esc(label),
+    canonical: esc(`${root}/employers/`),
+    ogImage: esc(`${root}/assets/og.png`),
+    description: esc(`All ${countText(employers.length)} near ${label}, grouped by type: prime contractors, federal agencies, suppliers and base services, with direct links to each careers page.`),
+    count: countText(employers.length),
+    typeChips: renderChips(employers).typeChips,
+    groups,
+    searchData: searchData(employers, synonyms, jobCounts, careerTitles),
+  });
+}
 
 // ---------- email signup (Buttondown) ----------
 
@@ -775,6 +815,11 @@ async function main() {
   const privacyTemplate = await readFile(path.join(ROOT, 'templates/privacy.html'), 'utf8');
   await mkdir(path.join(DIST, 'privacy'), { recursive: true });
   await writeFile(path.join(DIST, 'privacy', 'index.html'), renderPrivacy(site, privacyTemplate));
+
+  // Employer Directory: every Hill employer on one page, grouped by type.
+  const dirTemplate = await readFile(path.join(ROOT, 'templates/employers.html'), 'utf8');
+  await mkdir(path.join(DIST, 'employers'), { recursive: true });
+  await writeFile(path.join(DIST, 'employers', 'index.html'), renderDirectory('hill', data.bases.hill, data.employers, site, dirTemplate, jobCounts, synonyms, careerTitles));
 
   // Thank-you page the contact form returns to when JavaScript is off.
   const thanksTemplate = await readFile(path.join(ROOT, 'templates/thanks.html'), 'utf8');

@@ -164,6 +164,15 @@ The page has three tabs below the hero: **Employers** (the default), **Resume he
 - **No duplicates:** offices already on the Resume help tab appear here only for separate *job* help, such as a public job board.
 - **Review sheet:** `data/PROGRAMS-REVIEW.md` holds the evidence and the maybe/skip list.
 
+## 4b-2. Employer Directory (`/employers/`)
+
+One shareable page listing every Hill employer, grouped by type (Prime contractors, Subcontractors & suppliers, Federal civilian employers, Services & support), A–Z within each group.
+
+- **Built from `data/employers.json` at deploy time**, with the same cards as the homepage. Editing the JSON and pushing updates both pages. The page works without JavaScript.
+- **Search box and type pills ("All" plus one per type):** `assets/directory.js` runs the shared search in `assets/search.js`. Groups with no matches hide, and the URL keeps `?q=` and `?type=` so a filtered view can be shared.
+- **Layout:** one column under 640 px.
+- **Linked from:** the homepage hero ("Employer Directory →") and the footer of every page.
+
 ## 4c. How hiring at Hill works (`/how-hiring-works/`)
 - **What it is:** a short, plain-language page (about 850 words) in five sections:
   - federal vs. contractor jobs

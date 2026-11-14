@@ -524,10 +524,60 @@ try {
     {
       const p = await openPage(H, { width: 390 });
       const loaded = p.nextLoad();
-      await p.evaluate(click('.guide-link'));
+      await p.evaluate(click('.guide-link[href$="how-hiring-works/"]'));
       await loaded;
       const path = await p.evaluate('location.pathname');
       check('the hero "How it works" link opens the guide', path === '/how-hiring-works/', path);
+      await p.close();
+    }
+  }
+
+  // 11c. The Employer Directory page.
+  {
+    const D = `${ORIGIN}/employers/`;
+    for (const w of [320, 390, 414, 639, 768]) {
+      const p = await openPage(D, { width: w });
+      const r = await p.evaluate(`({ sw: document.documentElement.scrollWidth, iw: innerWidth, h1: document.querySelectorAll('h1').length, groups: document.querySelectorAll('.dir-group').length, cols: getComputedStyle(document.querySelector('.dir-group .grid')).gridTemplateColumns.split(' ').length })`);
+      const wantCols = w < 640 ? 1 : 2;
+      check(`directory page at ${w}px: no sideways scroll, one h1, ${wantCols} column(s)`, r.sw <= r.iw && r.h1 === 1 && r.groups >= 3 && r.cols === wantCols, JSON.stringify(r));
+      await p.close();
+    }
+    {
+      const p = await openPage(D, { width: 390 });
+      const all = await p.evaluate(`document.querySelectorAll('.dir-group .card').length`);
+      await p.evaluate(`(() => { const i = document.getElementById('dq'); i.value = 'painter'; i.dispatchEvent(new Event('input')); })()`);
+      const s = await p.evaluate(`({ shown: document.querySelectorAll('.dir-group li:not([hidden]) .card').length, count: document.getElementById('dcount').textContent, why: document.querySelector('.dir-group li:not([hidden]) .why')?.textContent || '', url: location.search })`);
+      check('directory search "painter" narrows the list and explains matches', s.shown > 0 && s.shown < all && s.count === `${s.shown} employer${s.shown === 1 ? '' : 's'}` && /Matches/.test(s.why) && s.url === '?q=painter', JSON.stringify(s));
+      await p.evaluate(`(() => { const i = document.getElementById('dq'); i.value = ''; i.dispatchEvent(new Event('input')); document.querySelector('.chip[data-type="federal"]').click(); })()`);
+      const f = await p.evaluate(`({ types: [...new Set([...document.querySelectorAll('.dir-group li:not([hidden]) .card')].map(c => c.dataset.type))], groupsShown: document.querySelectorAll('.dir-group:not([hidden])').length, pressed: document.querySelector('.chip[data-type="federal"]').getAttribute('aria-pressed') })`);
+      check('directory "Federal civilian" pill shows only that group', f.types.join() === 'federal' && f.groupsShown === 1 && f.pressed === 'true', JSON.stringify(f));
+      await p.evaluate(`document.querySelector('.chip[data-type=""]').click()`);
+      const back = await p.evaluate(`document.querySelectorAll('.dir-group li:not([hidden]) .card').length`);
+      check('directory "All" pill shows every employer again', back === all, `${back} of ${all}`);
+      await p.close();
+    }
+    {
+      const p = await openPage(D, { width: 390 });
+      const small = await p.evaluate(`[...document.querySelectorAll('.chip, .btn-jobs, .back-home, .site-footer a')].map(a => { const b = a.getBoundingClientRect(); return { t: a.textContent.trim().slice(0, 30), h: Math.round(b.height), w: Math.round(b.width) }; }).filter(x => x.h < 44 || x.w < 44)`);
+      check('directory page: pills, buttons and links are at least 44px tap targets', small.length === 0, small.map((x) => `${x.t} ${x.w}×${x.h}`).join('; '));
+      await p.close();
+    }
+    const dirSels = "const sels = ['h1', '.eyebrow a', '.tagline', '.search label', '.chip-label', '.chip', '.count', '.group-title', '.group-n', '.badge', '.card h3', '.desc', '.tags li', '.btn-jobs', '.link-secondary', '.meta span', '.site-footer p', '.site-footer a'];";
+    const DIR_CONTRAST = CONTRAST.replace(/const sels = \[[^\]]*\];/, dirSels);
+    for (const scheme of ['light', 'dark']) {
+      const p = await openPage(D, { width: 390, scheme });
+      const res = await p.evaluate(DIR_CONTRAST);
+      const bad = res.filter((x) => !x.ok);
+      check(`directory page contrast WCAG AA, ${scheme} theme`, bad.length === 0 && res.length > 20, bad.length ? [...new Map(bad.map((b) => [b.sel, b])).values()].map((b) => `${b.sel} ${b.ratio}:1`).join('; ') : `${res.length} elements`);
+      await p.close();
+    }
+    {
+      const p = await openPage(H, { width: 390 });
+      const loaded = p.nextLoad();
+      await p.evaluate(click('.guide-link[href$="employers/"]'));
+      await loaded;
+      const path = await p.evaluate('location.pathname');
+      check('the hero "Employer Directory" link opens the directory', path === '/employers/', path);
       await p.close();
     }
   }
