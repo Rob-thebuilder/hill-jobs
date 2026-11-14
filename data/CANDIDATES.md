@@ -4,6 +4,534 @@ Researched 2026-11-09 by four research agents plus a careers-link check.
 
 **Status, 2026-11-09:** at your request, all 17 "Ready to add" employers were added to `employers.json` (the directory went from 23 to 40). Six of them also get live job titles: KBR/Trinzic, Booz Allen, The Aerospace Corporation, Draper and PARC/ServiceSource on Workday, and MITRE on Phenom; the other 11 are listed in `job-sources.json` "skipped" with the reason. Pelatron ("Needs a fix"), the weak ones and the maybes were **not** added.
 
+## Round 2 (2026-11-14): 66 employers from new-candidates.json
+
+**Status, 2026-11-14:** at your request, all 8 "Ready to add" employers were added to `employers.json` (the directory went from 40 to 48). Credence also gets live job titles (Workable); the other 7 are listed in `job-sources.json` "skipped" with the reason. The "Needs a fix", maybe, weak and skipped ones were **not** added.
+
+Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo root, not committed). Each one was searched for a Hill workforce and an official careers link; every link in the snippets below was checked with `scripts/check-links.mjs` on 2026-11-14, and the snippets pass the employers.json schema. **Nothing was added to employers.json.**
+
+### Round 2 summary
+- **Ready to add: 8**: Accenture Federal Services, C3EL, Odyssey Systems Consulting, Credence, Astrion, SierTeK, Bechtel (Sentinel), JT4. All links load.
+- **Needs a fix: 5**: Torch Technologies, ManTech, Peerless Technologies, Toyon Research, Sumaria Systems: real Hill work, but the careers or evidence link needs a browser check or a better page.
+- **Maybe: 14**: real Hill presence but no current jobs, fewer than 3 roles, or contingent work.
+- **Weak or dropped: 16**: one posting or none, including all 7 Sentinel partners marked "Utah presence not confirmed" (still none found).
+- **Skipped: 23**: 3 already covered by the Air Force card, 9 off-base manufacturers (supply-only), 5 staffing agencies, 4 architect-engineer firms, 1 construction JV, 1 seasonal.
+
+**Watch-outs**
+- Several Ready jobsUrls can't be filtered to Hill (Accenture's portal, C3EL's and Credence's boards, Bechtel's search), so the card opens the full job list.
+- Bechtel is a Sentinel construction/engineering partner; it's Ready because of its multi-year Ogden program office, not field crews. Your call.
+- The 9 manufacturers are real Ogden/Layton aerospace employers. Our rule skips them (no Hill workforce); if you ever widen the directory to "aerospace jobs near Hill", they're the first to revisit.
+
+### Ready to add (8)
+#### Accenture Federal Services
+- **Hill evidence:** https://job-boards.greenhouse.io/accenturefederalservices/jobs/4702971006
+- **Careers:** https://smartafs.my.site.com/careers/s/
+- **Open near Hill now:** 6 at Hill AFB on its own job feed (Greenhouse), updated Oct 12–Nov 6, 2026: Cloud systems administrator, DevOps/platform engineer, HPC cloud engineer, Senior cloud engineer, ISSO, ISSM.
+- **Confidence:** high · Careers link is its new portal (the old Greenhouse board now redirects there); the portal has no Hill filter link, so the card opens the full list.
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "accenture-federal",
+  "base": "hill",
+  "name": "Accenture Federal Services",
+  "type": "services",
+  "categories": [
+    "software-it"
+  ],
+  "roles": [
+    "Cloud systems administrator",
+    "DevOps / platform engineer",
+    "HPC cloud engineer",
+    "Senior cloud engineer",
+    "Information system security officer (ISSO)",
+    "Information system security manager (ISSM)"
+  ],
+  "description": "Cloud, DevOps and cybersecurity engineers supporting Air Force systems on site at Hill AFB",
+  "jobsUrl": "https://smartafs.my.site.com/careers/s/",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://job-boards.greenhouse.io/accenturefederalservices/jobs/4702971006"
+}
+```
+
+#### C3EL
+- **Hill evidence:** https://job-boards.greenhouse.io/c3el/jobs/4944302007
+- **Careers:** https://job-boards.greenhouse.io/c3el
+- **Open near Hill now:** 7 at Hill AFB on its own job feed (Greenhouse), Feb–Oct 2026: JRSS network technician, TRIP network technician, UC network specialist, SATCOM network administrator, and MDA, SDA and AISR NOC technicians.
+- **Confidence:** high · Small company (about 50 staff); most of its listed jobs are at Hill. Greenhouse board isn't filtered, but Hill is most of it.
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "c3el",
+  "base": "hill",
+  "name": "C3EL",
+  "type": "services",
+  "categories": [
+    "software-it"
+  ],
+  "roles": [
+    "JRSS network technician",
+    "Transport/IP (TRIP) network technician",
+    "Unified capabilities (UC) network specialist",
+    "Network administrator (SATCOM)",
+    "MDA NOC technician",
+    "SDA NOC technician",
+    "AISR NOC technician"
+  ],
+  "description": "Network technicians for DISA's 24/7 network operations at Hill AFB: JRSS, SATCOM and NOC watch roles",
+  "jobsUrl": "https://job-boards.greenhouse.io/c3el",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://job-boards.greenhouse.io/c3el/jobs/4944302007"
+}
+```
+
+#### Odyssey Systems Consulting
+- **Hill evidence:** https://careers-odysseyconsult.icims.com/jobs/9554/senior-electrical-engineer/job
+- **Careers:** https://careers-odysseyconsult.icims.com/jobs/search?ss=1&searchKeyword=Hill
+- **Open near Hill now:** 8 on its own board for "Hill" today (iCIMS), e.g. Senior electrical engineer (9554), Principal test engineer, Principal program manager, ISSO, Software engineer. ClearanceJobs also lists 7 Utah jobs.
+- **Confidence:** high
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "odyssey-systems",
+  "base": "hill",
+  "name": "Odyssey Systems Consulting",
+  "type": "services",
+  "categories": [
+    "engineering",
+    "software-it",
+    "admin-business"
+  ],
+  "roles": [
+    "Senior electrical engineer",
+    "Senior mechanical engineer",
+    "Principal test engineer",
+    "Senior general/interdisciplinary engineer",
+    "Software engineer",
+    "Information system security officer",
+    "Principal program manager",
+    "Senior equipment specialist"
+  ],
+  "description": "Engineers, testers and security staff supporting Air Force program offices (C3BM, training, munitions) at Hill AFB",
+  "jobsUrl": "https://careers-odysseyconsult.icims.com/jobs/search?ss=1&searchKeyword=Hill",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://careers-odysseyconsult.icims.com/jobs/9554/senior-electrical-engineer/job"
+}
+```
+
+#### Credence Management Solutions
+- **Hill evidence:** https://apply.workable.com/j/24412D9530
+- **Careers:** https://apply.workable.com/credence/
+- **Open near Hill now:** 1 on its own board today: Structural Engineering Support (HSTAB) Principal, F-16, Hill AFB (posted Nov 6, 2026). Earlier 2025–26 postings for the same F-16 international office: IA manager, program & logistics manager, flight test manager, security manager.
+- **Confidence:** medium · Workable board has 114 jobs nationwide and no location filter link.
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "credence",
+  "base": "hill",
+  "name": "Credence Management Solutions",
+  "type": "services",
+  "categories": [
+    "engineering",
+    "admin-business",
+    "software-it"
+  ],
+  "roles": [
+    "Structural engineering support (F-16)",
+    "Information assurance manager (F-16)",
+    "Program and logistics manager (F-16)",
+    "Flight test and evaluation manager (F-16)",
+    "Security manager (F-16)",
+    "Executive assistant"
+  ],
+  "description": "Engineering, program and security support for the F-16 international program office at Hill AFB",
+  "jobsUrl": "https://apply.workable.com/credence/",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://apply.workable.com/j/24412D9530"
+}
+```
+
+#### Astrion
+- **Hill evidence:** https://www.clearancejobs.com/jobs/astrion/utah
+- **Careers:** https://careers.astrion.us/jobs?keywords=Hill%20AFB
+- **Open near Hill now:** ClearanceJobs "Astrion Jobs in Utah" lists current Hill AFB openings (22 Hill mentions); 2026 postings include Senior systems engineer (May 29, 2026), Senior logistics manager (ARCHER, AFLCMC/HBD), Senior network services engineer. Formerly ERC / Oasis Systems.
+- **Confidence:** medium · Its own portal's Hill search loads by script, so current Hill jobs were confirmed on ClearanceJobs.
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "astrion",
+  "base": "hill",
+  "name": "Astrion",
+  "type": "services",
+  "categories": [
+    "engineering",
+    "logistics-supply",
+    "software-it"
+  ],
+  "roles": [
+    "Senior systems engineer",
+    "Electrical engineer",
+    "Senior logistics manager",
+    "Senior network services engineer",
+    "Senior test manager",
+    "Senior acquisition intel specialist"
+  ],
+  "description": "Engineers and logisticians supporting AFLCMC digital, battle-control and training program offices at Hill AFB",
+  "jobsUrl": "https://careers.astrion.us/jobs?keywords=Hill%20AFB",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://www.clearancejobs.com/jobs/astrion/utah"
+}
+```
+
+#### SierTeK
+- **Hill evidence:** https://qocreate.federalcompass.com/fed-contract-award/FA822423D0004
+- **Careers:** https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=4FA5F6A76EB2C22971D8A5EBA944D71F · also https://www.siertek.com/careers
+- **Open near Hill now:** Contract FA8224-23-D-0004 (Ogden ALC, Jul 2023 to Jan 2029) for overhead production support at Hill (also Davis-Monthan and Randolph); job postings tie it to the 523rd/526th EMXS. 2026 postings: Material support technician (day), Lead material support technician (swing; contingent on award), Site supervisor (swing).
+- **Confidence:** high · Entry-level friendly (high school diploma for technician roles).
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "siertek",
+  "base": "hill",
+  "name": "SierTeK",
+  "type": "services",
+  "categories": [
+    "logistics-supply",
+    "admin-business",
+    "internships-entry"
+  ],
+  "roles": [
+    "Material support technician",
+    "Lead material support technician",
+    "Site supervisor",
+    "Technical writer and analytical support",
+    "Program management analyst"
+  ],
+  "description": "Production and material support staff for the 523rd and 526th Electronics Maintenance Squadrons at Hill AFB",
+  "jobsUrl": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=4FA5F6A76EB2C22971D8A5EBA944D71F",
+  "secondaryUrl": "https://www.siertek.com/careers",
+  "verified": "2026-11",
+  "sourceUrl": "https://qocreate.federalcompass.com/fed-contract-award/FA822423D0004"
+}
+```
+
+#### Bechtel (Sentinel)
+- **Hill evidence:** https://www.bechtel.com/projects/sentinel/
+- **Careers:** https://jobs.bechtel.com/
+- **Open near Hill now:** Bechtel's Sentinel page names Roy and Ogden as work sites; Ogden postings include Project engineer (296014), Structural engineer, Sentinel (275462), Senior planner/P6 scheduler (277119), Government property administrator.
+- **Confidence:** medium · ⚑ Construction/engineering partner, but its Sentinel program office in Ogden is a multi-year workforce, not a temporary crew. Careers link isn't filtered (its search drops the location).
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "bechtel",
+  "base": "hill",
+  "name": "Bechtel (Sentinel)",
+  "type": "services",
+  "categories": [
+    "engineering",
+    "admin-business"
+  ],
+  "roles": [
+    "Project engineer",
+    "Structural engineer (Sentinel)",
+    "Senior mechanical engineer",
+    "Senior planner / P6 scheduler",
+    "Government property administrator",
+    "Front desk attendant"
+  ],
+  "description": "Sentinel ICBM launch-infrastructure engineers and project staff at Bechtel's Ogden program office",
+  "jobsUrl": "https://jobs.bechtel.com/",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://www.bechtel.com/projects/sentinel/"
+}
+```
+
+#### JT4
+- **Hill evidence:** https://www.jt4llc.com/?p=261
+- **Careers:** https://www.jt4llc.com/careers/
+- **Open near Hill now:** JT4's own Utah Test and Training Range page says its range management office is on Hill AFB. Hill postings seen: RTO mission operations controller (levels II–V), mission operations scheduler, power systems engineer.
+- **Confidence:** medium · Couldn't confirm a dated Hill opening today; its careers page lists jobs by category, not location.
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "jt4",
+  "base": "hill",
+  "name": "JT4",
+  "type": "services",
+  "categories": [
+    "engineering",
+    "software-it",
+    "trades-maintenance"
+  ],
+  "roles": [
+    "Mission operations controller",
+    "Mission operations scheduler",
+    "Range communications engineer",
+    "Installation technician",
+    "Power systems engineer"
+  ],
+  "description": "Range operations and technical staff for the Utah Test and Training Range, from its range office at Hill AFB",
+  "jobsUrl": "https://www.jt4llc.com/careers/",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://www.jt4llc.com/?p=261"
+}
+```
+
+### Needs a fix (5)
+#### Torch Technologies
+- **Hill evidence:** https://www.clearancejobs.com/jobs/torch-technologies-inc/utah
+- **Careers:** https://www.clearancejobs.com/jobs/torch-technologies-inc/utah
+- **Open near Hill now:** Strong, current Hill presence (EPASS HB / AFLCMC/HBZ, C3BM, PEO Digital): ClearanceJobs "Torch Technologies Inc. Jobs in Utah" shows Hill openings today.
+- **Confidence:** high Hill evidence
+- **Needs a fix before adding:** No own careers site found: torchtechnologies.com/careers returns 404. The snippet uses the ClearanceJobs Utah page (as HX5 did before). Find Torch's own board, or accept ClearanceJobs.
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "torch-technologies",
+  "base": "hill",
+  "name": "Torch Technologies",
+  "type": "services",
+  "categories": [
+    "engineering",
+    "software-it",
+    "logistics-supply"
+  ],
+  "roles": [
+    "Senior cybersecurity engineer",
+    "Information system security officer",
+    "Senior network administrator",
+    "Electrical engineer",
+    "Equipment specialist",
+    "Senior logistics manager",
+    "Senior technical data manager"
+  ],
+  "description": "Engineers, cyber and logistics staff supporting AFLCMC program offices (EPASS, C3BM, digital) at Hill AFB",
+  "jobsUrl": "https://www.clearancejobs.com/jobs/torch-technologies-inc/utah",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://www.clearancejobs.com/jobs/torch-technologies-inc/utah"
+}
+```
+
+#### ManTech
+- **Hill evidence:** https://mantech.avature.net/en_US/careers/JobDetail/Equipment-Specialist/33690
+- **Careers:** https://mantech.avature.net/en_US/careers/SearchJobs/?keyword=Hill%20AFB
+- **Open near Hill now:** F-16 avionics (IAIS) product support at Hill: equipment specialists, ILS manager, electrical/systems engineer, QA specialist, program control analyst (postings 2024–2025).
+- **Confidence:** medium
+- **Needs a fix before adding:** ManTech's careers site (Avature) times out for the script and the sample job page is gone (404). Check in a browser that the Hill search works and shows current jobs.
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "mantech",
+  "base": "hill",
+  "name": "ManTech",
+  "type": "services",
+  "categories": [
+    "logistics-supply",
+    "engineering",
+    "admin-business"
+  ],
+  "roles": [
+    "Equipment specialist (F-16)",
+    "ILS manager",
+    "Electrical/systems engineer",
+    "Quality assurance specialist",
+    "Program control analyst"
+  ],
+  "description": "Product-support staff for the F-16 avionics (IAIS) effort at Hill AFB: equipment specialists, engineers, QA",
+  "jobsUrl": "https://mantech.avature.net/en_US/careers/SearchJobs/?keyword=Hill%20AFB",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://mantech.avature.net/en_US/careers/JobDetail/Equipment-Specialist/33690"
+}
+```
+
+#### Peerless Technologies
+- **Hill evidence:** https://www.clearancejobs.com/jobs/peerless-technologies-corporation
+- **Careers:** https://epeerless.com/careers/
+- **Open near Hill now:** F-22 program office at Hill: Senior A&A manager (Apr 2026), ISSM support, Senior safety manager, Senior PM (A&A). ClearanceJobs company page shows Hill openings (13 mentions).
+- **Confidence:** medium
+- **Needs a fix before adding:** Own careers page loads its jobs by script, so Hill openings couldn't be confirmed there; only 4 roles found (needs 3+, OK, but thin).
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "peerless-technologies",
+  "base": "hill",
+  "name": "Peerless Technologies",
+  "type": "services",
+  "categories": [
+    "software-it",
+    "engineering",
+    "admin-business"
+  ],
+  "roles": [
+    "Senior assessment and authorization (A&A) manager",
+    "ISSM support",
+    "Senior safety manager",
+    "Senior program manager (A&A)"
+  ],
+  "description": "Cybersecurity authorization and safety staff for the F-22 program office at Hill AFB",
+  "jobsUrl": "https://epeerless.com/careers/",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://www.clearancejobs.com/jobs/peerless-technologies-corporation"
+}
+```
+
+#### Toyon Research
+- **Hill evidence:** https://www.clearancejobs.com/jobs/toyon-research-corporation/utah
+- **Careers:** https://www.toyon.com/careers/ · also https://www.clearancejobs.com/jobs/toyon-research-corporation/utah
+- **Open near Hill now:** Clearfield office near Hill: ClearanceJobs "Toyon Research Corporation Jobs in Utah" lists current Clearfield jobs (mechanical, aerospace project and electrical engineers, systems analyst, FSO).
+- **Confidence:** medium
+- **Needs a fix before adding:** toyon.com blocks automated checks (403): open its careers page in a browser. Also confirm the Clearfield office supports Hill programs (the evidence shows Clearfield, not Hill AFB itself).
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "toyon",
+  "base": "hill",
+  "name": "Toyon Research",
+  "type": "services",
+  "categories": [
+    "engineering",
+    "admin-business"
+  ],
+  "roles": [
+    "Mechanical engineer",
+    "Aerospace project engineer",
+    "Senior electrical engineer",
+    "Systems analyst",
+    "Facility security officer"
+  ],
+  "description": "Engineers and analysts at Toyon's Clearfield office near Hill AFB, supporting Air Force programs",
+  "jobsUrl": "https://www.toyon.com/careers/",
+  "secondaryUrl": "https://www.clearancejobs.com/jobs/toyon-research-corporation/utah",
+  "verified": "2026-11",
+  "sourceUrl": "https://www.clearancejobs.com/jobs/toyon-research-corporation/utah"
+}
+```
+
+#### Sumaria Systems
+- **Hill evidence:** https://www.sumaria.com/careers/
+- **Careers:** https://www.sumaria.com/careers/
+- **Open near Hill now:** F-16 program office support from Clearfield (equipment specialists, FMS logistics, procurement); many 2025 postings, now closed.
+- **Confidence:** medium
+- **Needs a fix before adding:** No live evidence link: the 2025 postings are gone and its careers page only lists Utah as an office. Recheck when it posts again.
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "sumaria",
+  "base": "hill",
+  "name": "Sumaria Systems",
+  "type": "services",
+  "categories": [
+    "logistics-supply",
+    "engineering",
+    "admin-business"
+  ],
+  "roles": [
+    "F-16 avionics equipment specialist",
+    "F-16 structures equipment specialist (FMS)",
+    "Structural logistics technical advisor",
+    "FMS program and logistics manager",
+    "F-16 procurement specialist",
+    "Configuration manager"
+  ],
+  "description": "Equipment specialists, logisticians and FMS staff supporting the F-16 program office at Hill AFB",
+  "jobsUrl": "https://www.sumaria.com/careers/",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://www.sumaria.com/careers/"
+}
+```
+
+### Maybes (14)
+| Employer | Verdict | Why |
+|---|---|---|
+| Trace Systems | maybe | Hill SATCOM/network roles for DISA (Enterprise SATCOM admin, network controller, SDA network admin), 2025 postings; its iCIMS board shows no Hill jobs today. careers-tracesystems.icims.com |
+| Axient | maybe | Sentinel/ICBM Combined Test Force at Hill (missile test, reentry vehicle test, MBSE, security specialist), mostly 2024; no Hill jobs on its iCIMS board today. careers-axient.icims.com |
+| UICGS (Bowhead) | maybe | A-10 weapon system support contract at Hill: Sr. systems engineer (2025-24102), cyber security specialist; no Hill jobs on its board today. bowheadcareers-uicalaska.icims.com |
+| Golden Tech Systems | maybe | Hill sysadmin team (Primavera, Teamcenter, domain, Linux; network/COMSEC), postings 2024–Aug 2025; own careers page not found. |
+| T-Rex Solutions | maybe | Hill Component Enterprise Data Center (CEDC) O&M: IT/cloud project managers, infrastructure and virtualization engineers, 2024–25; own careers page not confirmed. Note: CEDC also has Command Cyber Solutions (already listed) and Fed95. |
+| Spiral Solutions and Technologies | maybe | ICBM support at Hill (systems engineer field support, propulsion logistician, GBSD software test, tech writer), all 2024; nothing current found. |
+| IVA'AL Solutions | maybe | Air Force Family Advocacy contract at Hill (clinical social workers FATM/FAIS, victim advocate) on Paylocity, latest seen Sep 2024; could be a base-services listing if current. |
+| DCS Corp | maybe | One current role: Electrical Engineer, Journeyman, C3BM at Hill (Aug 11, 2026, careers.dcscorp.com job 350). Fewer than 3 roles. |
+| Sierra Nevada Corporation | maybe | Many Hill ICBM engineering postings, but all "contingent upon award" (ICBM Integration Support Contract 2.0 with Guidehouse). Revisit if SNC wins. |
+| EMCOR Government Services | maybe | Facilities O&M for the DISA data center at Hill (HVAC tech, general maintenance, landscape, O&M manager); postings 2022–early 2025, some contingent on recompete. |
+| Embry-Riddle Aeronautical University | maybe | Northern Utah campus in Bldg 180 on Hill (worldwide.erau.edu/locations/northern-utah); hiring is tiny (temporary site advisor, adjuncts). |
+| Webster University | maybe | Hill campus in the Bldg 180 education center since 2000; no Hill job postings found. |
+| FPM Remediations | maybe | $29M Hill environmental remediation contract through Aug 2031 (lasting work), but no job postings or careers page found. |
+| LinQuest | maybe | Hill Sentinel roles (modeling & flight simulation lead, principal test engineer). LinQuest is now part of KBR, so these may belong under a KBR card rather than a new one. |
+
+### Weak or dropped (16)
+| Employer | Verdict | Why |
+|---|---|---|
+| TekSynap | weak | One role: inventory specialist for DLA's Enterprise Service Desk at Hill/Ogden; date unknown. |
+| Endurion | weak | One role: DevSecOps engineer (GBSD FENCES), aggregator only. |
+| Honu Services | weak | One old posting (real property specialist jr); a related KaiHonua help-desk post; no careers page. |
+| Integrated Data Services | weak | One AFNWC business analyst posting; nothing else at Hill. |
+| Belcan | drop | No Hill postings found. |
+| Shipcom Federal Solutions | drop | No Hill evidence: its Air Force award found is at Warner Robins, GA; the "$9.3M Aug 2026" award couldn't be confirmed. |
+| PlanIT Group | drop | No Hill evidence found. |
+| AxioLogic Solutions | drop | No Hill evidence found (Northern Virginia firm). |
+| PALADIN Consulting | weak | Staffing-style client roles at the Hill CEDC (project managers), 2025–early 2026; not the employer. |
+| CAE | weak | Sentinel partner; no Utah jobs found. |
+| Clark Construction | weak | Sentinel partner; no Utah jobs found. |
+| Collins Aerospace | weak | Sentinel partner; no Utah jobs found. |
+| HDT Global | weak | Sentinel partner; no Utah jobs found. |
+| Honeywell | weak | Sentinel partner; no Utah jobs found. |
+| Kratos Defense | weak | Sentinel partner; no Utah jobs found. |
+| Textron Systems | weak | Sentinel partner; no Utah jobs found. |
+
+### Skipped (23)
+| Employer | Verdict | Why |
+|---|---|---|
+| AFLCMC – Hill site | skip (covered) | Air Force civilian jobs: already covered by the "Air Force civilian jobs at Hill" card (USAJOBS + afciviliancareers.com). |
+| AFNWC ICBM Systems Directorate | skip (covered) | Same card. Tip: AFNWC's resume dropbox page (afnwc.af.mil/About-Us/Jobs) could be added to that card's links. |
+| 388th Fighter Wing | skip (covered) | Mostly military; its civilian jobs are on USAJOBS under the same card. |
+| H&R Block | skip | Seasonal tax preparers only. |
+| NVE-HHI JV | skip | Construction (MACC IV pool): temporary crews; already in Table 1 flagged as construction. |
+| HDR | skip | Architect-engineer pool (2019) from a Salt Lake City office; no Hill workforce. |
+| Jacobs | skip | Architect-engineer pool (2019) from Taylorsville; no Hill workforce. |
+| Stanley Consultants | skip | Architect-engineer pool (2019) from Murray; no Hill workforce. |
+| Stantec | skip | Architect-engineer pool (2019) from Salt Lake City; no Hill workforce. |
+| Janicki Industries | skip (supply-only) | Layton plant makes F-35 parts and tooling; no Hill workforce. |
+| Rantec | skip (supply-only) | Layton manufacturer; no Hill workforce. |
+| Williams International | skip (supply-only) | Ogden jet-engine maker (large local employer), but no Hill workforce. |
+| Parker Hannifin Control Systems | skip (supply-only) | Ogden actuation/repair plant; no Hill workforce. |
+| Petersen Inc. | skip (supply-only) | Ogden fabricator; no Hill workforce. |
+| JBT AeroTech (now Oshkosh AeroTech) | skip (supply-only) | Ogden ground-support equipment maker; no Hill workforce. |
+| PCC Structurals | skip (supply-only) | Ogden-area castings plant; no Hill workforce. |
+| Barnes Aerospace | skip (supply-only) | Ogden parts maker; no Hill workforce. |
+| Apogee Worx | skip (supply-only) | Ogden-area supplier; no Hill workforce. |
+| Insight Global | skip (staffing) | Recruits for other companies' Hill jobs; those employers are listed directly. |
+| Zachary Piper Solutions | skip (staffing) | Same. |
+| Aerotek | skip (staffing) | Same. |
+| Absolute Staffers | skip (staffing) | Same. |
+| TEKsystems | skip (staffing) | Same. |
+
+---
+
+# Round 1 (2026-11-09)
+
 ## Summary
 - **Ready to add: 17.** Each has an official careers link and durable evidence of a Hill workforce; every link was re-checked by script on 2026-11-09 (all loaded).
 - **Needs a decision or fix: 1** (see "Needs a fix" below).

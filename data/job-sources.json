@@ -17,7 +17,8 @@
     "aerospace-corp": { "type": "workday", "host": "aero.wd5.myworkdayjobs.com", "tenant": "aero", "site": "External", "searchText": "Hill AFB" },
     "draper": { "type": "workday", "host": "draper.wd5.myworkdayjobs.com", "tenant": "draper", "site": "Draper_Careers", "searchText": "Utah" },
     "parc-hill": { "type": "workday", "host": "servicesourceinc.wd1.myworkdayjobs.com", "tenant": "servicesourceinc", "site": "ServiceSource_Staff", "searchText": "Hill" },
-    "mitre": { "type": "phenom", "url": "https://careers.mitre.org/us/en/search-results", "keywords": "Hill AFB" }
+    "mitre": { "type": "phenom", "url": "https://careers.mitre.org/us/en/search-results", "keywords": "Hill AFB" },
+    "credence": { "type": "workable", "account": "credence" }
   },
   "skipped": {
     "saic": "jobs.saic.com refuses automated requests (HTTP 403, even for robots.txt).",
@@ -35,6 +36,13 @@
     "asrc-federal-netcentric": "Dayforce portal; its search API refuses automated requests (403).",
     "tecolote-research": "Custom careers app that only renders in a browser.",
     "summit-technologies": "TriNet Hire board; not a supported platform yet.",
-    "nurses-etc-staffing": "Sourceflow job board whose search isn't in the page HTML."
+    "nurses-etc-staffing": "Sourceflow job board whose search isn't in the page HTML.",
+    "accenture-federal": "Salesforce careers portal (its old Greenhouse board redirects there); no adapter.",
+    "c3el": "Greenhouse board; no adapter yet.",
+    "odyssey-systems": "iCIMS board; no adapter.",
+    "astrion": "Careers portal search loads by script; no adapter.",
+    "siertek": "Paycom job board; no adapter.",
+    "bechtel": "Careers search drops the location filter; no adapter.",
+    "jt4": "Careers page lists jobs by category through an external system; no adapter."
   }
 }

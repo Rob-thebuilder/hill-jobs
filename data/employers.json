@@ -1000,6 +1000,194 @@
       "secondaryUrl": null,
       "verified": "2026-11",
       "sourceUrl": "https://careerportal.nursesetc.net/jobs/192562/"
+    },
+    {
+      "id": "accenture-federal",
+      "base": "hill",
+      "name": "Accenture Federal Services",
+      "type": "services",
+      "description": "Cloud, DevOps and cybersecurity engineers supporting Air Force systems on site at Hill AFB",
+      "categories": [
+        "software-it"
+      ],
+      "roles": [
+        "Cloud systems administrator",
+        "DevOps / platform engineer",
+        "HPC cloud engineer",
+        "Senior cloud engineer",
+        "Information system security officer (ISSO)",
+        "Information system security manager (ISSM)"
+      ],
+      "jobsUrl": "https://smartafs.my.site.com/careers/s/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://job-boards.greenhouse.io/accenturefederalservices/jobs/4702971006"
+    },
+    {
+      "id": "c3el",
+      "base": "hill",
+      "name": "C3EL",
+      "type": "services",
+      "description": "Network technicians for DISA's 24/7 network operations at Hill AFB: JRSS, SATCOM and NOC watch roles",
+      "categories": [
+        "software-it"
+      ],
+      "roles": [
+        "JRSS network technician",
+        "Transport/IP (TRIP) network technician",
+        "Unified capabilities (UC) network specialist",
+        "Network administrator (SATCOM)",
+        "MDA NOC technician",
+        "SDA NOC technician",
+        "AISR NOC technician"
+      ],
+      "jobsUrl": "https://job-boards.greenhouse.io/c3el",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://job-boards.greenhouse.io/c3el/jobs/4944302007"
+    },
+    {
+      "id": "odyssey-systems",
+      "base": "hill",
+      "name": "Odyssey Systems Consulting",
+      "type": "services",
+      "description": "Engineers, testers and security staff supporting Air Force program offices (C3BM, training, munitions) at Hill AFB",
+      "categories": [
+        "engineering",
+        "software-it",
+        "admin-business"
+      ],
+      "roles": [
+        "Senior electrical engineer",
+        "Senior mechanical engineer",
+        "Principal test engineer",
+        "Senior general/interdisciplinary engineer",
+        "Software engineer",
+        "Information system security officer",
+        "Principal program manager",
+        "Senior equipment specialist"
+      ],
+      "jobsUrl": "https://careers-odysseyconsult.icims.com/jobs/search?ss=1&searchKeyword=Hill",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://careers-odysseyconsult.icims.com/jobs/9554/senior-electrical-engineer/job"
+    },
+    {
+      "id": "credence",
+      "base": "hill",
+      "name": "Credence Management Solutions",
+      "type": "services",
+      "description": "Engineering, program and security support for the F-16 international program office at Hill AFB",
+      "categories": [
+        "engineering",
+        "admin-business",
+        "software-it"
+      ],
+      "roles": [
+        "Structural engineering support (F-16)",
+        "Information assurance manager (F-16)",
+        "Program and logistics manager (F-16)",
+        "Flight test and evaluation manager (F-16)",
+        "Security manager (F-16)",
+        "Executive assistant"
+      ],
+      "jobsUrl": "https://apply.workable.com/credence/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://apply.workable.com/j/24412D9530"
+    },
+    {
+      "id": "astrion",
+      "base": "hill",
+      "name": "Astrion",
+      "type": "services",
+      "description": "Engineers and logisticians supporting AFLCMC digital, battle-control and training program offices at Hill AFB",
+      "categories": [
+        "engineering",
+        "logistics-supply",
+        "software-it"
+      ],
+      "roles": [
+        "Senior systems engineer",
+        "Electrical engineer",
+        "Senior logistics manager",
+        "Senior network services engineer",
+        "Senior test manager",
+        "Senior acquisition intel specialist"
+      ],
+      "jobsUrl": "https://careers.astrion.us/jobs?keywords=Hill%20AFB",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.clearancejobs.com/jobs/astrion/utah"
+    },
+    {
+      "id": "siertek",
+      "base": "hill",
+      "name": "SierTeK",
+      "type": "services",
+      "description": "Production and material support staff for the 523rd and 526th Electronics Maintenance Squadrons at Hill AFB",
+      "categories": [
+        "logistics-supply",
+        "admin-business",
+        "internships-entry"
+      ],
+      "roles": [
+        "Material support technician",
+        "Lead material support technician",
+        "Site supervisor",
+        "Technical writer and analytical support",
+        "Program management analyst"
+      ],
+      "jobsUrl": "https://www.paycomonline.net/v4/ats/web.php/jobs?clientkey=4FA5F6A76EB2C22971D8A5EBA944D71F",
+      "secondaryUrl": "https://www.siertek.com/careers",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.supplierdiversity.com/federal-spending/award/FA822724F0049/"
+    },
+    {
+      "id": "bechtel",
+      "base": "hill",
+      "name": "Bechtel (Sentinel)",
+      "type": "services",
+      "description": "Sentinel ICBM launch-infrastructure engineers and project staff at Bechtel's Ogden program office",
+      "categories": [
+        "engineering",
+        "admin-business"
+      ],
+      "roles": [
+        "Project engineer",
+        "Structural engineer (Sentinel)",
+        "Senior mechanical engineer",
+        "Senior planner / P6 scheduler",
+        "Government property administrator",
+        "Front desk attendant"
+      ],
+      "jobsUrl": "https://jobs.bechtel.com/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.bechtel.com/projects/sentinel/"
+    },
+    {
+      "id": "jt4",
+      "base": "hill",
+      "name": "JT4",
+      "type": "services",
+      "description": "Range operations and technical staff for the Utah Test and Training Range, from its range office at Hill AFB",
+      "categories": [
+        "engineering",
+        "software-it",
+        "trades-maintenance"
+      ],
+      "roles": [
+        "Mission operations controller",
+        "Mission operations scheduler",
+        "Range communications engineer",
+        "Installation technician",
+        "Power systems engineer"
+      ],
+      "jobsUrl": "https://www.jt4llc.com/careers/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.jt4llc.com/?p=261"
     }
   ]
 }
