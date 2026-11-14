@@ -705,8 +705,8 @@
         "Information system security officer",
         "Operations manager"
       ],
-      "jobsUrl": "https://www.clearancejobs.com/jobs/hx5-llc/utah",
-      "secondaryUrl": null,
+      "jobsUrl": "https://phe.tbe.taleo.net/phe01/ats/careers/v2/jobSearch?org=ACDY28&cws=37",
+      "secondaryUrl": "https://www.clearancejobs.com/jobs/hx5-llc/utah",
       "verified": "2026-11",
       "sourceUrl": "https://www.clearancejobs.com/jobs/hx5-llc/utah"
     },
@@ -868,18 +868,18 @@
       "base": "hill",
       "name": "The Aerospace Corporation",
       "type": "services",
-      "description": "Federally funded R&D center engineers supporting the Sentinel ICBM program office at Falcon Hill.",
+      "description": "Federally funded R&D center engineers supporting the Sentinel ICBM program office at Falcon Hill",
       "categories": [
         "engineering",
         "software-it"
       ],
       "roles": [
-        "Sentinel SE&I Sr. Project Engineer",
-        "Sr. Sentinel Payloads Engineer",
-        "Sr. Guidance, Navigation and Control Engineer",
-        "Software Acquisition Engineer",
-        "Sr. Engineer - Solid Propulsion",
-        "Booster Senior Aerospace/Mechanical Engineer"
+        "Sentinel SE&I senior project engineer",
+        "Senior Sentinel payloads engineer",
+        "Senior guidance, navigation and control engineer",
+        "Software acquisition engineer",
+        "Senior engineer, solid propulsion",
+        "Booster senior aerospace/mechanical engineer"
       ],
       "jobsUrl": "https://aero.wd5.myworkdayjobs.com/en-US/External?q=Hill%20AFB",
       "secondaryUrl": null,
@@ -891,19 +891,19 @@
       "base": "hill",
       "name": "MITRE",
       "type": "services",
-      "description": "Nonprofit systems engineers supporting Air Force nuclear/Sentinel program offices from MITRE's Falcon Hill site.",
+      "description": "Nonprofit systems engineers supporting Air Force nuclear and Sentinel program offices from MITRE's Falcon Hill site",
       "categories": [
         "engineering",
         "software-it",
         "admin-business"
       ],
       "roles": [
-        "Facility Security Officer",
-        "Nuclear Codes and Crypto Engineer Lead",
-        "Sentinel Enterprise Engineer",
-        "Multidisciplinary Systems Engineer",
-        "Lead Communications Engineer",
-        "Systems Engineer (Cryptography)"
+        "Facility security officer",
+        "Nuclear codes and crypto engineer lead",
+        "Sentinel enterprise engineer",
+        "Multidisciplinary systems engineer",
+        "Lead communications engineer",
+        "Systems engineer (cryptography)"
       ],
       "jobsUrl": "https://careers.mitre.org/us/en/search-results?keywords=Hill%20AFB",
       "secondaryUrl": null,
@@ -915,18 +915,18 @@
       "base": "hill",
       "name": "Draper",
       "type": "subcontractor",
-      "description": "Nonprofit R&D lab building a 30k+ SF engineering center at Falcon Hill (open fall 2026) for ICBM guidance work.",
+      "description": "Nonprofit R&D lab with a Clearfield campus and a 30,000+ sq ft ICBM guidance center being built at Falcon Hill",
       "categories": [
         "engineering",
         "software-it"
       ],
       "roles": [
-        "Senior Software Engineer",
-        "Principal Digital Electronics Engineer",
-        "Senior FPGA Design Engineer",
-        "Senior Integration and Test Engineer",
-        "Principal System Quality Engineer",
-        "Program Manager / Program Director, Air Force & Missile Defe"
+        "Senior software engineer",
+        "Principal digital electronics engineer",
+        "Senior FPGA design engineer",
+        "Senior integration and test engineer",
+        "Principal system quality engineer",
+        "Program manager / program director"
       ],
       "jobsUrl": "https://draper.wd5.myworkdayjobs.com/en-US/Draper_Careers?q=Clearfield",
       "secondaryUrl": null,
@@ -938,19 +938,19 @@
       "base": "hill",
       "name": "Tecolote Research",
       "type": "services",
-      "description": "Cost-estimating and program-control analysts supporting Air Force program offices from Falcon Hill Bldg 1580.",
+      "description": "Cost-estimating and program-control analysts supporting Air Force program offices from Falcon Hill (Building 1580)",
       "categories": [
         "admin-business",
         "engineering"
       ],
       "roles": [
-        "Budget Analyst (Junior)",
-        "Senior Cost Analyst",
-        "Journeyman Cost Analyst",
-        "Senior Cost Engineer Analyst",
-        "Schedule Analyst",
-        "Construction Cost Engineer",
-        "Cost Estimating Analyst"
+        "Budget analyst (junior)",
+        "Senior cost analyst",
+        "Journeyman cost analyst",
+        "Senior cost engineer analyst",
+        "Schedule analyst",
+        "Construction cost engineer",
+        "Cost estimating analyst"
       ],
       "jobsUrl": "https://www.tecolote.com/careers/",
       "secondaryUrl": null,
@@ -962,20 +962,20 @@
       "base": "hill",
       "name": "Summit Technologies",
       "type": "subcontractor",
-      "description": "Veteran-owned small business HQ'd at Falcon Hill providing mission planning, FMS logistics and IT support.",
+      "description": "Veteran-owned small business providing mission planning, FMS logistics and IT support at Hill AFB",
       "categories": [
         "software-it",
         "logistics-supply",
         "admin-business"
       ],
       "roles": [
-        "Mission Planning Subject Matter Expert (MPSC)",
-        "Mission Planning SME Team Lead",
-        "Foreign Military Sales (FMS) Logistics Specialist",
-        "FMS Subject Matter Expert",
-        "Configuration Management Specialist",
-        "MPC Software Test Engineer / QA",
-        "System Support Representative"
+        "Mission planning subject matter expert (MPSC)",
+        "Mission planning SME team lead",
+        "Foreign military sales (FMS) logistics specialist",
+        "FMS subject matter expert",
+        "Configuration management specialist",
+        "MPC software test engineer / QA",
+        "System support representative"
       ],
       "jobsUrl": "https://app.trinethire.com/companies/20517-summit-technologies-inc/jobs",
       "secondaryUrl": null,

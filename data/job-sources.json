@@ -27,7 +27,7 @@
     "aafes-hill-exchange": "No public job feed found on applymyexchange.com.",
     "swri": "Custom careers app (resapp.swri.org) with no location filter; not a supported platform yet.",
     "jhu-apl": "iCIMS Jibe careers site; not a supported platform yet.",
-    "hx5": "No company careers site (hx5.com is parked); the card links its ClearanceJobs page.",
+    "hx5": "Careers site is a Taleo board (no adapter for it); its ClearanceJobs Utah page is the card's second link.",
     "rmc": "Its Workable account slug couldn't be found; the card links the jobs.workable.com company page.",
     "city-light-power": "JobScore board; not a supported platform yet.",
     "american-water-hill": "SAP SuccessFactors site that only renders in a browser.",
