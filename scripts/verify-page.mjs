@@ -178,7 +178,8 @@ try {
     for (const [label, qs] of [['default', ''], ['all categories on', `?cat=${allCats}`], ['empty state', '?q=zzqqxx']]) {
       const p = await openPage(H + qs, { width: w, height: h });
       const r = await p.evaluate(`({ sw: document.documentElement.scrollWidth, iw: innerWidth, bw: document.body.scrollWidth })`);
-      check(`no sideways scroll ${w}×${h} (${label})`, r.sw <= r.iw && r.bw <= r.iw, `scrollWidth ${r.sw}, innerWidth ${r.iw}`);
+      // Compare with the screen width set above: on mobile, innerWidth grows along with any overflow.
+      check(`no sideways scroll ${w}×${h} (${label})`, r.sw <= w && r.bw <= w && r.iw === w, `scrollWidth ${r.sw}, innerWidth ${r.iw}, screen ${w}`);
       await p.close();
     }
   }
@@ -502,7 +503,7 @@ try {
     for (const w of [320, 390, 414]) {
       const p = await openPage(G, { width: w });
       const r = await p.evaluate(`({ sw: document.documentElement.scrollWidth, iw: innerWidth, h1: document.querySelectorAll('h1').length, sections: document.querySelectorAll('main section').length })`);
-      check(`guide page: no sideways scroll at ${w}px, one h1, five sections`, r.sw <= r.iw && r.h1 === 1 && r.sections === 5, JSON.stringify(r));
+      check(`guide page: no sideways scroll at ${w}px, one h1, five sections`, r.sw <= w && r.iw === w && r.h1 === 1 && r.sections === 5, JSON.stringify(r));
       await p.close();
     }
     const guideSels = "const sels = ['h1', '.eyebrow a', '.tagline', '.guide h2', '.guide h3', '.guide p', '.guide li', '.guide a', '.guide-note', '.site-footer p', '.site-footer a'];";
@@ -539,7 +540,7 @@ try {
       const p = await openPage(D, { width: w });
       const r = await p.evaluate(`({ sw: document.documentElement.scrollWidth, iw: innerWidth, h1: document.querySelectorAll('h1').length, groups: document.querySelectorAll('.dir-group').length, cols: getComputedStyle(document.querySelector('.dir-group .grid')).gridTemplateColumns.split(' ').length })`);
       const wantCols = w < 640 ? 1 : 2;
-      check(`directory page at ${w}px: no sideways scroll, one h1, ${wantCols} column(s)`, r.sw <= r.iw && r.h1 === 1 && r.groups >= 3 && r.cols === wantCols, JSON.stringify(r));
+      check(`directory page at ${w}px: no sideways scroll, one h1, ${wantCols} column(s)`, r.sw <= w && r.iw === w && r.h1 === 1 && r.groups >= 3 && r.cols === wantCols, JSON.stringify(r));
       await p.close();
     }
     {

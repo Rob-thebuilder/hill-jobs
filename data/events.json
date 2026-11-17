@@ -1,12 +1,23 @@
 {
   "_note": "Curated events (job fairs, resume workshops, meet-and-greets) near Hill AFB. Dates are Mountain Time. Past events drop off the page automatically at the next build. Events read from public calendars (event-sources.json) are added at build time. 'annual' lists recurring events whose next date isn't posted yet.",
-  "events": [],
+  "events": [
+    {
+      "id": "utah-virtual-job-fair-2027-01",
+      "title": "Utah Statewide Virtual Job Fair",
+      "type": "job-fair",
+      "start": "2027-01-14",
+      "city": "Online (statewide)",
+      "host": "Utah Department of Workforce Services",
+      "url": "https://jobs.utah.gov/",
+      "sourceUrl": "https://www.utah.gov/pmn/files/1497469.pdf"
+    }
+  ],
   "annual": [
     {
       "id": "hill-hiring-event",
       "title": "Hill AFB / Ogden Air Logistics Complex hiring event",
       "type": "job-fair",
-      "timing": "Once a year, usually winter or spring, at the Davis Conference Center in Layton",
+      "timing": "Once a year, usually in January, at the Davis Conference Center in Layton",
       "host": "Hill AFB civilian recruiting",
       "url": "https://afciviliancareers.com/events/",
       "sourceUrl": "https://www.hill.af.mil/News/Article-Display/Article/4041732/hill-hiring-event-connects-recruiters-with-job-seekers/"
@@ -15,7 +26,7 @@
       "id": "utah-virtual-job-fair",
       "title": "Utah Statewide Virtual Job Fair",
       "type": "job-fair",
-      "timing": "Several times a year (2026: January, March, July, September, November), with a prep workshop the day before",
+      "timing": "About every two months (2026: January, March, May, July, September, November), with a prep workshop the day before",
       "host": "Utah Department of Workforce Services",
       "url": "https://jobs.utah.gov/",
       "sourceUrl": "https://jobs.utah.gov/department/press/2026/010526.html"
@@ -33,7 +44,7 @@
       "id": "weber-career-fairs",
       "title": "Weber State career and internship fairs",
       "type": "job-fair",
-      "timing": "Fall fairs in September and October; spring dates posted on Weber's events page",
+      "timing": "Fall fairs in September and October; the spring career and internship fair is usually in late January",
       "host": "Weber State University Career Services",
       "url": "https://www.weber.edu/careerservices/events/",
       "sourceUrl": "https://www.weber.edu/careerservices/events/"

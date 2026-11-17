@@ -22,7 +22,7 @@ Researched 2026-11-09 by four research agents plus a careers-link check.
 - **Hill evidence:** https://www.hill.af.mil/News/Article-Display/Article/3441081/disa-completes-orion-cyber-operations-center-hill-advances-command-and-control/
 - **Careers:** https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=DD04
 - **Open near Hill now:** 8 DISA openings on USAJOBS listing Hill AFB/Ogden today (IT cybersecurity specialists: network, system administration, customer support).
-- **Confidence:** high · Evidence is Hill's own news release (hill.af.mil, on the link checker's skip list, so open it in a browser once): DISA's Ogden Data Center on Hill houses its Global Operations Center West, Orion Cyber Operations Center, hosting and Global Service Desk (about 650 staff per an Air Force release). USAJOBS counts will work automatically (agency code DD04).
+- **Confidence:** high · Evidence is Hill's own news release (hill.af.mil, on the link checker's skip list; opened in a browser by the site owner on 2026-11-16): DISA's Ogden Data Center on Hill houses its Global Operations Center West, Orion Cyber Operations Center, hosting and Global Service Desk (about 650 staff per an Air Force release). USAJOBS counts will work automatically (agency code DD04).
 - **Your call:** ☐ add ☐ fix ☐ skip
 
 ```json
