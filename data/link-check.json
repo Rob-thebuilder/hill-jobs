@@ -3,8 +3,9 @@
   "retries": 2,
   "blockedStatuses": [401, 403, 429, 999],
   "skipDomains": [
-    { "domain": "careers.rtx.com", "why": "RTX careers site returns 403 to every automated request (RTX / Pratt & Whitney card)." },
-    { "domain": "jobs.saic.com", "why": "SAIC careers site returns 403 to every automated request (SAIC card)." },
+    { "domain": "careers.rtx.com", "why": "RTX careers site returns 403 to every automated request (RTX / Pratt & Whitney card). Checked by hand 2026-11-16: page loads; no Hill AFB or Utah openings at the time." },
+    { "domain": "jobs.saic.com", "why": "SAIC careers site returns 403 to every automated request (SAIC card). Checked by hand 2026-11-16: the Utah search (search/jobs?q=utah) showed 2 openings." },
+    { "domain": "toyon.com", "why": "Toyon careers site returns 403 to automated requests (Toyon Research card). Checked by hand 2026-11-16: careers page loads and lists Clearfield, UT openings." },
     { "domain": "hill.af.mil", "why": "Air Force public sites return 403 to automated requests (hiring guide: visitor access)." }
   ]
 }

@@ -159,7 +159,7 @@
         "Software systems engineer",
         "Systems engineering manager"
       ],
-      "jobsUrl": "https://jobs.saic.com/jobs?location=Hill%20AFB",
+      "jobsUrl": "https://jobs.saic.com/search/jobs?q=utah",
       "secondaryUrl": null,
       "verified": "2026-11",
       "sourceUrl": "https://clearancejobs.com/jobs/saic/hill-afb-ut"
@@ -1188,6 +1188,28 @@
       "secondaryUrl": null,
       "verified": "2026-11",
       "sourceUrl": "https://www.jt4llc.com/?p=261"
+    },
+    {
+      "id": "toyon",
+      "base": "hill",
+      "name": "Toyon Research",
+      "type": "services",
+      "description": "Engineers and analysts at Toyon Research's Clearfield office near Hill AFB (clearance required for most roles)",
+      "categories": [
+        "engineering",
+        "admin-business"
+      ],
+      "roles": [
+        "Mechanical engineer",
+        "Aerospace project engineer",
+        "Senior electrical engineer",
+        "Systems analyst",
+        "Facility security officer"
+      ],
+      "jobsUrl": "https://www.toyon.com/careers/",
+      "secondaryUrl": "https://www.clearancejobs.com/jobs/toyon-research-corporation/utah",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.clearancejobs.com/jobs/toyon-research-corporation/utah"
     }
   ]
 }

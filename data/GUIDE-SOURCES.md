@@ -38,7 +38,8 @@ Checked 2026-11-09. Every claim on `/how-hiring-works/` traces to an official .g
 |---|---|---|
 | A standard license without the REAL ID star doesn't work for military bases | https://www.tsa.gov/news/press/releases/2025/04/24/virginia-and-dc-residents-will-need-real-id-board-airplane-starting | "will not be valid to board a domestic flight or to access secure federal facilities, including military bases" |
 | REAL ID enforcement began May 7, 2025; a passport is an alternative | https://www.tsa.gov/realid/realid-faqs | "REAL ID enforcement began on May 7, 2025."; "or another acceptable alternative such as a passport" |
-| ⚑ Hill's visitor pass process, visitor center and hours | https://www.hill.af.mil/News/Article-Display/Article/3737475/new-visitor-access-procedures-at-hill-afb/ | hill.af.mil blocks automated reading (403). **Linked only, not quoted.** Check in a browser that the link opens. |
+| Once hired, CAC base access comes through a government sponsor; DoD civilians qualify through employment, contractors when they need regular access | https://www.govinfo.gov/app/details/CFR-2025-title32-vol1/CFR-2025-title32-vol1-sec161-7 | "Applicants for a CAC shall be sponsored by a DoD Government official or employee."; populations include "DoD civilian employees" (by employment) and "DoD contractors" based on "the type and frequency of access required" (32 CFR 161.7, checked 2026-11-16) |
+| ⚑ Hill's visitor pass process, visitor center and hours | https://www.hill.af.mil/News/Article-Display/Article/3737475/new-visitor-access-procedures-at-hill-afb/ | hill.af.mil blocks automated reading (403). **Linked only, not quoted.** Opened in a browser by the site owner on 2026-11-16: still describes how visitors get on base. |
 | ⚑ DoD visitor rules (DoDM 5200.08 Vol. 3) | https://www.esd.whs.mil/Portals/54/Documents/DD/issuances/dodm/520008_vol3.pdf | Blocked (403). **Not used.** |
 
 ## 5. Veteran and military spouse preferences

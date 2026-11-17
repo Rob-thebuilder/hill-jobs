@@ -43,6 +43,7 @@
     "astrion": "Careers portal search loads by script; no adapter.",
     "siertek": "Paycom job board; no adapter.",
     "bechtel": "Careers search drops the location filter; no adapter.",
-    "jt4": "Careers page lists jobs by category through an external system; no adapter."
+    "jt4": "Careers page lists jobs by category through an external system; no adapter.",
+    "toyon": "toyon.com refuses automated requests (HTTP 403)."
   }
 }

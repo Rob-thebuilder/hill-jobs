@@ -8,6 +8,8 @@ Researched 2026-11-09 by four research agents plus a careers-link check.
 
 **Status, 2026-11-14:** at your request, all 8 "Ready to add" employers were added to `employers.json` (the directory went from 40 to 48). Credence also gets live job titles (Workable); the other 7 are listed in `job-sources.json` "skipped" with the reason. The "Needs a fix", maybe, weak and skipped ones were **not** added.
 
+**Update, 2026-11-16:** you checked Toyon's careers page in a browser (it lists Clearfield, UT openings), so **Toyon Research was added** (49 employers), described only as its Clearfield office near Hill AFB, since no source ties that office to Hill programs. ManTech: you found no Utah openings today; its working Utah search is https://careers.mantech.com/en_US/careers/SearchJobs/utah?listFilterMode=1&jobRecordsPerPage=6& — check back later.
+
 Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo root, not committed). Each one was searched for a Hill workforce and an official careers link; every link in the snippets below was checked with `scripts/check-links.mjs` on 2026-11-14, and the snippets pass the employers.json schema. **Nothing was added to employers.json.**
 
 ### Round 2 summary
@@ -334,6 +336,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 - **Open near Hill now:** F-16 avionics (IAIS) product support at Hill: equipment specialists, ILS manager, electrical/systems engineer, QA specialist, program control analyst (postings 2024–2025).
 - **Confidence:** medium
 - **Needs a fix before adding:** ManTech's careers site (Avature) times out for the script and the sample job page is gone (404). Check in a browser that the Hill search works and shows current jobs.
+- **Checked by hand 2026-11-16:** no Utah openings. Use this Utah search when checking back: https://careers.mantech.com/en_US/careers/SearchJobs/utah?listFilterMode=1&jobRecordsPerPage=6& (if it's added later, use it as jobsUrl in place of the Avature link above).
 - **Your call:** ☐ add ☐ fix ☐ skip
 
 ```json
@@ -401,6 +404,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 - **Open near Hill now:** Clearfield office near Hill: ClearanceJobs "Toyon Research Corporation Jobs in Utah" lists current Clearfield jobs (mechanical, aerospace project and electrical engineers, systems analyst, FSO).
 - **Confidence:** medium
 - **Needs a fix before adding:** toyon.com blocks automated checks (403): open its careers page in a browser. Also confirm the Clearfield office supports Hill programs (the evidence shows Clearfield, not Hill AFB itself).
+- **Resolved 2026-11-16, added:** you confirmed the careers page lists Clearfield, UT openings. Added with the description "Engineers and analysts at Toyon Research's Clearfield office near Hill AFB (clearance required for most roles)", since the Hill-programs link is still unconfirmed.
 - **Your call:** ☐ add ☐ fix ☐ skip
 
 ```json
