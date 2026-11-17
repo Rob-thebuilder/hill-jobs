@@ -4,6 +4,295 @@ Researched 2026-11-09 by four research agents plus a careers-link check.
 
 **Status, 2026-11-09:** at your request, all 17 "Ready to add" employers were added to `employers.json` (the directory went from 23 to 40). Six of them also get live job titles: KBR/Trinzic, Booz Allen, The Aerospace Corporation, Draper and PARC/ServiceSource on Workday, and MITRE on Phenom; the other 11 are listed in `job-sources.json` "skipped" with the reason. Pelatron ("Needs a fix"), the weak ones and the maybes were **not** added.
 
+## Round 3 (2026-11-16): new search
+
+**Status, 2026-11-16:** at your request, all 4 "Ready to add" employers were added to `employers.json` (49 → 53): DISA and the Army Corps of Engineers (federal; USAJOBS counts come from their agency codes) and I2X Technologies and SPA (listed in `job-sources.json` "skipped": iCIMS boards). The "Needs a fix", maybe and weak ones were **not** added.
+
+**Sources:** (1) companies posting Hill-area jobs on ClearanceJobs today (Hill AFB, Ogden, Clearfield, Layton and Roy pages: 110 jobs from 36 companies); (2) every federal agency with current USAJOBS openings at Hill and nearby; (3) subcontractors that came up in Round 2 searches but weren't reviewed; (4) USAspending contract recipients ranked 101–200 for Hill. Everything already in the directory or in Rounds 1–2 was filtered out first. Every snippet link below was checked with `scripts/check-links.mjs` on 2026-11-16 and the snippets pass the schema. **Nothing was added to employers.json.**
+
+### Round 3 summary
+- **Ready to add: 4**: DISA and the Army Corps of Engineers (federal, both missing from the directory), I2X Technologies, Systems Planning and Analysis.
+- **Needs a fix: 3**: Applied Research Solutions (no own careers site found), Infinity Systems Engineering (careers site unconfirmed), Fed95 (careers page needs a browser check).
+- **Maybe: 7**: Tactical Air Support, System High, Delaware Nation Industries, GMRE, NAVFAC, NAVAIR, DCMA.
+- **Weak or dropped: 15**: mostly companies with a single Hill-area posting today.
+- **Not researched one by one:** 65 small contract recipients (see below).
+
+### Ready to add (4)
+#### Defense Information Systems Agency (DISA) · federal
+- **Hill evidence:** https://www.hill.af.mil/News/Article-Display/Article/3441081/disa-completes-orion-cyber-operations-center-hill-advances-command-and-control/
+- **Careers:** https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=DD04
+- **Open near Hill now:** 8 DISA openings on USAJOBS listing Hill AFB/Ogden today (IT cybersecurity specialists: network, system administration, customer support).
+- **Confidence:** high · Evidence is Hill's own news release (hill.af.mil, on the link checker's skip list, so open it in a browser once): DISA's Ogden Data Center on Hill houses its Global Operations Center West, Orion Cyber Operations Center, hosting and Global Service Desk (about 650 staff per an Air Force release). USAJOBS counts will work automatically (agency code DD04).
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "disa",
+  "base": "hill",
+  "name": "Defense Information Systems Agency (DISA)",
+  "type": "federal",
+  "description": "DoD's IT agency runs its Ogden Data Center on Hill AFB: global operations, cyber operations and hosting",
+  "categories": [
+    "software-it"
+  ],
+  "roles": [
+    "IT cybersecurity specialist (network/infosec)",
+    "IT cybersecurity specialist (system administration)",
+    "IT cybersecurity specialist (customer support)",
+    "IT specialist (data center operations)"
+  ],
+  "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=DD04",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://www.hill.af.mil/News/Article-Display/Article/3441081/disa-completes-orion-cyber-operations-center-hill-advances-command-and-control/"
+}
+```
+
+#### U.S. Army Corps of Engineers (Utah Resident Office) · federal
+- **Hill evidence:** https://www.army.mil/article/284418/usace_sacramento_enhances_partnerships_to_support_military_and_civil_works_missions
+- **Careers:** https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=ARCE
+- **Open near Hill now:** 5 openings on USAJOBS for Hill AFB today, 3 of them located at Hill itself (IT specialist (network services) ×2, engineering technician (civil)), plus procurement analysts.
+- **Confidence:** high · Army.mil (2025) on the Sacramento District's stakeholder meeting at Hill; DVIDS (2024) shows its Utah Resident Office staff at Hill projects. Agency code ARCE.
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "usace",
+  "base": "hill",
+  "name": "U.S. Army Corps of Engineers (Utah Resident Office)",
+  "type": "federal",
+  "description": "Sacramento District's Utah Resident Office at Hill AFB, managing military construction projects on base",
+  "categories": [
+    "engineering",
+    "admin-business",
+    "software-it"
+  ],
+  "roles": [
+    "Engineering technician (civil)",
+    "Construction engineer",
+    "Procurement analyst",
+    "IT specialist (network services)"
+  ],
+  "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=ARCE",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://www.army.mil/article/284418/usace_sacramento_enhances_partnerships_to_support_military_and_civil_works_missions"
+}
+```
+
+#### I2X Technologies
+- **Hill evidence:** https://www.clearancejobs.com/jobs/i2x-technologies/utah
+- **Careers:** https://careers-i2xisys.icims.com/jobs/search?ss=1&searchKeyword=Hill · also https://www.clearancejobs.com/jobs/i2x-technologies/utah
+- **Open near Hill now:** ClearanceJobs "I2X Technologies Jobs in Utah" lists current Hill AFB openings (13 Hill mentions); 2 Hill postings updated today. Roles: MDA NOC technician, SDA network technician, transport/IP network controller, SATCOM network support.
+- **Confidence:** high · Works alongside C3EL on DISA network operations at Hill. Its own iCIMS Hill search shows 1 job today; ClearanceJobs is the second link.
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "i2x",
+  "base": "hill",
+  "name": "I2X Technologies",
+  "type": "services",
+  "categories": [
+    "software-it"
+  ],
+  "roles": [
+    "MDA NOC technician",
+    "SDA network technician",
+    "Transport/IP network controller",
+    "SATCOM IP network support specialist",
+    "Network administrator",
+    "Systems administrator"
+  ],
+  "description": "Network operations technicians and administrators supporting DISA and missile-defense networks at Hill AFB",
+  "jobsUrl": "https://careers-i2xisys.icims.com/jobs/search?ss=1&searchKeyword=Hill",
+  "secondaryUrl": "https://www.clearancejobs.com/jobs/i2x-technologies/utah",
+  "verified": "2026-11",
+  "sourceUrl": "https://www.clearancejobs.com/jobs/i2x-technologies/utah"
+}
+```
+
+#### Systems Planning and Analysis (SPA)
+- **Hill evidence:** https://www.clearancejobs.com/jobs/9301228
+- **Careers:** https://careers-spa.icims.com/jobs/search?ss=1
+- **Open near Hill now:** "Surety Program Manager (Hill AFB)" posted on ClearanceJobs (updated today); 2026 postings include Systems Engineer (Command Sys SW, Hill AFB, May 24, 2026), Sentinel future-capabilities and MK21A systems engineers, ICBM transformation PM.
+- **Confidence:** high · Its own iCIMS board doesn't return Hill jobs for a keyword search, so the card opens the full board.
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "spa",
+  "base": "hill",
+  "name": "Systems Planning and Analysis (SPA)",
+  "type": "services",
+  "categories": [
+    "engineering",
+    "admin-business",
+    "software-it"
+  ],
+  "roles": [
+    "Systems engineer (Sentinel)",
+    "Systems software engineer",
+    "MBSE architect",
+    "Warhead systems engineer",
+    "Surety program manager",
+    "ICBM transformation program manager",
+    "Program analyst"
+  ],
+  "description": "Systems engineers and program analysts supporting the Sentinel and Minuteman III ICBM program offices at Hill AFB",
+  "jobsUrl": "https://careers-spa.icims.com/jobs/search?ss=1",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://www.clearancejobs.com/jobs/9301228"
+}
+```
+
+### Needs a fix (3)
+#### Applied Research Solutions
+- **Hill evidence:** https://www.clearancejobs.com/jobs/applied-research-solutions/hill-afb-ut
+- **Careers:** https://www.clearancejobs.com/jobs/applied-research-solutions/hill-afb-ut
+- **Open near Hill now:** ClearanceJobs "Applied Research Solutions Jobs in Hill AFB, UT" lists many current Hill openings (35 Hill mentions; one updated today).
+- **Confidence:** high Hill evidence
+- **Needs a fix before adding:** Own careers site not found: appliedresearchsolutions.com doesn't respond to the script. Snippet uses ClearanceJobs (as Torch would). Find its own board, or accept ClearanceJobs.
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "applied-research-solutions",
+  "base": "hill",
+  "name": "Applied Research Solutions",
+  "type": "services",
+  "categories": [
+    "engineering",
+    "software-it",
+    "admin-business"
+  ],
+  "roles": [
+    "Acquisition program specialist",
+    "Technical order manager",
+    "Information system security officer (ISSO)",
+    "Senior technical data manager",
+    "Senior systems engineer",
+    "Network administrator"
+  ],
+  "description": "Acquisition, engineering and cyber staff supporting Air Force program offices at Hill AFB (armament, aerospace)",
+  "jobsUrl": "https://www.clearancejobs.com/jobs/applied-research-solutions/hill-afb-ut",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://www.clearancejobs.com/jobs/applied-research-solutions/hill-afb-ut"
+}
+```
+
+#### Infinity Systems Engineering
+- **Hill evidence:** https://infinity.dejobs.org/hill-air-force-base-ut/senior-aerospace-propulsion-engineer/826F68449A6C4081AC99485CBFA93BE8/job/
+- **Careers:** https://www.infinity-systems.com/careers
+- **Open near Hill now:** Many ICBM postings at Hill (Layton) on DirectEmployers: M&S, materials, electrical, test and propulsion engineers, equipment specialist, junior program analyst; some contingent on award.
+- **Confidence:** medium
+- **Needs a fix before adding:** Couldn't confirm its own careers site: infinity-systems.com/careers loads but may be a different company. Open it in a browser and check it's the Huntsville ICBM contractor with Hill jobs.
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "infinity-systems-engineering",
+  "base": "hill",
+  "name": "Infinity Systems Engineering",
+  "type": "services",
+  "categories": [
+    "engineering",
+    "logistics-supply",
+    "internships-entry"
+  ],
+  "roles": [
+    "Modeling and simulation engineer",
+    "Materials (re-entry subsystem) engineer",
+    "Electrical engineer",
+    "Test engineer",
+    "Equipment specialist",
+    "Junior program analyst"
+  ],
+  "description": "Engineers and analysts supporting ICBM (Minuteman III and Sentinel) programs at Hill AFB",
+  "jobsUrl": "https://www.infinity-systems.com/careers",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://infinity.dejobs.org/hill-air-force-base-ut/senior-aerospace-propulsion-engineer/826F68449A6C4081AC99485CBFA93BE8/job/"
+}
+```
+
+#### Fed95 (Waseyabek Development Co.)
+- **Hill evidence:** https://www.jobtarget.com/jobs/jt-t6ycz7viy3/information-systems-security-officer-isso-hill-air-force-base-utah
+- **Careers:** https://fed95.com/careers/
+- **Open near Hill now:** Hill Component Enterprise Data Center (CEDC) IT O&M postings on JobTarget: ISSO, computer user support, sysadmin, database architect, senior IT PMs, document management.
+- **Confidence:** medium
+- **Needs a fix before adding:** Its careers page (fed95.com/careers) loads but its job list isn't readable by script: check in a browser that Hill openings show there. Note the CEDC also has Command Cyber Solutions (listed) and T-Rex (Round 2 maybe).
+- **Your call:** ☐ add ☐ fix ☐ skip
+
+```json
+{
+  "id": "fed95",
+  "base": "hill",
+  "name": "Fed95 (Waseyabek Development Co.)",
+  "type": "services",
+  "categories": [
+    "software-it",
+    "admin-business"
+  ],
+  "roles": [
+    "Computer user support specialist",
+    "Information systems security officer (ISSO)",
+    "Systems administrator",
+    "Database architect",
+    "Senior IT project manager",
+    "Senior document management specialist"
+  ],
+  "description": "IT operations staff for the Hill Component Enterprise Data Center (CEDC) contract on Hill AFB",
+  "jobsUrl": "https://fed95.com/careers/",
+  "secondaryUrl": null,
+  "verified": "2026-11",
+  "sourceUrl": "https://www.jobtarget.com/jobs/jt-t6ycz7viy3/information-systems-security-officer-isso-hill-air-force-base-utah"
+}
+```
+
+### Maybes (7)
+| Employer | Verdict | Why |
+|---|---|---|
+| Tactical Air Support | maybe | Real Hill crew maintaining adversary F-5/T-38 aircraft (aircraft and avionics mechanics, electrician, expediter, QA, maintenance control), but postings found are 2024–Mar 2025 and its careers page doesn't show Hill today. Strong trades fit if it posts again: tacticalairsupport.com/careers |
+| System High Corporation | maybe | Security staff at Hill/Layton (program and activity security reps, ISSE, IT assurance), postings Apr–May 2026 plus one today in Layton; careers page (systemhigh.com/careers) loads but shows no Utah jobs to the script. |
+| Delaware Nation Industries | maybe | Hill help desk / IT support roles (2025–Aug 2026), but no Utah jobs on its Workable board today. Uses Workable, so it would get live titles if added. |
+| Gauss Management Research & Engineering (GMRE) | maybe | HQ in South Ogden; engineering, security and production roles; one Hill AFB posting today. Hill tie beyond proximity not confirmed (like Toyon). |
+| Naval Facilities Engineering Systems Command (NAVFAC) | maybe | 6 USAJOBS openings list Hill AFB, but all are "Multiple Locations" announcements; no Hill-only NAVFAC office confirmed. |
+| Naval Air Systems Command (NAVAIR) | maybe | One USAJOBS opening at Hill: Interdisciplinary Engineer, F-35 Depot Senior Engineer. Small Navy presence at the F-35 depot. |
+| Defense Contract Management Agency (DCMA) | maybe | One USAJOBS opening (contract administrator) listing Hill among multiple locations. |
+
+### Weak or dropped (15)
+| Employer | Verdict | Why |
+|---|---|---|
+| Guidehouse | weak | Only Hill postings are contingent on an ICBM support contract award (with SNC). |
+| Chenega | drop | No Hill postings found. |
+| Integrits | drop | Nothing found. |
+| Vaxcom Services (Clearfield) | weak | One ClearanceJobs posting in the Hill area today; not enough for 3 roles. Recheck next round. |
+| Bow Wave (Clearfield) | weak | One ClearanceJobs posting in the Hill area today; not enough for 3 roles. Recheck next round. |
+| Assured Information Security (Clearfield) | weak | One ClearanceJobs posting in the Hill area today; not enough for 3 roles. Recheck next round. |
+| Titan Technologies (Clearfield) | weak | One ClearanceJobs posting in the Hill area today; not enough for 3 roles. Recheck next round. |
+| Systolic (Clearfield) | weak | One ClearanceJobs posting in the Hill area today; not enough for 3 roles. Recheck next round. |
+| DecisionPoint (Hill AFB) | weak | One ClearanceJobs posting in the Hill area today; not enough for 3 roles. Recheck next round. |
+| Allyon (Layton) | weak | One ClearanceJobs posting in the Hill area today; not enough for 3 roles. Recheck next round. |
+| Potawatomi Federal Solutions (Ogden) | weak | One ClearanceJobs posting in the Hill area today; not enough for 3 roles. Recheck next round. |
+| PGTEK (Ogden) | weak | One ClearanceJobs posting in the Hill area today; not enough for 3 roles. Recheck next round. |
+| Davidson Technologies (Ogden) | weak | One ClearanceJobs posting in the Hill area today; not enough for 3 roles. Recheck next round. |
+| Auria (Ogden) | weak | One ClearanceJobs posting in the Hill area today; not enough for 3 roles. Recheck next round. |
+| IC-CAP (Ogden) | weak | One ClearanceJobs posting in the Hill area today; not enough for 3 roles. Recheck next round. |
+
+### Skipped
+| Employer | Verdict | Why |
+|---|---|---|
+| U.S. Army Reserve Command; Army National Guard | skip | Ogden reserve/guard centers, not Hill. |
+| VA, IRS, DHS, U.S. Courts, NTSB, NRC, Forest Service, USDA, ICE, Justice | skip | Ogden offices or nationwide/remote announcements that list Hill-area towns; not Hill employers. |
+
+### Contract recipients ranked 101–200
+65 recipients ranked 101–200 by Hill contract dollars (each $1–3M over 3 years) weren't researched one by one: most are equipment, furniture, IT resale or construction (e.g., Kardex Remstar, Dell Federal, Allsteel, Mazak, Cummins, construction JVs), which our rules skip. Ones that may be on-site services and are worth a look next round: Maintenance Engineers Inc, Logistic Specialties Inc, Leader Communications, Strategic Technology Institute, T Square Logistics, PM Jenkins Group, Chenega Reliable Services, Koniag Integration Solutions, Parsons, CGI Federal, Sytronics, BKW GSE Consulting, Anautics. Ranks 81–100 couldn't be loaded (the USAspending API timed out on that page).
+
+---
+
 ## Round 2 (2026-11-14): 66 employers from new-candidates.json
 
 **Status, 2026-11-14:** at your request, all 8 "Ready to add" employers were added to `employers.json` (the directory went from 40 to 48). Credence also gets live job titles (Workable); the other 7 are listed in `job-sources.json` "skipped" with the reason. The "Needs a fix", maybe, weak and skipped ones were **not** added.

@@ -5,6 +5,8 @@ import { apiParamsFromJobsUrl, fetchUsajobs, mountainDate } from '../scripts/lib
 
 const data = JSON.parse(await readFile(new URL('../data/employers.json', import.meta.url), 'utf8'));
 const FAKE_KEY = 'FAKE-KEY-123-do-not-log';
+// Number of employers whose jobs link is a USAJOBS search (the federal cards).
+const FED_COUNT = data.employers.filter((e) => apiParamsFromJobsUrl(e.jobsUrl)).length;
 const FAKE_EMAIL = 'fake-sender@example.invalid';
 
 const json = (body, status = 200) => new Response(JSON.stringify(body), { status, headers: { 'content-type': 'application/json' } });
@@ -26,6 +28,8 @@ test('every current USAJOBS jobsUrl maps to API params', () => {
     'deca-hill-commissary': { LocationName: 'Hill AFB, Utah', Organization: 'DD34' },
     '419th-fighter-wing': { LocationName: 'Hill AFB, Utah', Organization: 'AF0M' },
     '75th-medical-group': { LocationName: 'Hill AFB, Utah', Organization: 'DD83' },
+    disa: { LocationName: 'Hill AFB, Utah', Organization: 'DD04' },
+    usace: { LocationName: 'Hill AFB, Utah', Organization: 'ARCE' },
   };
   const mapped = Object.fromEntries(data.employers.map((e) => [e.id, apiParamsFromJobsUrl(e.jobsUrl)]).filter(([, p]) => p));
   assert.deepEqual(mapped, expected);
@@ -77,9 +81,9 @@ test('success: one request per eligible entry with exactly the documented header
   const { log } = captureLog();
   const r = await fetchUsajobs(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log, now: new Date('2026-11-06T18:00:00Z') });
   assert.equal(r.checkedAt, '2026-11-06');
-  assert.equal(r.eligible, 7);
-  assert.equal(seen.length, 7);
-  assert.equal(Object.keys(r.counts).length, 7);
+  assert.equal(r.eligible, FED_COUNT);
+  assert.equal(seen.length, FED_COUNT);
+  assert.equal(Object.keys(r.counts).length, FED_COUNT);
   assert.equal(r.counts['air-force-civilian-hill'], 2);
   for (const s of seen) {
     assert.deepEqual(s.headers, { Host: 'data.usajobs.gov', 'User-Agent': FAKE_EMAIL, 'Authorization-Key': FAKE_KEY });
@@ -97,7 +101,7 @@ test('one failing entry does not stop the others', async () => {
   const fetchImpl = async () => (++i === 2 ? json({}, 500) : json(countBody(5)));
   const { log, lines } = captureLog();
   const r = await fetchUsajobs(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log });
-  assert.equal(Object.keys(r.counts).length, 6);
+  assert.equal(Object.keys(r.counts).length, FED_COUNT - 1);
   assert.match(lines.join('\n'), /HTTP 500/);
 });
 
@@ -129,7 +133,7 @@ test('network errors, timeouts and bad JSON skip just that entry', async () => {
   const fetchImpl = async (url, init) => responses[Math.min(i++, responses.length - 1)](init);
   const { log, lines } = captureLog();
   const r = await fetchUsajobs(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log, timeoutMs: 30 });
-  assert.equal(Object.keys(r.counts).length, 4);
+  assert.equal(Object.keys(r.counts).length, FED_COUNT - 3);
   const text = lines.join('\n');
   assert.match(text, /network error|TypeError/);
   assert.match(text, /timed out/);
@@ -201,7 +205,7 @@ test('titles come back per employer, cleaned and de-duplicated; failures give no
   const { log } = captureLog();
   const r = await fetchUsajobs(fed, { key: FAKE_KEY, email: FAKE_EMAIL, fetchImpl, log });
   const ids = Object.keys(r.counts);
-  assert.equal(ids.length, 6);
+  assert.equal(ids.length, FED_COUNT - 1);
   assert.deepEqual(r.titles[ids[0]], ['Aircraft mechanic', 'Painter']);
   assert.equal(r.counts[ids[0]], 3); // count is the API total, not the number of distinct titles
   const failedId = data.employers.filter((e) => apiParamsFromJobsUrl(e.jobsUrl))[1].id;

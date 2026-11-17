@@ -44,6 +44,8 @@
     "siertek": "Paycom job board; no adapter.",
     "bechtel": "Careers search drops the location filter; no adapter.",
     "jt4": "Careers page lists jobs by category through an external system; no adapter.",
-    "toyon": "toyon.com refuses automated requests (HTTP 403)."
+    "toyon": "toyon.com refuses automated requests (HTTP 403).",
+    "i2x": "iCIMS board; no adapter.",
+    "spa": "iCIMS board; no adapter."
   }
 }

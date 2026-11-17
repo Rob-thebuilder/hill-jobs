@@ -1210,6 +1210,95 @@
       "secondaryUrl": "https://www.clearancejobs.com/jobs/toyon-research-corporation/utah",
       "verified": "2026-11",
       "sourceUrl": "https://www.clearancejobs.com/jobs/toyon-research-corporation/utah"
+    },
+    {
+      "id": "disa",
+      "base": "hill",
+      "name": "Defense Information Systems Agency (DISA)",
+      "type": "federal",
+      "description": "DoD's IT agency runs its Ogden Data Center on Hill AFB: global operations, cyber operations and hosting",
+      "categories": [
+        "software-it"
+      ],
+      "roles": [
+        "IT cybersecurity specialist (network/infosec)",
+        "IT cybersecurity specialist (system administration)",
+        "IT cybersecurity specialist (customer support)",
+        "IT specialist (data center operations)"
+      ],
+      "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=DD04",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.hill.af.mil/News/Article-Display/Article/3441081/disa-completes-orion-cyber-operations-center-hill-advances-command-and-control/"
+    },
+    {
+      "id": "usace",
+      "base": "hill",
+      "name": "U.S. Army Corps of Engineers (Utah Resident Office)",
+      "type": "federal",
+      "description": "Sacramento District's Utah Resident Office at Hill AFB, managing military construction projects on base",
+      "categories": [
+        "engineering",
+        "admin-business",
+        "software-it"
+      ],
+      "roles": [
+        "Engineering technician (civil)",
+        "Construction engineer",
+        "Procurement analyst",
+        "IT specialist (network services)"
+      ],
+      "jobsUrl": "https://www.usajobs.gov/search/results/?l=Hill%20AFB%2C%20Utah&a=ARCE",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.army.mil/article/284418/usace_sacramento_enhances_partnerships_to_support_military_and_civil_works_missions"
+    },
+    {
+      "id": "i2x",
+      "base": "hill",
+      "name": "I2X Technologies",
+      "type": "services",
+      "description": "Network operations technicians and administrators supporting DISA and missile-defense networks at Hill AFB",
+      "categories": [
+        "software-it"
+      ],
+      "roles": [
+        "MDA NOC technician",
+        "SDA network technician",
+        "Transport/IP network controller",
+        "SATCOM IP network support specialist",
+        "Network administrator",
+        "Systems administrator"
+      ],
+      "jobsUrl": "https://careers-i2xisys.icims.com/jobs/search?ss=1&searchKeyword=Hill",
+      "secondaryUrl": "https://www.clearancejobs.com/jobs/i2x-technologies/utah",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.clearancejobs.com/jobs/i2x-technologies/utah"
+    },
+    {
+      "id": "spa",
+      "base": "hill",
+      "name": "Systems Planning and Analysis (SPA)",
+      "type": "services",
+      "description": "Systems engineers and program analysts supporting the Sentinel and Minuteman III ICBM program offices at Hill AFB",
+      "categories": [
+        "engineering",
+        "admin-business",
+        "software-it"
+      ],
+      "roles": [
+        "Systems engineer (Sentinel)",
+        "Systems software engineer",
+        "MBSE architect",
+        "Warhead systems engineer",
+        "Surety program manager",
+        "ICBM transformation program manager",
+        "Program analyst"
+      ],
+      "jobsUrl": "https://careers-spa.icims.com/jobs/search?ss=1",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.clearancejobs.com/jobs/9301228"
     }
   ]
 }

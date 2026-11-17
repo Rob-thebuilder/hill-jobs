@@ -17,6 +17,7 @@ const data = JSON.parse(await read('data/employers.json'));
 const site = JSON.parse(await read('data/site.json'));
 const template = await read('templates/base.html');
 const usajobsIds = data.employers.filter((e) => apiParamsFromJobsUrl(e.jobsUrl)).map((e) => e.id);
+const FED_COUNT = usajobsIds.length;
 const render = (counts) => renderBase('hill', data.bases.hill, data.employers, site, template, counts);
 const strip = (html) => html.replace(/<[^>]+>/g, '');
 
@@ -158,7 +159,7 @@ test('build with the API unreachable: succeeds, no counts', async () => {
   assert.equal(r.code, 0, r.out);
   assert.equal(articleCount(r.html), data.employers.length);
   assert.ok(!r.html.includes('open-jobs'));
-  assert.match(r.out, /0\/7, building without counts/);
+  assert.match(r.out, new RegExp(`0/${FED_COUNT}, building without counts`));
 });
 
 test('build with a working API: counts on the USAJOBS cards, sent with the right headers', async () => {
@@ -171,11 +172,11 @@ test('build with a working API: counts on the USAJOBS cards, sent with the right
     apiHost = new URL(apiUrl).host;
     const r = await buildCase({ USAJOBS_API_KEY: FAKE_KEY, USAJOBS_EMAIL: FAKE_EMAIL, USAJOBS_API_URL: apiUrl });
     assert.equal(r.code, 0, r.out);
-    assert.match(r.out, /USAJOBS counts: 7\/7/);
-    assert.equal((r.html.match(/class="open-jobs"/g) || []).length, 7);
+    assert.match(r.out, new RegExp(`USAJOBS counts: ${FED_COUNT}/${FED_COUNT}`));
+    assert.equal((r.html.match(/class="open-jobs"/g) || []).length, FED_COUNT);
     assert.ok(!r.out.includes(FAKE_KEY) && !r.out.includes(FAKE_EMAIL), 'credentials printed');
   });
-  assert.equal(seen.length, 7);
+  assert.equal(seen.length, FED_COUNT);
   for (const s of seen) {
     assert.equal(s.key, FAKE_KEY);
     assert.equal(s.ua, FAKE_EMAIL);
