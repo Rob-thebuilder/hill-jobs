@@ -1,0 +1,10 @@
+{
+  "_note": "Settings for scripts/check-links.mjs. 'blockedStatuses' and timeouts (after retries) mean the site refused an automated check, not that the link is dead: they're listed as 'Blocked' in the report and don't count as broken. Links on 'skipDomains' are never requested because those sites always block bots; check them by hand in a browser now and then.",
+  "retries": 2,
+  "blockedStatuses": [401, 403, 429, 999],
+  "skipDomains": [
+    { "domain": "careers.rtx.com", "why": "RTX careers site returns 403 to every automated request (RTX / Pratt & Whitney card)." },
+    { "domain": "jobs.saic.com", "why": "SAIC careers site returns 403 to every automated request (SAIC card)." },
+    { "domain": "hill.af.mil", "why": "Air Force public sites return 403 to automated requests (hiring guide: visitor access)." }
+  ]
+}

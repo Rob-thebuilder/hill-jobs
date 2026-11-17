@@ -357,9 +357,10 @@ A short form at the bottom of the home page (name, email, message) for questions
   - They're passed to the build step only for pushes, scheduled runs and manual runs, never for pull requests. PR builds run without counts.
 - **Weekly link check** (`link-check.yml`, cron every Monday plus a manual trigger):
   - Requests every outbound link: each employer's `jobsUrl` and `secondaryUrl`, plus the resume help, "More ways" programs and event links. `--extra FILE` also checks a list under review, such as candidates. Uses HEAD and falls back to GET, follows redirects, and times out after 15 s. Sends a generic User-Agent such as `WorkAtHill-LinkCheck/1.0`.
-  - A link is broken on 4xx/5xx or a failed connection. A redirect to a different domain is flagged for review but not counted as broken.
-  - If anything fails, the workflow opens or updates **one** GitHub issue titled "Broken links: <date>" that lists each employer, URL, and status. It doesn't open duplicates.
-  - Some careers sites block bots (Workday, Taleo, and others). An allowlist of known false positives can be checked by hand.
+  - Retries timeouts, 429s and 5xx errors (twice, with a short pause). Settings are in `data/link-check.json`.
+  - Each link is **OK**, **Moved** (redirect to another domain: flagged for review, not broken), **Blocked** (bot protection: 401/403/429/999, a timeout after retries, a Cloudflare challenge or a Workday maintenance page), **Skipped** (a domain on the skip list that always blocks bots, e.g. careers.rtx.com, jobs.saic.com, hill.af.mil) or **Broken** (404/410, other 4xx/5xx, or a failed connection). Only Broken counts as a failure. The User-Agent stays the honest `WorkAtHill-LinkCheck/1.0`; it never pretends to be a browser.
+  - If anything is Broken, the workflow opens or updates **one** GitHub issue titled "Broken links: <date>" that lists each employer, URL and status, without opening duplicates. When a later check finds nothing broken, it closes that issue with a comment. The run itself stays green either way (it only fails if the checker crashes); the report is also shown on the run's summary page.
+  - Blocked and skipped links are listed in the report so they can be opened by hand in a browser now and then. Known false positives that were checked by hand can also go on `data/link-allowlist.json`.
 - **Verified dates:** when you confirm a link, update `verified` in the data. The card shows month and year.
 
 ## 9. Accessibility

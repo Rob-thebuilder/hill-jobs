@@ -43,6 +43,21 @@ jobs:
           else
             gh issue create --title "$title" --label broken-links --body-file report.md
           fi
-      - name: Fail the run if links are broken
-        if: steps.check.outcome == 'failure'
-        run: exit 1
+      # Broken links are tracked in the issue above, not as a red run. Once a check finds nothing
+      # broken, the open issue is closed with a comment. A crash before the report still fails the run.
+      - name: Close the broken-links issue when everything passes
+        if: steps.check.outcome == 'success'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        run: |
+          num=$(gh issue list --label broken-links --state open --limit 1 --json number --jq '.[0].number // empty')
+          if [ -n "$num" ]; then
+            gh issue close "$num" --comment "Link check on $(date -u +%F) found no broken links. $(grep -o 'Blocked or not checked: bot protection ([0-9]*)' report.md || true)"
+            echo "Closed issue #$num"
+          else
+            echo "No open broken-links issue"
+          fi
+      - name: Summary
+        if: always()
+        run: test -f report.md && cat report.md >> "$GITHUB_STEP_SUMMARY" || true
