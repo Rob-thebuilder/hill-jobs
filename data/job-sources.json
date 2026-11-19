@@ -46,6 +46,8 @@
     "jt4": "Careers page lists jobs by category through an external system; no adapter.",
     "toyon": "toyon.com refuses automated requests (HTTP 403).",
     "i2x": "iCIMS board; no adapter.",
-    "spa": "iCIMS board; no adapter."
+    "spa": "iCIMS board; no adapter.",
+    "fed95": "ADP Workforce Now board; no adapter.",
+    "bionetics": "Paycom job board; no adapter."
   }
 }

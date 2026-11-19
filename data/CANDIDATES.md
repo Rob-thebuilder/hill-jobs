@@ -2,6 +2,27 @@
 
 Researched 2026-11-09 by four research agents plus a careers-link check.
 
+## Round 4 (2026-11-18): Hill AFB contract-awards sheet + USAspending subawards
+
+Source: the "Hill AFB Contract Awards & Contractors" sheet (Awards + Local contractors tabs) plus USAspending subawards with place of performance ZIP 84056, 2023-11-01 to 2026-11-17. The full 74-company list, with merges, Hill flags, job types and careers links, is the sheet's **Employers** tab. Nearby-ZIP subawards weren't pulled (a TLS-inspecting proxy blocked api.usaspending.gov partway through).
+
+### Added (2)
+- **Fed95**: fixes the Round 3 "needs a fix": its ADP board (cid 5330343c-…) lists 2 Hill AFB openings today (Contract Program Manager, 2026-11-10; Business Intelligence Analyst, 2026-10-20). New GSA IT O&M task order at Hill, Jul 2026 (~$27M ceiling).
+- **Bionetics**: DOCAT 5 depot-maintenance awardee; Hill postings Apr–May 2026 (aircraft mechanic II, aircraft painter, machinist, on-site supervisor). Paycom board renders by script, so today's openings weren't readable.
+
+### Maybes
+| Employer | Why not yet |
+|---|---|
+| Kay and Associates (KAI) | Hill 309th CMXG postings (supervisor, expeditor, painter), but marked "pending contract award" and no official careers page found. kayandassociates.com is a different firm (private investigators). |
+| Serco | HX5 sub at Hill; its Hill AFB DOL TAP navigator posting now 404s and its iCIMS search isn't readable by script. |
+| Tyonek Technical Services | DOCAT 5 awardee; one aggregator mentions a Hill aircraft mechanic, but its ApplicantPro board shows no Utah jobs. |
+| Strategic Technology Institute, SkyQuest Aviation | DOCAT 5 awardees; no careers page found. |
+| Pelatron Technologies | Base IT contract period ended 2026-06-30; recompete winner unknown. |
+| Tyto Athene, Viranim | Hill work on paper; no Hill postings found. |
+
+### Skipped by the usual rules
+Construction (Mortenson, SES, West Coast JV, SABER III holders, NH1 JV, Floor Styles, local builders), architect-engineer pool (11 firms), supply-only (AIS, Fastenal, ALSCO), product-only subs (ThunderCat, Clean Earth), and awards performed away from Hill (GE Aerospace, AAR, Sherwood, V2X, Honeywell).
+
 **Status, 2026-11-09:** at your request, all 17 "Ready to add" employers were added to `employers.json` (the directory went from 23 to 40). Six of them also get live job titles: KBR/Trinzic, Booz Allen, The Aerospace Corporation, Draper and PARC/ServiceSource on Workday, and MITRE on Phenom; the other 11 are listed in `job-sources.json` "skipped" with the reason. Pelatron ("Needs a fix"), the weak ones and the maybes were **not** added.
 
 ## Round 3 (2026-11-16): new search

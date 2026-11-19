@@ -1299,6 +1299,50 @@
       "secondaryUrl": null,
       "verified": "2026-11",
       "sourceUrl": "https://www.clearancejobs.com/jobs/9301228"
+    },
+    {
+      "id": "fed95",
+      "base": "hill",
+      "name": "Fed95 (Waseyabek Development Co.)",
+      "type": "services",
+      "description": "IT operations staff for the Hill Component Enterprise Data Center (CEDC) contract on Hill AFB",
+      "categories": [
+        "software-it",
+        "admin-business"
+      ],
+      "roles": [
+        "Computer user support specialist",
+        "Information systems security officer (ISSO)",
+        "Systems administrator",
+        "Database architect",
+        "Business intelligence analyst",
+        "Contract program manager",
+        "Senior document management specialist"
+      ],
+      "jobsUrl": "https://fed95.com/careers/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.jobtarget.com/jobs/jt-t6ycz7viy3/information-systems-security-officer-isso-hill-air-force-base-utah"
+    },
+    {
+      "id": "bionetics",
+      "base": "hill",
+      "name": "Bionetics",
+      "type": "services",
+      "description": "Contract depot maintenance crews working alongside the 309th Maintenance Groups at Hill AFB (DOCAT 5)",
+      "categories": [
+        "trades-maintenance"
+      ],
+      "roles": [
+        "Aircraft mechanic",
+        "Aircraft painter",
+        "Machinist",
+        "On-site supervisor"
+      ],
+      "jobsUrl": "https://www.bionetics.com/careers/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.career.com/job/the-bionetics-corporation/aircraft-mechanic-ii-54561/j202604101506067380735"
     }
   ]
 }
