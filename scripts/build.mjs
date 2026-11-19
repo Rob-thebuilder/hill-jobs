@@ -324,19 +324,51 @@ const PRIVACY_CONTACT = `
   <ul>
     <li><strong>What's sent:</strong> the name, email address and message you type. Nothing is sent until you press "Send message".</li>
     <li><strong>How it's sent:</strong> <a href="https://web3forms.com/privacy" rel="noopener">Web3Forms</a>, a form service, emails your message to Work At Hill. Work At Hill keeps it in its email inbox.</li>
-    <li><strong>How it's used:</strong> only to read and reply to your message. It's never added to the weekly email list, sold, rented or shared.</li>
+    <li><strong>How it's used:</strong> only to read and reply to your message. It's never added to any mailing list, sold, rented or shared.</li>
     <li><strong>Deleting it:</strong> ask in a message, and it will be deleted.</li>
   </ul>
 `;
 
+// Change this whenever the privacy page's wording changes.
+export const PRIVACY_UPDATED = 'November 18, 2026';
+
+const CONNECT_LINK = `the <a href="../#contact-form">Let's Connect form</a> on the home page`;
+
+// Shown only while signup is live, like the contact-form section.
+function privacyNewsletter(contactOn) {
+  const ask = contactOn ? `write to us through ${CONNECT_LINK}, or reply to any email` : 'reply to any email';
+  return `
+  <h2>The weekly email (optional)</h2>
+  <ul>
+    <li><strong>What's kept:</strong> your email address, and the search terms you ask to be alerted about (for example "sheet metal"). Nothing else.</li>
+    <li><strong>Who keeps it:</strong> <a href="https://buttondown.com/legal/privacy" rel="noopener">Buttondown</a>, the email service that stores the list and sends the email. Work At Hill never sells, rents or shares your address.</li>
+    <li><strong>Confirming:</strong> after you sign up, you'll get an email asking you to confirm. Nothing is sent until you do.</li>
+    <li><strong>What you get:</strong> at most one email a week, with new jobs near Hill, upcoming events and new matches for your saved searches.</li>
+    <li><strong>Stopping:</strong> every email has an unsubscribe link. Unsubscribing stops all emails.</li>
+    <li><strong>Deleting your data:</strong> to have your address and saved searches deleted, ${ask}.</li>
+  </ul>
+`;
+}
+
 export function renderPrivacy(site, template) {
-  const n = site.newsletter;
-  const contact = n?.postalAddress ? `Work At Hill, ${n.postalAddress}` : 'A contact address will be posted here when the weekly email starts.';
+  const newsOn = newsletterReady(site);
+  const contactOn = contactReady(site);
+  const short = ['browsing Work At Hill collects nothing about you.'];
+  if (newsOn) short.push('If you sign up for the weekly email, your email address and any saved searches are kept by our email service, Buttondown, and used only to send you that email.');
+  if (contactOn) short.push("If you send a message through the Let's Connect form, it's used only to reply to you.");
+  const contact = [];
+  if (contactOn) contact.push(`  <p>Questions, or want something deleted? Use ${CONNECT_LINK}.</p>`);
+  if (newsOn) contact.push(`  <p>${esc(`Work At Hill, ${site.newsletter.postalAddress}`)}</p>`);
+  if (!contact.length) contact.push('  <p>A way to contact Work At Hill will be posted here soon.</p>');
   return fill(template, {
     siteName: esc(site.siteName),
     canonical: esc(site.siteUrl.replace(/\/$/, '') + '/privacy/'),
-    postalAddress: esc(contact),
-    contactForm: contactReady(site) ? PRIVACY_CONTACT : '',
+    updated: PRIVACY_UPDATED,
+    shortVersion: short.join(' '),
+    newsletter: newsOn ? privacyNewsletter(contactOn) : '',
+    contactForm: contactOn ? PRIVACY_CONTACT : '',
+    changesEmail: newsOn ? ' A change that affects subscribers is also mentioned in the next weekly email.' : '',
+    contact: contact.join('\n'),
   });
 }
 

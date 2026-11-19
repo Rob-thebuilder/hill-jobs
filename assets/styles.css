@@ -543,6 +543,7 @@ button { font: inherit; }
 .prose h2 { margin-top: 1.75rem; font-size: 1.25rem; font-weight: 900; }
 .prose p, .prose ul { margin-top: .6rem; }
 .prose li { margin-top: .35rem; }
+.prose .updated { margin-top: 0; font-size: .9rem; color: var(--muted); }
 
 /* ---------- footer ---------- */
 .site-footer {

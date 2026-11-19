@@ -309,10 +309,14 @@ Job seekers can sign up for one weekly email: new jobs near Hill, upcoming event
   - Every signup gets the tag `weekly`.
   - **"Get weekly updates"** sits in the footer on every tab.
   - **"Email me new jobs for this search":** while a search is active, a box above the results offers an alert. With no results it reads "Nothing for “welder” right now. Want an email when a job shows up?"; with results it offers new postings. It adds the tag `search:<term>`, with the term normalized like the search (lowercase, accents and punctuation removed, ≤40 characters).
-- **Privacy page** (`/privacy/`, from `templates/privacy.html`):
+- **Privacy page** (`/privacy/`, from `templates/privacy.html`, filled by `renderPrivacy`):
+  - A "Last updated" date (`PRIVACY_UPDATED` in `scripts/build.mjs`; change it whenever the wording changes).
   - Browsing collects nothing.
-  - Signups keep only the email address and saved searches, held by Buttondown.
-  - How to confirm, unsubscribe and ask for deletion; the contact address.
+  - The weekly-email section appears only while signup is live: signups keep only the email address and saved searches, held by Buttondown; how to confirm, unsubscribe and ask for deletion.
+  - The Let's Connect section appears only while the contact form is live (section 7b).
+  - Children: meant for adults; nothing knowingly collected from under-13s, and deleted on request.
+  - Changes: the page and its date change first; while the weekly email runs, a change that affects subscribers is also mentioned there.
+  - Contact: the Let's Connect form, plus the postal address once the weekly email is live; a placeholder only if neither is set up.
   - Linked from the footer and every signup form.
 - **The weekly email** (`.github/workflows/weekly-email.yml`, Mondays 13:00 UTC, plus manual runs):
   1. It builds with `--snapshot`: this week's live job titles (USAJOBS and contractors) and upcoming events.
