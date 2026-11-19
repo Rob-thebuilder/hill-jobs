@@ -543,6 +543,51 @@ try {
     }
   }
 
+  // 11b-2. The Get Trained page.
+  {
+    const T = `${ORIGIN}/get-trained/`;
+    for (const w of [320, 390, 414, 768]) {
+      const p = await openPage(T, { width: w });
+      const r = await p.evaluate(`({ sw: document.documentElement.scrollWidth, iw: innerWidth, h1: document.querySelectorAll('h1').length, sections: document.querySelectorAll('main section').length, cards: document.querySelectorAll('.train-card').length })`);
+      check(`get-trained page: no sideways scroll at ${w}px, one h1, five sections`, r.sw <= w && r.iw === w && r.h1 === 1 && r.sections === 5 && r.cards > 20, JSON.stringify(r));
+      await p.close();
+    }
+    const trainSels = "const sels = ['h1', '.eyebrow a', '.tagline', '.training h2', '.training h3', '.training p', '.training li', '.training a', '.training dt', '.training dd', '.kind', '.site-footer p', '.site-footer a'];";
+    const TRAIN_CONTRAST = CONTRAST.replace(/const sels = \[[^\]]*\];/, trainSels);
+    for (const scheme of ['light', 'dark']) {
+      const p = await openPage(T, { width: 390, scheme });
+      const res = await p.evaluate(TRAIN_CONTRAST);
+      const bad = res.filter((x) => !x.ok);
+      check(`get-trained page contrast WCAG AA, ${scheme} theme`, bad.length === 0 && res.length > 50, bad.length ? [...new Map(bad.map((b) => [b.sel, b])).values()].map((b) => `${b.sel} ${b.ratio}:1`).join('; ') : `${res.length} elements`);
+      await p.close();
+    }
+    {
+      const p = await openPage(T, { width: 390 });
+      const small = await p.evaluate(`[...document.querySelectorAll('.toc a, .back-home, .btn-outline, .train-jobs, .site-footer a')].map(a => { const b = a.getBoundingClientRect(); return { t: a.textContent.trim(), h: Math.round(b.height), w: Math.round(b.width) }; }).filter(x => x.h < 44 || x.w < 44)`);
+      check('get-trained page: buttons and navigation links are at least 44px tap targets', small.length === 0, small.map((x) => `${x.t} ${x.w}×${x.h}`).join('; '));
+      await p.close();
+    }
+    {
+      const p = await openPage(H, { width: 390 });
+      const loaded = p.nextLoad();
+      await p.evaluate(click('.guide-link[href$="get-trained/"]'));
+      await loaded;
+      const path = await p.evaluate('location.pathname');
+      check('the hero "Get trained" link opens the page', path === '/get-trained/', path);
+      await p.close();
+    }
+    {
+      const p = await openPage(T, { width: 390 });
+      const loaded = p.nextLoad();
+      await p.evaluate(click('.train-jobs[href*="q=NDI"]'));
+      await loaded;
+      await sleep(400);
+      const r = await p.evaluate(`({ q: document.getElementById('q').value, shown: [...document.querySelectorAll('.card')].filter(c => c.offsetParent !== null).length })`);
+      check('a "Hill jobs for …" link opens the homepage search with matching employers', r.q === 'NDI' && r.shown > 0, JSON.stringify(r));
+      await p.close();
+    }
+  }
+
   // 11c. The Employer Directory page.
   {
     const D = `${ORIGIN}/employers/`;
