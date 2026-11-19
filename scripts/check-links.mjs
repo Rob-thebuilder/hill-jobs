@@ -1,5 +1,5 @@
 // Checks every outbound link the site shows: employers (jobsUrl, secondaryUrl), resume help,
-// "More ways to find Hill jobs" programs, and events. Node 20+ built-ins only.
+// "More ways to find Hill jobs" programs, Get Trained listings, and events. Node 20+ built-ins only.
 // Usage: node scripts/check-links.mjs [--report report.md] [--data path/to/employers.json]
 //   [--test-url URL]   also check one extra URL (to test the broken-link issue flow)
 //   [--extra FILE]     also check links from a JSON list [{ name, field, url }] (e.g. candidates under review)
@@ -20,7 +20,7 @@ const MAX_HOPS = 10;
 const CONCURRENCY = 5;
 
 /** Every outbound link shown on the site, as [{ id, name, field, url }]. Missing files are skipped. */
-export function collectLinks({ employers = [], resources = [], programs = [], events = [], annual = [], guide = [] }) {
+export function collectLinks({ employers = [], resources = [], programs = [], events = [], annual = [], guide = [], training = [] }) {
   return [
     ...employers.flatMap((e) => [
       { id: e.id, name: e.name, field: 'jobsUrl', url: e.jobsUrl },
@@ -31,6 +31,7 @@ export function collectLinks({ employers = [], resources = [], programs = [], ev
     ...events.map((e) => ({ id: e.id, name: e.title, field: 'event', url: e.url })),
     ...annual.map((a) => ({ id: a.id, name: a.title, field: 'yearly event', url: a.url })),
     ...guide.map((g, i) => ({ id: `guide-${i}`, name: g.label, field: 'guide source', url: g.url })),
+    ...training.map((t) => ({ id: t.id, name: `${t.name} (${t.provider})`, field: 'training', url: t.url })),
   ].filter((l) => typeof l.url === 'string' && l.url);
 }
 
@@ -50,6 +51,7 @@ async function loadSiteLinks(employersPath) {
       events: eventsFile.events || [],
       annual: eventsFile.annual || [],
       guide: existsSync(path.join(ROOT, 'templates/guide.html')) ? guideSourceLinks(await readFile(path.join(ROOT, 'templates/guide.html'), 'utf8')) : [],
+      training: await read('data/training.json', 'training'),
     }),
   };
 }

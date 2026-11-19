@@ -420,6 +420,95 @@ ${list.map((p) => `      <li><a class="way-name" href="${esc(p.url)}" target="_b
   };
 }
 
+// ---------- Get Trained page (/get-trained/) ----------
+
+/** Sections of the Get Trained page, in page order: [heading, intro]. */
+export const TRAINING_SECTIONS = {
+  certificates: ['Fast certificates', 'Hands-on certificates at the two tech colleges closest to Hill. Davis Tech lengths are for part-time study (15 hours a week). At OTECH, a full-time student finishes about 1 credit a week.'],
+  apprenticeships: ['Apprenticeships', 'Get paid on the job while you take the required classes. Union programs place you with an employer. For the college programs, you find a job as an apprentice first, then take the classes.'],
+  aviation: ['Aircraft mechanic (A&P) schools', 'These Utah programs prepare you for the FAA mechanic exams (airframe and powerplant, or "A&P"). None is in Davis or Weber County yet.'],
+  funding: ['Paying for training', 'Grants, state help and free tuition that can lower what you pay.'],
+};
+const TRAINING_KEYS = ['id', 'section', 'name', 'provider', 'city', 'length', 'cost', 'credential', 'note', 'search', 'url', 'verified', 'sourceUrl'];
+const isYearMonth = (s) => /^\d{4}-(0[1-9]|1[0-2])$/.test(s || '');
+
+export function validateTraining(file, searchIndex = null) {
+  const errors = [];
+  if (!Array.isArray(file?.training)) return ['"training" must be a list'];
+  if (!isYearMonth(file.checked)) errors.push('"checked" must be YYYY-MM');
+  const seen = new Set();
+  for (const t of file.training) {
+    const at = `training "${t?.id}"`;
+    for (const k of TRAINING_KEYS) if (!(k in (t || {}))) errors.push(`${at}: missing "${k}"`);
+    for (const k of Object.keys(t || {})) if (!TRAINING_KEYS.includes(k)) errors.push(`${at}: unknown field "${k}"`);
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(t?.id || '') || seen.has(t?.id)) errors.push(`${at}: missing, bad or duplicate id`);
+    seen.add(t?.id);
+    if (!(t?.section in TRAINING_SECTIONS)) errors.push(`${at}: unknown section "${t?.section}"`);
+    if (!isText(t?.name, 80) || !isText(t?.provider, 100) || !isText(t?.city, 60)) errors.push(`${at}: name (≤80), provider (≤100) and city (≤60) are required`);
+    for (const [k, max] of [['length', 60], ['cost', 60], ['credential', 110], ['note', 170], ['search', 30]]) {
+      if (t?.[k] !== null && !isText(t?.[k], max)) errors.push(`${at}: "${k}" must be null or 1–${max} characters`);
+    }
+    if (!isHttps(t?.url) || !isHttps(t?.sourceUrl)) errors.push(`${at}: url and sourceUrl must be https`);
+    if (!isYearMonth(t?.verified)) errors.push(`${at}: verified must be YYYY-MM`);
+    // A "Hill jobs" link must lead somewhere: the term has to find employers by their researched roles.
+    if (t?.search && searchIndex && !Object.keys(Search.search(searchIndex, t.search).results).length) {
+      errors.push(`${at}: search "${t.search}" finds no employer`);
+    }
+  }
+  for (const s of Object.keys(TRAINING_SECTIONS)) {
+    if (!file.training.some((t) => t?.section === s)) errors.push(`section "${s}" has no entries`);
+  }
+  return errors;
+}
+
+function renderTrainingCard(t, prefix) {
+  const id = `t-${t.id}`;
+  const facts = [['Length', t.length], ['Cost', t.cost], ['Credential', t.credential]].filter(([, v]) => v);
+  const jobs = t.search
+    ? `<a class="train-jobs" href="${prefix}?q=${esc(encodeURIComponent(t.search))}">Hill jobs for “${esc(t.search)}” <span aria-hidden="true">→</span></a>\n`
+    : '';
+  return `<li><article class="res-card train-card" aria-labelledby="${esc(id)}">
+<div class="card-top"><span class="kind">${esc(t.provider)}</span></div>
+<h3 id="${esc(id)}">${esc(t.name)}</h3>
+<dl class="res-facts"><div><dt>Where</dt><dd>${esc(t.city)}</dd></div>${facts.map(([k, v]) => `<div><dt>${k}</dt><dd>${esc(v)}</dd></div>`).join('')}</dl>
+${t.note ? `<p class="desc">${esc(t.note)}</p>\n` : ''}<div class="card-actions"><a class="btn-outline" href="${esc(t.url)}" target="_blank" rel="noopener">Visit website <span aria-hidden="true">→</span><span class="sr-only"> for ${esc(t.name)}, ${esc(t.provider)}</span>${NEW_TAB}</a>
+${jobs}</div>
+<p class="meta"><span>Checked ${verifiedLabel(t.verified)}</span></p>
+</article></li>`;
+}
+
+/** The Get Trained page: one section per TRAINING_SECTIONS key, cards A–Z by provider, then name. */
+export function renderTraining(site, template, file) {
+  const root = site.siteUrl.replace(/\/$/, '');
+  const prefix = '../';
+  const byProvider = (a, b) => a.provider.localeCompare(b.provider) || a.name.localeCompare(b.name);
+  const sections = Object.entries(TRAINING_SECTIONS)
+    .map(([key, [heading, intro]]) => {
+      const list = file.training.filter((t) => t.section === key).sort(byProvider);
+      return `  <section id="${key}" aria-labelledby="h-${key}">
+    <h2 id="h-${key}" class="group-title">${esc(heading)} <span class="group-n">${list.length}</span></h2>
+    <p class="note">${esc(intro)}</p>
+    <ul class="res-grid">
+${list.map((t) => renderTrainingCard(t, prefix)).join('\n')}
+    </ul>
+  </section>`;
+    })
+    .join('\n');
+  const toc = Object.entries(TRAINING_SECTIONS)
+    .map(([key, [heading]]) => `      <li><a href="#${key}">${esc(heading)}</a></li>`)
+    .concat('      <li><a href="#more-paths">More paths into Hill</a></li>')
+    .join('\n');
+  return fill(template, {
+    siteName: esc(site.siteName),
+    canonical: esc(`${root}/get-trained/`),
+    ogImage: esc(`${root}/assets/og.png`),
+    count: String(file.training.length),
+    checked: verifiedLabel(file.checked),
+    toc,
+    sections,
+  });
+}
+
 // ---------- resume help + events ----------
 
 export const RESOURCE_KINDS = {
@@ -692,7 +781,7 @@ async function main() {
   const checkOnly = argv.includes('--check');
   const outArg = argv.includes('--out') ? argv[argv.indexOf('--out') + 1] : null;
   const DIST = outArg ? path.resolve(outArg) : path.join(ROOT, 'dist');
-  const [data, schema, site, synonyms, jobSources, places, resourcesFile, eventsFile, eventSources, programsFile] = await Promise.all([
+  const [data, schema, site, synonyms, jobSources, places, resourcesFile, eventsFile, eventSources, programsFile, trainingFile] = await Promise.all([
     readJson('data/employers.json'),
     readJson('data/employers.schema.json'),
     // --site FILE swaps in other site settings (e.g. to preview the email signup before setup).
@@ -704,7 +793,12 @@ async function main() {
     readJson('data/events.json'),
     readJson('data/event-sources.json'),
     readJson('data/programs.json'),
+    readJson('data/training.json'),
   ]);
+  const rolesIndex = Search.createIndex(
+    data.employers.map((e) => ({ id: e.id, name: e.name, description: e.description, roles: e.roles || [], titles: [] })),
+    synonyms,
+  );
 
   const errors = [
     ...validateData(data, schema),
@@ -713,6 +807,7 @@ async function main() {
     ...validatePlaces(places).map((e) => `locations.json: ${e}`),
     ...validateResources(resourcesFile).map((e) => `resources.json: ${e}`),
     ...validatePrograms(programsFile).map((e) => `programs.json: ${e}`),
+    ...validateTraining(trainingFile, rolesIndex).map((e) => `training.json: ${e}`),
     ...validateEvents(eventsFile, eventSources).map((e) => `events.json: ${e}`),
     ...validateNewsletter(site).map((e) => `site.json newsletter: ${e}`),
     ...validateContact(site).map((e) => `site.json contact: ${e}`),
@@ -830,6 +925,11 @@ async function main() {
   const guideTemplate = await readFile(path.join(ROOT, 'templates/guide.html'), 'utf8');
   await mkdir(path.join(DIST, 'how-hiring-works'), { recursive: true });
   await writeFile(path.join(DIST, 'how-hiring-works', 'index.html'), renderGuide(site, guideTemplate));
+
+  // Get Trained: schools, apprenticeships and funding for trades jobs (evidence in data/TRAINING-REVIEW.md).
+  const trainingTemplate = await readFile(path.join(ROOT, 'templates/training.html'), 'utf8');
+  await mkdir(path.join(DIST, 'get-trained'), { recursive: true });
+  await writeFile(path.join(DIST, 'get-trained', 'index.html'), renderTraining(site, trainingTemplate, trainingFile));
 
   // Snapshot for the weekly email: this build's live job titles and upcoming events.
   const snapshotOut = argv.includes('--snapshot') ? argv[argv.indexOf('--snapshot') + 1] : null;
