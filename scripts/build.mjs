@@ -225,6 +225,7 @@ ${list.map((e) => renderCard(e, site.form, jobCounts, 'h3')).join('\n')}
     </section>`)
     .join('\n');
   return fill(template, {
+    analytics: renderAnalytics(site),
     siteName: esc(site.siteName),
     baseLabel: esc(label),
     canonical: esc(`${root}/employers/`),
@@ -284,6 +285,28 @@ const WEB3FORMS_KEY = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]
 /** True once data/site.json has a Web3Forms access key. Web3Forms emails each message to the key's account. */
 export const contactReady = (site) => WEB3FORMS_KEY.test(site?.contact?.web3formsKey || '');
 
+// ---- Google Analytics 4 (site.analyticsId; null = no tag). gtag.js only: never also the GTM container. ----
+const GA4_ID = /^G-[A-Z0-9]{4,20}$/;
+
+export function validateAnalytics(site) {
+  const id = site?.analyticsId;
+  return id != null && !GA4_ID.test(id) ? ['analyticsId should be a GA4 measurement ID like G-XXXXXXXXXX, or null'] : [];
+}
+
+/** The GA4 tag, placed immediately after <head> on every indexable page (not /thanks/). */
+export function renderAnalytics(site) {
+  const id = site?.analyticsId;
+  if (!id || !GA4_ID.test(id)) return '';
+  return `<script async src="https://www.googletagmanager.com/gtag/js?id=${id}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', '${id}');
+</script>
+`;
+}
+
 export function validateContact(site) {
   const key = site?.contact?.web3formsKey;
   return key != null && !WEB3FORMS_KEY.test(key) ? ['web3formsKey should look like xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'] : [];
@@ -330,7 +353,7 @@ const PRIVACY_CONTACT = `
 `;
 
 // Change this whenever the privacy page's wording changes.
-export const PRIVACY_UPDATED = 'November 18, 2026';
+export const PRIVACY_UPDATED = 'November 23, 2026';
 
 const CONNECT_LINK = `the <a href="../#contact-form">Let's Connect form</a> on the home page`;
 
@@ -353,7 +376,9 @@ function privacyNewsletter(contactOn) {
 export function renderPrivacy(site, template) {
   const newsOn = newsletterReady(site);
   const contactOn = contactReady(site);
-  const short = ['browsing Work At Hill collects nothing about you.'];
+  const short = renderAnalytics(site)
+    ? ['Work At Hill uses Google Analytics, which sets cookies, to count visits and see which employer links get clicked. It never sells personal information.']
+    : ['browsing Work At Hill collects nothing about you.'];
   if (newsOn) short.push('If you sign up for the weekly email, your email address and any saved searches are kept by our email service, Buttondown, and used only to send you that email.');
   if (contactOn) short.push("If you send a message through the Let's Connect form, it's used only to reply to you.");
   const contact = [];
@@ -361,6 +386,7 @@ export function renderPrivacy(site, template) {
   if (newsOn) contact.push(`  <p>${esc(`Work At Hill, ${site.newsletter.postalAddress}`)}</p>`);
   if (!contact.length) contact.push('  <p>A way to contact Work At Hill will be posted here soon.</p>');
   return fill(template, {
+    analytics: renderAnalytics(site),
     siteName: esc(site.siteName),
     canonical: esc(site.siteUrl.replace(/\/$/, '') + '/privacy/'),
     updated: PRIVACY_UPDATED,
@@ -375,6 +401,7 @@ export function renderPrivacy(site, template) {
 export function renderGuide(site, template) {
   const root = site.siteUrl.replace(/\/$/, '');
   return fill(template, {
+    analytics: renderAnalytics(site),
     siteName: esc(site.siteName),
     canonical: esc(`${root}/how-hiring-works/`),
     ogImage: esc(`${root}/assets/og.png`),
@@ -681,6 +708,7 @@ export function renderBase(baseId, base, allEmployers, site, template, jobCounts
   const description = `${countText(employers.length)} hiring at ${base.name}, ${base.state}: defense contractors and federal employers, with direct links to each careers page.`;
   const moreWays = renderMoreWays(extras.programs || []);
   return fill(template, {
+    analytics: renderAnalytics(site),
     title: esc(`${site.siteName}: who's hiring at ${base.name}`),
     description: esc(description),
     canonical: esc(canonical),
@@ -767,6 +795,7 @@ async function main() {
     ...validateEvents(eventsFile, eventSources).map((e) => `events.json: ${e}`),
     ...validateNewsletter(site).map((e) => `site.json newsletter: ${e}`),
     ...validateContact(site).map((e) => `site.json contact: ${e}`),
+    ...validateAnalytics(site).map((e) => `site.json: ${e}`),
   ];
   if (errors.length) {
     console.error(`✗ ${errors.length} data error(s):\n  - ${errors.join('\n  - ')}`);

@@ -63,7 +63,7 @@ The primary link is a **USAJOBS search pre-filtered to the agency and the Hill A
   - The API query is derived from that same URL: `l` → `LocationName`, `a` → `Organization`, `pp` → `JobGradeCode`. Several values are joined with `;`.
   - If the URL has any other parameter, the card shows **no** count rather than one that could disagree.
   - Checked against the live website on 2026-11-06: all 7 counts matched.
-- **Build time only.** The browser never calls the API, so the page still makes zero third-party requests.
+- **Build time only.** The browser never calls the API; the page's only third-party request is Google Analytics (§6).
 - **Never breaks the site.** If the key is missing or rejected, the API is down, or a response is malformed, the build continues and those cards simply show no count.
 - **The date** is the Mountain Time date the counts were fetched.
 - **The API key and email are secrets.** They are never logged, printed or written into the page.
@@ -275,7 +275,8 @@ Everything runs in the browser, with no server.
   - The build reads `USAJOBS_API_KEY` and `USAJOBS_EMAIL` from the environment: `.env` locally (git-ignored), repo secrets in CI.
   - `--no-counts` skips the fetch.
   - A missing key or a failed API call never fails the build.
-- **Page weight budget:** under 100 KB transferred for the Hill page, excluding the favicon. The page makes no third-party requests. The only exception is an email signup form, which posts to Buttondown when someone submits it (§7a).
+- **Page weight budget:** under 100 KB transferred for the site's own files on the Hill page (HTML, CSS, JS, favicon). Google Analytics' gtag.js (about 184 KB compressed) is not counted, so a real visit transfers about 225 KB. The phone checks block GA so test runs never send fake visits.
+- **Analytics:** Google Analytics 4 via gtag.js, ID in `data/site.json` → `analyticsId` (`null` = no tag). The tag sits immediately after `<head>` on every indexable page (base pages, `/employers/`, `/how-hiring-works/`, `/privacy/`), never on the noindex `/thanks/`. Don't also add the GTM container (it would double-count). The only other third-party request is an email signup form, which posts to Buttondown when someone submits it (§7a).
 - **Meta:** `<title>`, meta description, Open Graph/Twitter tags with a static share image (`og.png`, 1200×630), a favicon, and a canonical URL. No `JobPosting` structured data: the site lists employers, not job postings.
 - **Adding a base later:** add an entry to `bases` with a `path` (e.g., `/tinker/`) plus its employers, then run the build. The root stays the Hill page while the site is called Work At Hill.
 
@@ -298,7 +299,7 @@ Everything runs in the browser, with no server.
 
 Job seekers can sign up for one weekly email: new jobs near Hill, upcoming events, and new matches for any searches they saved. The site itself stores no emails.
 
-- **Email service:** [Buttondown](https://buttondown.com). It stores the list, sends a confirmation email before adding anyone (double opt-in), and adds an unsubscribe link to every email. Free up to 100 subscribers, then paid. Its open/click tracking must be turned **off**, to keep the site's no-tracking promise.
+- **Email service:** [Buttondown](https://buttondown.com). It stores the list, sends a confirmation email before adding anyone (double opt-in), and adds an unsubscribe link to every email. Free up to 100 subscribers, then paid. Its open/click tracking must be turned **off**: subscribers are never tracked through their email.
 - **Settings:** `data/site.json` → `newsletter`:
   - `buttondownUsername`
   - `postalAddress`: required in every commercial email by CAN-SPAM; a PO box is fine.
@@ -311,7 +312,7 @@ Job seekers can sign up for one weekly email: new jobs near Hill, upcoming event
   - **"Email me new jobs for this search":** while a search is active, a box above the results offers an alert. With no results it reads "Nothing for “welder” right now. Want an email when a job shows up?"; with results it offers new postings. It adds the tag `search:<term>`, with the term normalized like the search (lowercase, accents and punctuation removed, ≤40 characters).
 - **Privacy page** (`/privacy/`, from `templates/privacy.html`, filled by `renderPrivacy`):
   - A "Last updated" date (`PRIVACY_UPDATED` in `scripts/build.mjs`; change it whenever the wording changes).
-  - Browsing collects nothing.
+  - Google Analytics (cookies) counts visits and employer-link clicks; nothing is sold; link to Google's opt-out add-on. If `analyticsId` is null, the short version says browsing collects nothing, but the template's GA bullets must be edited by hand.
   - The weekly-email section appears only while signup is live: signups keep only the email address and saved searches, held by Buttondown; how to confirm, unsubscribe and ask for deletion.
   - The Let's Connect section appears only while the contact form is live (section 7b).
   - Children: meant for adults; nothing knowingly collected from under-13s, and deleted on request.
@@ -389,7 +390,7 @@ A short form at the bottom of the home page (name, email, message) for questions
 - User accounts and saved employers (weekly email and saved-search alerts are in scope through Buttondown, §7a)
 - Recruiter self-service editing, a CMS, or automatic updates from form submissions
 - Featured, paid, or sponsored placement, for employers, resume professionals or events
-- Analytics and tracking of any kind, including outbound click counts and email open/click tracking
+- Analytics beyond Google Analytics 4 (§6), and email open/click tracking
 - Map view, commute or distance filters
 - Languages other than English
 - A backend, database, or serverless functions
@@ -409,7 +410,7 @@ The site isn't done until every check below passes.
 ### Automated (run locally and in CI where possible)
 - [ ] Lighthouse **mobile** run (Moto G-class emulation, slow 4G) on the deployed URL: Performance ≥ 90, Accessibility ≥ 95, Best Practices ≥ 95, SEO ≥ 95
 - [ ] No horizontal page scroll at 320, 360, 390, and 414 px widths (Chrome DevTools device mode). Check `document.documentElement.scrollWidth <= window.innerWidth`.
-- [ ] Hill page transfer size under 100 KB, and 0 third-party requests (DevTools Network tab)
+- [ ] Hill page's own files under 100 KB, and no third-party requests besides Google Analytics (DevTools Network tab)
 - [ ] With JavaScript disabled, all employers and links are still visible and usable
 - [ ] Filtered-out cards are actually hidden on screen (checked by what's visible, not by the `hidden` attribute)
 - [ ] The five example searches ("painter", "coater", "LO", "networking", "admin") each show employers with a "Matches:" line, and a nonsense search shows the helpful empty state

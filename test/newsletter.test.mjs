@@ -51,7 +51,7 @@ test('privacy page describes the weekly email only while signup is live', async 
   const on = renderPrivacy(ready, template);
   assert.match(on, /Work At Hill, PO Box 123, Layton, UT 84041/);
   assert.match(on, /The weekly email \(optional\)/);
-  assert.match(on, /No accounts, no cookies, no analytics/);
+  assert.match(on, /uses Google Analytics, which sets cookies/);
   assert.match(on, /mentioned in the next weekly email/);
   const off = renderPrivacy({ ...ready, newsletter: { ...ready.newsletter, buttondownUsername: null } }, template);
   assert.ok(!/weekly email|Buttondown|PO Box/.test(off), 'no weekly-email wording before signup is live');
