@@ -354,6 +354,7 @@ A short form at the bottom of the home page (name, email, message) for questions
   - Turn on "Enforce HTTPS" in the repo's Pages settings.
   - Verify the domain in the GitHub account settings so nobody else can claim it.
   - `www.workathill.com` redirects to the apex domain.
+- **Sitemap and robots.txt:** the build writes `sitemap.xml` (every base page, `/employers/`, `/how-hiring-works/`, `/privacy/`; not the noindex `/thanks/`; `<lastmod>` = build date) and `robots.txt` (allow all, plus the sitemap URL), both from `siteUrl`.
 - **Validation on every push and PR:** schema check, duplicate-id check, all URLs must be `https://`, `node --test`, and the automated phone checks. Any failure blocks the deploy.
 - **Daily refresh:** `deploy.yml` also runs on a daily schedule (13:15 UTC, about 6–7 am Mountain) to rebuild and redeploy with fresh open-job counts.
   - GitHub pauses scheduled workflows in a public repo after 60 days with no repo activity; re-enable it in the Actions tab if that happens.

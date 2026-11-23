@@ -381,6 +381,25 @@ export function renderGuide(site, template) {
   });
 }
 
+/** Every indexable page the build writes. /thanks/ is left out: it's noindex. */
+export function sitemapPaths(bases) {
+  return [...new Set([...Object.values(bases).map((b) => b.path), '/employers/', '/how-hiring-works/', '/privacy/'])];
+}
+
+/** sitemap.xml for the indexable pages; lastmod is the build date (YYYY-MM-DD). */
+export function renderSitemap(site, bases, date) {
+  const root = site.siteUrl.replace(/\/$/, '');
+  const urls = sitemapPaths(bases)
+    .map((p) => `  <url>\n    <loc>${esc(root + p)}</loc>\n    <lastmod>${esc(date)}</lastmod>\n  </url>`)
+    .join('\n');
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
+}
+
+export function renderRobots(site) {
+  const root = site.siteUrl.replace(/\/$/, '');
+  return `User-agent: *\nAllow: /\n\nSitemap: ${root}/sitemap.xml\n`;
+}
+
 /** Official source links on the guide page (links marked class="src"). */
 export function guideSourceLinks(template) {
   return [...template.matchAll(/<a class="src" href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/g)].map((m) => ({
@@ -862,6 +881,11 @@ async function main() {
   const guideTemplate = await readFile(path.join(ROOT, 'templates/guide.html'), 'utf8');
   await mkdir(path.join(DIST, 'how-hiring-works'), { recursive: true });
   await writeFile(path.join(DIST, 'how-hiring-works', 'index.html'), renderGuide(site, guideTemplate));
+
+  // Sitemap and robots.txt for search engines (indexable pages only; /thanks/ is noindex).
+  await writeFile(path.join(DIST, 'sitemap.xml'), renderSitemap(site, data.bases, today));
+  await writeFile(path.join(DIST, 'robots.txt'), renderRobots(site));
+  console.log(`✓ wrote sitemap.xml (${sitemapPaths(data.bases).length} pages) and robots.txt`);
 
   // Snapshot for the weekly email: this build's live job titles and upcoming events.
   const snapshotOut = argv.includes('--snapshot') ? argv[argv.indexOf('--snapshot') + 1] : null;
