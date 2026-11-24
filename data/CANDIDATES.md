@@ -2,6 +2,28 @@
 
 Researched 2026-11-09 by four research agents plus a careers-link check.
 
+## Round 6 (2026-11-23): job-site location search + careers-link check
+
+Source: web searches of DirectEmployers (dejobs/usnlx), Indeed, Glassdoor, ZipRecruiter and ClearanceJobs pages for Hill AFB, Clearfield and Layton. SAM.gov interested-vendor lists were also planned, but SAM.gov only shows them in a live browser session, so they weren't read. All 15 finds are logged in the sheet's Employers tab (rows 79–93).
+
+### Added (7)
+- **Torch Technologies**: fixes Round 1's "needs a fix": its own board is Workday (starfish.wd501), linked from torchtechnologies.com/careers; Hill Equipment Specialist posting for AFLCMC/HB. Live titles via Workday ("Hill"). ClearanceJobs Utah page kept as second link.
+- **Guidehouse**: Materials Engineer posting for the AFNWC ICBM Directorate ISC 2.0 project at Hill (was "weak" in Round 2 because postings were contingent). Workday board; live titles ("Hill AFB").
+- **Viranim Technical Solutions**: Round 4 maybe; now a Hill AFB MBSE posting (Oct 2026) and a Clearfield office. ApplicantPro board.
+- **Applied Research Solutions (ARS)**: fixes Round 3's "needs a fix": its own board is UKG UltiPro, linked from appliedres.com/now-hiring. Round 3 roles kept, plus Operations research analyst.
+- **APTIM**: Environmental technician and engineer postings at Hill (long-term remediation project). Professional board first, Craft board second.
+- **HydroGeoLogic (HGL)**: Environmental field technician postings for the Hill AFB Optimized Remediation Contract (2022, Jun 2025). Two of its three roles are inferred from the contract work (medium confidence).
+- **Illumination Works**: Data Engineer/Analyst at Hill (hybrid, 2–3 days on base) and a ServiceNow technical specialist. ADP board.
+
+### Not added
+| Employer | Why not yet |
+|---|---|
+| Tope Technology | Sentinel jobs at Hill (IT configuration management specialist Apr 2026, logistic analyst 2024, principal system engineer), but no careers site found. |
+| Professional Solutions Delivered (ProSoDel) | Hill "Site Lead – RFID" on JobTarget; prosodel.com careers page errors. |
+| Tetra Tech, Dark Wolf Solutions, Ladgov | One posting each; Tetra Tech's is undated, Dark Wolf's is in Ogden. |
+| CEMML | Seasonal (usual rules). |
+| Janicki Industries, Kenai Defense | Off-base manufacturers (usual rules). |
+
 ## Round 5 (2026-11-23): second pass over the contract-awards sheet
 
 Source: the sheet's Employers tab (rows not yet on the site) plus three companies found while checking the Pelatron and SABER V recompetes. Each one was checked for Hill job postings by web search. Construction, the architect-engineer pool and supply-only firms were skipped by the usual rules.

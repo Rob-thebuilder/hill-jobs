@@ -19,7 +19,9 @@
     "parc-hill": { "type": "workday", "host": "servicesourceinc.wd1.myworkdayjobs.com", "tenant": "servicesourceinc", "site": "ServiceSource_Staff", "searchText": "Hill" },
     "mitre": { "type": "phenom", "url": "https://careers.mitre.org/us/en/search-results", "keywords": "Hill AFB" },
     "credence": { "type": "workable", "account": "credence" },
-    "canvas": { "type": "workday", "host": "canvasinc.wd108.myworkdayjobs.com", "tenant": "canvasinc", "site": "Canvas", "searchText": "Hill AFB" }
+    "canvas": { "type": "workday", "host": "canvasinc.wd108.myworkdayjobs.com", "tenant": "canvasinc", "site": "Canvas", "searchText": "Hill AFB" },
+    "torch-technologies": { "type": "workday", "host": "starfish.wd501.myworkdayjobs.com", "tenant": "starfish", "site": "Careers", "searchText": "Hill" },
+    "guidehouse": { "type": "workday", "host": "guidehouse.wd1.myworkdayjobs.com", "tenant": "guidehouse", "site": "External", "searchText": "Hill AFB" }
   },
   "skipped": {
     "saic": "jobs.saic.com refuses automated requests (HTTP 403, even for robots.txt).",
@@ -52,6 +54,11 @@
     "bionetics": "Paycom job board; no adapter.",
     "axient": "iCIMS board; no adapter.",
     "tyonek": "ApplicantPro board; its domain id hasn't been found yet.",
-    "koniag-integration-solutions": "Candidate portal on koniag-gs.com disallows automated reads (robots.txt)."
+    "koniag-integration-solutions": "Candidate portal on koniag-gs.com disallows automated reads (robots.txt).",
+    "viranim": "ApplicantPro board; its domain id hasn't been found yet.",
+    "applied-research-solutions": "UKG UltiPro board; no adapter.",
+    "aptim": "ADP Recruiting board; no adapter.",
+    "hgl": "ADP Workforce Now board; no adapter.",
+    "illumination-works": "ADP Workforce Now board; no adapter."
   }
 }
