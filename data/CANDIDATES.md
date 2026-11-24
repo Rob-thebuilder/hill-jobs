@@ -2,6 +2,29 @@
 
 Researched 2026-11-09 by four research agents plus a careers-link check.
 
+## Round 5 (2026-11-23): second pass over the contract-awards sheet
+
+Source: the sheet's Employers tab (rows not yet on the site) plus three companies found while checking the Pelatron and SABER V recompetes. Each one was checked for Hill job postings by web search. Construction, the architect-engineer pool and supply-only firms were skipped by the usual rules.
+
+### Added (4)
+- **Axient**: many Hill AFB postings for Sentinel/Minuteman III test engineers (ICBM CTF, 804th Test Group) and a security specialist for the 719th Test Squadron. iCIMS board, so no live titles.
+- **Canvas**: Hill AFB postings for Sentinel CTF and ICBM test engineers, a technical writer and a facility/security technician on the TMAS II contract (719th Test Squadron); won TMAS 3 in Aug 2026. Its Workday board is set up for live titles ("Hill AFB").
+- **Tyonek**: DOCAT 5 depot-maintenance awardee; Hill AFB postings for Aircraft Mechanic II and a machinist (2026). Some postings say "contingent upon contract award". Board: tyonekjobs.applicantpro.com.
+- **Koniag Integration Solutions**: technical order library at Hill (TO Librarian Jr. swing shift, Hill Library Project Lead), supporting F-16 and F-35 maintenance; Mar 2026 TO/engineering-data order at Hill. Entry-level (high-school diploma plus Secret clearance).
+
+### Maybes
+| Employer | Why not yet |
+|---|---|
+| Strategic Technology Institute (STi) | DOCAT 5; Hill AFB Aircraft Mechanic II posting (ClearanceJobs), but no careers page of its own and only one Hill role found. |
+| Stantec | Hill AFB hazardous-waste technician/supervisor postings, but from 2024–Jan 2025; careers site blocks automated checks. |
+| GMRE | South Ogden HQ (engineers, work card planner, production specialist) and an F-16 systems engineer at Hill; its Paylocity board link wasn't found. |
+| NexOne | Senior Security Manager for the Munitions Sustainment Division at Hill; no careers board found. |
+| Serco | Utah acquisition SME "near Hill AFB" and Ogden air traffic controllers; the Hill DOL TAP posting is gone. |
+| Environmental Abatement Inc. | Layton abatement technicians (KSL Jobs, 2025); no website of its own. |
+
+### New leads, not yet researched
+HydroGeoLogic (HGL) and APTIM (environmental technicians on long-term Hill remediation contracts), E-Logic and Applied Global Technologies (small Hill IT/VTC orders).
+
 ## Round 4 (2026-11-18): Hill AFB contract-awards sheet + USAspending subawards
 
 Source: the "Hill AFB Contract Awards & Contractors" sheet (Awards + Local contractors tabs) plus USAspending subawards with place of performance ZIP 84056, 2023-11-01 to 2026-11-17. The full 74-company list, with merges, Hill flags, job types and careers links, is the sheet's **Employers** tab. Nearby-ZIP subawards weren't pulled (a TLS-inspecting proxy blocked api.usaspending.gov partway through).

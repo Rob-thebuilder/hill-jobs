@@ -18,7 +18,8 @@
     "draper": { "type": "workday", "host": "draper.wd5.myworkdayjobs.com", "tenant": "draper", "site": "Draper_Careers", "searchText": "Utah" },
     "parc-hill": { "type": "workday", "host": "servicesourceinc.wd1.myworkdayjobs.com", "tenant": "servicesourceinc", "site": "ServiceSource_Staff", "searchText": "Hill" },
     "mitre": { "type": "phenom", "url": "https://careers.mitre.org/us/en/search-results", "keywords": "Hill AFB" },
-    "credence": { "type": "workable", "account": "credence" }
+    "credence": { "type": "workable", "account": "credence" },
+    "canvas": { "type": "workday", "host": "canvasinc.wd108.myworkdayjobs.com", "tenant": "canvasinc", "site": "Canvas", "searchText": "Hill AFB" }
   },
   "skipped": {
     "saic": "jobs.saic.com refuses automated requests (HTTP 403, even for robots.txt).",
@@ -48,6 +49,9 @@
     "i2x": "iCIMS board; no adapter.",
     "spa": "iCIMS board; no adapter.",
     "fed95": "ADP Workforce Now board; no adapter.",
-    "bionetics": "Paycom job board; no adapter."
+    "bionetics": "Paycom job board; no adapter.",
+    "axient": "iCIMS board; no adapter.",
+    "tyonek": "ApplicantPro board; its domain id hasn't been found yet.",
+    "koniag-integration-solutions": "Candidate portal on koniag-gs.com disallows automated reads (robots.txt)."
   }
 }

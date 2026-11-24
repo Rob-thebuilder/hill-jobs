@@ -1343,6 +1343,101 @@
       "secondaryUrl": null,
       "verified": "2026-11",
       "sourceUrl": "https://www.career.com/job/the-bionetics-corporation/aircraft-mechanic-ii-54561/j202604101506067380735"
+    },
+    {
+      "id": "axient",
+      "base": "hill",
+      "name": "Axient",
+      "type": "services",
+      "description": "Test engineers and specialists for Sentinel and Minuteman III ICBM testing and the 719th Test Squadron at Hill AFB",
+      "categories": [
+        "engineering",
+        "software-it",
+        "admin-business"
+      ],
+      "roles": [
+        "ICBM missile test engineer",
+        "Software test engineer",
+        "Reentry vehicle test engineer",
+        "Loads and environments test engineer",
+        "Codes and cryptography test engineer",
+        "Systems engineer (MBSE)",
+        "Penetration tester (cybersecurity)",
+        "Security specialist"
+      ],
+      "jobsUrl": "https://careers-axient.icims.com/jobs/search?ss=1&searchKeyword=Hill",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://axientcorp.dejobs.org/hill-afb-ut/security-specialist/7F5A4B1D4EBE43BD9AB52BF079CEA4D2/job"
+    },
+    {
+      "id": "canvas",
+      "base": "hill",
+      "name": "Canvas",
+      "type": "services",
+      "description": "Sentinel ICBM test engineers and technical staff for the 719th Test Squadron (TMAS contract) at Hill AFB",
+      "categories": [
+        "engineering",
+        "software-it",
+        "admin-business"
+      ],
+      "roles": [
+        "Sentinel CTF test engineer",
+        "ICBM developmental test engineer",
+        "Flight test engineer",
+        "Command and control test engineer",
+        "Support equipment test engineer",
+        "Avionics equipment specialist",
+        "Aircraft structural maintenance specialist (F-16 tech data)",
+        "Communications network analyst",
+        "Senior technical writer",
+        "Facility manager/security technician"
+      ],
+      "jobsUrl": "https://canvasinc.wd108.myworkdayjobs.com/en-US/Canvas?q=Hill%20AFB",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://dejobs.org/clearfield-ut/senior-technical-writer/E37D388696814406B31F3B68E5292A3A/job"
+    },
+    {
+      "id": "tyonek",
+      "base": "hill",
+      "name": "Tyonek",
+      "type": "services",
+      "description": "Contract depot maintenance crews working alongside the 309th Maintenance Groups at Hill AFB (DOCAT 5)",
+      "categories": [
+        "trades-maintenance"
+      ],
+      "roles": [
+        "Aircraft mechanic II",
+        "Aircraft mechanic III (egress)",
+        "Machinist"
+      ],
+      "jobsUrl": "https://tyonekjobs.applicantpro.com/jobs/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://tallo.com/talent/job/maintenance-and-repair/aircraft-or-a-and-p-mechanic/ut/hill-air-force-base/aircraft-mechanic-ii-d93624c5"
+    },
+    {
+      "id": "koniag-integration-solutions",
+      "base": "hill",
+      "name": "Koniag Integration Solutions",
+      "type": "services",
+      "description": "Technical order library staff keeping F-16 and F-35 maintenance data flowing to the hangars at Hill AFB",
+      "categories": [
+        "admin-business",
+        "logistics-supply",
+        "internships-entry"
+      ],
+      "roles": [
+        "Technical order (TO) librarian",
+        "Print room technician (TO/digital output)",
+        "Library project lead",
+        "Engineering data specialist"
+      ],
+      "jobsUrl": "https://www.koniag-gs.com/open-positions/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.clearancejobs.com/jobs/9138988/to-librarian-jr-swing-shift"
     }
   ]
 }
