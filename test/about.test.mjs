@@ -67,7 +67,9 @@ test('"Suggest a change" and the recruiter link open the About form, prefilled, 
   const cards = home.match(/<article class="card"[\s\S]*?<\/article>/g);
   assert.equal(cards.length, hill.length);
   for (const c of cards) assert.match(c, /<a href="\.\/about\/\?topic=fix&amp;company=[^"]+#update">Suggest a change<span class="sr-only"> for /);
-  assert.equal((home.match(/class="recruiter" href="\.\/about\/\?topic=add#update">Recruiter\? Add or update your company<\/a>/g) || []).length, 2, 'hero and footer');
+  assert.equal((home.match(/class="recruiter" href="\.\/about\/\?topic=add#update">Recruiter\? Add or update your company<\/a>/g) || []).length, 1, 'once, at the bottom');
+  const footerStart = home.indexOf('<footer');
+  assert.ok(home.indexOf('class="recruiter"') > footerStart, 'the recruiter link is in the footer, not the hero');
   assert.match(home, /<a href="\.\/about\/">About<\/a>/);
 
   const dir = renderDirectory('hill', data.bases.hill, data.employers, ready, await read('templates/employers.html'));
