@@ -306,7 +306,7 @@ Everything runs in the browser, with no server.
   - The email subject reads "Listing request from workathill.com". The form uses the same spam guard and `/thanks/` redirect as Let's Connect.
 - **Links into it (same tab):**
   - Each card's "Suggest a change" goes to `about/?topic=fix&company=<name>#update`.
-  - The hero and footer "Recruiter? Add or update your company" link goes to `about/?topic=add#update`.
+  - The "Recruiter? Add or update your company" link, at the bottom of the home page (footer, above Let's Connect), goes to `about/?topic=add#update`.
   - A short script on the About page reads `topic` and `company` and fills them in. Without JavaScript the form still works; the person picks these fields themselves.
 - **Fallback:** if `contact.web3formsKey` isn't set, the links use the optional Google Form in `site.json` → `form` (prefill URL, new tab). If neither is set, the links and the form are left out.
 - **Workflow:** a request comes in → you check it → you edit `employers.json` (or ask Claude to) → push → the site redeploys. Nothing updates on the site automatically.
