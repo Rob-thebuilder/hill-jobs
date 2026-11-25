@@ -197,6 +197,14 @@ One shareable page listing every Hill employer, grouped by type (Prime contracto
 - **Official sources only:** every figure is copied from the school's or program's own page, and `data/TRAINING-REVIEW.md` records the URL and what it said. Figures that aren't published are left out, never estimated.
 - **Kept current:** the weekly link check covers every training link. Re-check costs and lengths each July, when tech colleges publish new-year tuition.
 
+## 4e. About / For recruiters (`/about/`)
+- **What it is:** a short page, written in a casual first-person voice, with four sections:
+  - **Who's behind this:** Rob Smith, 10+ years in the aviation maintenance world, who built the site to put the Hill job search and its resources in one place. No current employer is named.
+  - **How listings work:** free with no paid placement, A–Z; links go straight to each employer's site or USAJOBS; the site never takes applications or resumes; only employers with evidence of a Hill workforce; daily USAJOBS refresh and a weekly link check; independent, not affiliated.
+  - **For recruiters and employers:** the "Add or fix a listing" form (§7), on a navy panel with the anchor `#update`.
+  - **Link to Work At Hill:** a copy-paste blurb with the live employer count and the site URL, for schools, job centers, recruiters and veteran groups.
+- **Where:** its own page, built from `templates/about.html` by `renderAbout`. Linked from every page's footer, and reached from the card and recruiter links (§7). Listed in `sitemap.xml` and tagged for GA4 like the other indexable pages.
+
 ## 5. Search and filtering
 
 Everything runs in the browser, with no server.
@@ -291,18 +299,17 @@ Everything runs in the browser, with no server.
 
 ## 7. Recruiter feedback
 
-- A Google Form titled **"Work At Hill — suggest a change"** with these fields:
-  - Your name
-  - Work email
-  - Company
-  - Request type (Add my company / Fix a link / Fix details / Remove listing / Add my resume service / Add an event)
-  - Details
-  - Correct URL (optional)
-- Responses go to a linked Google Sheet that you review by hand. Nothing updates on the site automatically.
-- Each card's "Suggest a change" link uses the form's prefill URL to fill in Company and set Request type to "Fix details".
-- The footer and hero have a "Recruiter? Add or update your company" link that opens the form with Request type set to "Add my company".
-- Links open in a new tab with `rel="noopener"`.
-- **Workflow:** a submission comes in → you check it → you edit `employers.json` (or ask Claude to) → push → the site redeploys.
+- **The form:** "Add or fix a listing" on the About page (§4e), sent through the same Web3Forms inbox as Let's Connect (§7b), so requests arrive at rob@workathill.com. No Google account or second service is needed. Fields:
+  - What's this about? (`request`, required): Add my company / Fix a listing / Remove a listing / List my resume service / Add an event / Link to or partner with the site / Something else
+  - Company or organization (`company`, optional)
+  - Your name, Work email, Details (required)
+  - The email subject reads "Listing request from workathill.com". The form uses the same spam guard and `/thanks/` redirect as Let's Connect.
+- **Links into it (same tab):**
+  - Each card's "Suggest a change" goes to `about/?topic=fix&company=<name>#update`.
+  - The hero and footer "Recruiter? Add or update your company" link goes to `about/?topic=add#update`.
+  - A short script on the About page reads `topic` and `company` and fills them in. Without JavaScript the form still works; the person picks these fields themselves.
+- **Fallback:** if `contact.web3formsKey` isn't set, the links use the optional Google Form in `site.json` → `form` (prefill URL, new tab). If neither is set, the links and the form are left out.
+- **Workflow:** a request comes in → you check it → you edit `employers.json` (or ask Claude to) → push → the site redeploys. Nothing updates on the site automatically.
 
 ## 7a. Weekly email and saved-search alerts
 

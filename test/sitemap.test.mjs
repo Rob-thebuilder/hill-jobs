@@ -69,7 +69,7 @@ test('the build writes a valid sitemap of indexable https://workathill.com pages
     const urls = locs(xml);
     const expected = [
       ...Object.values(data.bases).map((b) => b.path),
-      '/employers/', '/get-trained/', '/how-hiring-works/', '/privacy/',
+      '/employers/', '/get-trained/', '/how-hiring-works/', '/about/', '/privacy/',
     ].map((p) => `https://workathill.com${p}`);
     assert.deepEqual([...urls].sort(), [...new Set(expected)].sort());
     for (const u of urls) assert.ok(u.startsWith('https://workathill.com/'), u);

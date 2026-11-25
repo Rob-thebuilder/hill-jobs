@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{analytics}}<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>About Work At Hill · For recruiters and partners · {{siteName}}</title>
+<meta name="description" content="Who runs Work At Hill, how listings work (free, no paid placement), and how recruiters can add or fix a listing or link to the site.">
+<link rel="canonical" href="{{canonical}}">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0b1f3a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{siteName}}">
+<meta property="og:title" content="About Work At Hill">
+<meta property="og:description" content="A free, independent directory of who's hiring at Hill AFB, built by someone from the aviation maintenance world.">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:image" content="{{ogImage}}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../assets/styles.css">
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="hero hero-small">
+  <div class="wrap hero-inner">
+    <p class="eyebrow"><a class="back-home" href="../">← {{siteName}}</a></p>
+    <h1>About Work At Hill</h1>
+    <p class="tagline">One place to see who's hiring at Hill AFB, and how to get in the door.</p>
+  </div>
+</header>
+
+<main id="main" class="wrap prose about">
+  <nav class="toc" aria-labelledby="toc-heading">
+    <h2 id="toc-heading">On this page</h2>
+    <ol>
+      <li><a href="#who">Who's behind this</a></li>
+      <li><a href="#how-listings-work">How listings work</a></li>
+      <li><a href="#for-recruiters">For recruiters and employers</a></li>
+      <li><a href="#link-to-us">Link to Work At Hill</a></li>
+    </ol>
+  </nav>
+
+  <section id="who" aria-labelledby="h-who">
+    <h2 id="h-who">Who's behind this</h2>
+    <p>Hi, I'm Rob Smith. I've been in the aviation maintenance world for 10+ years, and one thing never changes: finding a job at Hill is harder than it should be. There are dozens of contractors, each with its own careers site, plus USAJOBS, job fairs, training programs and resume help, all scattered across the internet.</p>
+    <p>So I built Work At Hill to pull it all into one place. It's local, independent and free, for job seekers and for employers.</p>
+  </section>
+
+  <section id="how-listings-work" aria-labelledby="h-listings">
+    <h2 id="h-listings">How listings work</h2>
+    <ul>
+      <li><strong>Free, with no paid placement.</strong> Nobody pays to be listed, and nobody pays to rank higher. Employers are sorted A–Z.</li>
+      <li><strong>Straight to the source.</strong> Every "View jobs" link goes to the employer's own careers site or USAJOBS. Work At Hill never takes applications or collects resumes.</li>
+      <li><strong>Only employers with people at Hill.</strong> Each of the {{count}} employers listed has evidence of a workforce on or near the base.</li>
+      <li><strong>Kept current.</strong> Federal job counts refresh daily from USAJOBS, every link is checked weekly, and corrections are made by hand.</li>
+      <li><strong>Independent.</strong> Work At Hill isn't affiliated with or endorsed by the U.S. Air Force, the Department of Defense or any listed employer.</li>
+    </ul>
+  </section>
+
+  <section id="for-recruiters" aria-labelledby="h-recruiters">
+    <h2 id="h-recruiters">For recruiters and employers</h2>
+    <p>Hiring at Hill and not listed? Is a link or description wrong? Have a job fair or a resume service people should know about? Send it with the form below. You don't need an account, and it's always free.</p>
+    <div class="form-panel" id="update">
+      {{updateForm}}
+    </div>
+  </section>
+
+  <section id="link-to-us" aria-labelledby="h-link">
+    <h2 id="h-link">Link to Work At Hill</h2>
+    <p>Schools, job centers, recruiters and veteran groups are welcome to share the site. Feel free to copy this:</p>
+    <div class="blurb">
+      <p id="blurb-text">{{blurb}}</p>
+      <p class="blurb-url"><a href="{{siteUrl}}">{{siteUrl}}</a></p>
+    </div>
+    <p>Questions or ideas? Use the <a href="../#contact-form">Let's Connect form</a> on the home page.</p>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="disclaimer">Work At Hill is an independent directory and is not affiliated with or endorsed by the U.S. Air Force, the Department of Defense, or any listed employer.</p>
+    <p class="fine"><a href="../">Home</a> · <a href="../employers/">Employers</a> · <a href="../how-hiring-works/">How hiring at Hill works</a> · <a href="../get-trained/">Get Trained</a> · <a href="./">About</a> · <a href="../privacy/">Privacy</a></p>
+  </div>
+</footer>
+<script>
+// Fill in the request type and company from links like ?topic=fix&company=Boeing#update.
+// Without JavaScript the form works the same; you just pick these yourself.
+(() => {
+  const q = new URLSearchParams(location.search);
+  const select = document.getElementById('update-topic');
+  const company = document.getElementById('update-company');
+  if (!select) return;
+  const opt = select.querySelector(`option[data-topic="${CSS.escape(q.get('topic') || '')}"]`);
+  if (opt) select.value = opt.value;
+  if (company && q.get('company')) company.value = q.get('company').slice(0, 120);
+})();
+</script>
+</body>
+</html>

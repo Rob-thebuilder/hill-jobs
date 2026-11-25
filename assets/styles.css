@@ -498,12 +498,13 @@ button { font: inherit; }
 .contact-row .field { flex: 1 1 14rem; min-width: 0; }
 .contact .field { margin-top: .75rem; }
 .contact label { display: block; margin-bottom: .3rem; font-weight: 700; color: #fff; }
-.contact input:not([type="hidden"]):not(.hp), .contact textarea {
+.contact input:not([type="hidden"]):not(.hp), .contact textarea, .contact select {
   display: block; width: 100%; min-height: 48px; padding: .7rem .9rem; border-radius: 10px;
   border: 1.5px solid #b8c1cf; background: #fff; color: #0f1b2d;
   font: inherit; font-size: 1.0625rem; /* 16px or more: no iOS zoom */
 }
 .contact textarea { min-height: 8rem; resize: vertical; }
+.contact select { appearance: auto; }
 .contact .btn-signup { margin-top: .9rem; }
 .contact .btn-signup:disabled { opacity: .7; cursor: progress; }
 .contact-status:empty { display: none; }
@@ -569,3 +570,19 @@ button { font: inherit; }
 @media (prefers-reduced-motion: reduce) {
   .btn-jobs span[aria-hidden] { transition: none; }
 }
+
+/* About page: the listing form sits on a navy panel so it matches the footer forms. */
+.about .toc { margin-top: .5rem; padding: .75rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.about .toc h2 { margin-top: 0; font-size: 1rem; }
+.about .toc ol { margin: .25rem 0 0; padding-left: 1.25rem; }
+.about .toc li { margin-top: 0; }
+.about .toc a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
+.form-panel { margin-top: 1rem; padding: 1.25rem 1rem 1.5rem; border-radius: 14px; background: var(--navy); color: #e8edf5; scroll-margin-top: 1rem; }
+.form-panel .contact { margin-bottom: 0; max-width: none; }
+.form-panel .signup-title { margin-top: 0; }
+.form-panel .signup-fine, .form-panel .signup-fine a { color: #b4c0d3; }
+.form-panel p { margin-top: 0; }
+.blurb { margin-top: .75rem; padding: .9rem 1rem; background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--amber); border-radius: 10px; }
+.blurb p { margin-top: 0; }
+.blurb .blurb-url { margin-top: .4rem; font-weight: 700; }
+@media (min-width: 640px) { .form-panel { padding: 1.5rem 1.5rem 1.75rem; } }

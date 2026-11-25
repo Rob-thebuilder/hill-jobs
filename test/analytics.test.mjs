@@ -6,7 +6,7 @@ import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
-  renderAnalytics, validateAnalytics, renderBase, renderDirectory, renderGuide, renderPrivacy, renderThanks,
+  renderAnalytics, validateAnalytics, renderBase, renderDirectory, renderGuide, renderPrivacy, renderThanks, PRIVACY_UPDATED,
 } from '../scripts/build.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -58,7 +58,7 @@ test('every indexable page has the tag right after <head>; /thanks/ and the GTM 
     assert.equal(r.code, 0, r.out);
     const pages = [
       ...Object.values(data.bases).map((b) => path.join(b.path, 'index.html')),
-      'employers/index.html', 'get-trained/index.html', 'how-hiring-works/index.html', 'privacy/index.html',
+      'employers/index.html', 'get-trained/index.html', 'how-hiring-works/index.html', 'about/index.html', 'privacy/index.html',
     ];
     for (const rel of pages) {
       const html = await readFile(path.join(out, rel), 'utf8');
@@ -96,5 +96,5 @@ test('privacy page explains Google Analytics in plain words, with the opt-out li
   assert.match(html, /never sells personal information/);
   assert.ok(!/no cookies|no analytics|no tracking of any kind|loads nothing from other companies/.test(html), 'old no-analytics wording is gone');
   assert.match(html, /<meta name="description" content="[^"]*Google Analytics[^"]*opt out[^"]*">/);
-  assert.match(html, /Last updated November 23, 2026/);
+  assert.match(html, new RegExp(`Last updated ${PRIVACY_UPDATED}`));
 });
