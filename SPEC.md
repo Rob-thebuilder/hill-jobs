@@ -200,7 +200,7 @@ One shareable page listing every Hill employer, grouped by type (Prime contracto
 ## 4e. About / For recruiters (`/about/`)
 - **What it is:** a short page, written in a casual first-person voice, with four sections:
   - **Who's behind this:** Rob Smith, 10+ years in the aviation maintenance world, who built the site to put the Hill job search and its resources in one place. No current employer is named.
-  - **How listings work:** free with no paid placement, A–Z; links go straight to each employer's site or USAJOBS; the site never takes applications or resumes; only employers with evidence of a Hill workforce; daily USAJOBS refresh and a weekly link check; independent, not affiliated.
+  - **How listings work:** free for job seekers, always; every employer listed free, A–Z, and nobody can pay to rank higher in the directory; any future sponsors clearly labeled and kept separate from the listings; links go straight to each employer's site or USAJOBS; the site never takes applications or resumes; only employers with evidence of a Hill workforce; daily USAJOBS refresh and a weekly link check; independent, not affiliated.
   - **For recruiters and employers:** the "Add or fix a listing" form (§7), on a navy panel with the anchor `#update`.
   - **Link to Work At Hill:** a copy-paste blurb with the live employer count and the site URL, for schools, job centers, recruiters and veteran groups.
 - **Where:** its own page, built from `templates/about.html` by `renderAbout`. Linked from every page's footer, and reached from the card and recruiter links (§7). Listed in `sitemap.xml` and tagged for GA4 like the other indexable pages.
