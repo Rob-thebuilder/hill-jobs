@@ -58,7 +58,7 @@ test('every indexable page has the tag right after <head>; /thanks/ and the GTM 
     assert.equal(r.code, 0, r.out);
     const pages = [
       ...Object.values(data.bases).map((b) => path.join(b.path, 'index.html')),
-      'employers/index.html', 'how-hiring-works/index.html', 'privacy/index.html',
+      'employers/index.html', 'get-trained/index.html', 'how-hiring-works/index.html', 'privacy/index.html',
     ];
     for (const rel of pages) {
       const html = await readFile(path.join(out, rel), 'utf8');

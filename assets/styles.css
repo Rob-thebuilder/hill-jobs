@@ -520,12 +520,23 @@ button { font: inherit; }
 .guide-link:hover { color: var(--amber); }
 
 /* ---------- "How hiring at Hill works" guide ---------- */
-.guide .toc { margin-top: .5rem; padding: .75rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
-.guide .toc h2 { margin-top: 0; font-size: 1rem; }
-.guide .toc ol { margin: .25rem 0 0; padding-left: 1.25rem; }
-.guide .toc li { margin-top: 0; }
-.guide .toc a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
-.guide section { scroll-margin-top: 1rem; }
+.guide .toc, .training .toc { margin-top: .5rem; padding: .75rem 1rem; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; }
+.guide .toc h2, .training .toc h2 { margin-top: 0; font-size: 1rem; }
+.guide .toc ol, .training .toc ol { margin: .25rem 0 0; padding-left: 1.25rem; }
+.guide .toc li, .training .toc li { margin-top: 0; }
+.guide .toc a, .training .toc a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
+.guide section, .training section { scroll-margin-top: 1rem; }
+
+/* ---------- Get Trained page ---------- */
+.training { padding-top: 1.5rem; padding-bottom: 3rem; }
+.training .toc { max-width: 760px; }
+.train-checked { margin-top: 1rem; max-width: 70ch; color: var(--muted); font-size: .95rem; }
+.train-card .res-facts div { display: grid; grid-template-columns: 5.5rem minmax(0, 1fr); gap: .4rem; }
+.train-card .desc { font-size: .95rem; }
+.train-jobs { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
+.paths-list { margin: 0; padding-left: 1.25rem; max-width: 70ch; }
+.paths-list li { margin-top: .5rem; }
+.paths-list a { font-weight: 600; }
 .guide h3 { margin-top: 1.1rem; font-size: 1.05rem; font-weight: 800; }
 .guide ul { padding-left: 1.25rem; }
 .guide li a, .guide p a { font-weight: 600; }

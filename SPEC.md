@@ -189,6 +189,14 @@ One shareable page listing every Hill employer, grouped by type (Prime contracto
   - The weekly link check covers every source link.
   - Re-check the facts each January, when the GS pay tables and WG schedules change, and update "Last checked" on the page.
 
+## 4d. Get Trained (`/get-trained/`)
+- **What it is:** schools, apprenticeships and funding that lead to trades jobs at Hill, in four sections (Fast certificates, Apprenticeships, Aircraft mechanic (A&P) schools, Paying for training) plus "More paths into Hill", which links to the existing More ways section, Resume Resources tab, hiring guide and Employer Directory instead of repeating them.
+- **Where:** its own page, built from `templates/training.html` and `data/training.json`, with no JavaScript. Linked from the hero ("Get trained for a trade →") and every page's footer.
+- **Each card:** provider, name, where, length, cost and credential when the school publishes them, an optional one-line note, a "Visit website" link (new tab) and the month it was checked. An optional `search` term adds "Hill jobs for “…” →", which opens the homepage search; the build fails if that term finds no employer by its researched `roles`.
+- **Fields:** `id`, `section`, `name`, `provider`, `city`, `length`, `cost`, `credential`, `note`, `search`, `url`, `verified` (YYYY-MM), and `sourceUrl`, which is internal and never shown. `length`, `cost`, `credential`, `note` and `search` may be `null`. A top-level `checked` (YYYY-MM) is shown as "last checked".
+- **Official sources only:** every figure is copied from the school's or program's own page, and `data/TRAINING-REVIEW.md` records the URL and what it said. Figures that aren't published are left out, never estimated.
+- **Kept current:** the weekly link check covers every training link. Re-check costs and lengths each July, when tech colleges publish new-year tuition.
+
 ## 5. Search and filtering
 
 Everything runs in the browser, with no server.
@@ -241,6 +249,7 @@ Everything runs in the browser, with no server.
 │   ├── event-sources.json  public event calendars read at build time
 │   ├── RESOURCES-REVIEW.md evidence for resume help and events
 │   ├── programs.json       "More ways to find Hill jobs" (PROGRAMS-REVIEW.md has the evidence)
+│   ├── training.json       Get Trained page (TRAINING-REVIEW.md has the evidence)
 │   ├── CANDIDATES.md       employers found but not yet approved
 │   ├── GUIDE-SOURCES.md    official source and quote for every fact on the hiring guide
 │   └── ROLES-REVIEW.md     evidence for each employer's roles
@@ -252,7 +261,7 @@ Everything runs in the browser, with no server.
 │   ├── weekly-email.mjs    builds the weekly email and creates it in Buttondown
 │   └── lib/                usajobs.mjs (USAJOBS counts/titles), careers.mjs (contractor titles), events.mjs (event calendars), newsletter.mjs (weekly email), chrome.mjs (headless Chrome)
 ├── test/                   node --test unit and build tests
-├── templates/base.html, privacy.html, guide.html
+├── templates/base.html, privacy.html, guide.html, training.html
 └── .github/workflows/
     ├── deploy.yml
     ├── link-check.yml
@@ -362,7 +371,7 @@ A short form at the bottom of the home page (name, email, message) for questions
 - **Secrets:** add `USAJOBS_API_KEY` and `USAJOBS_EMAIL` as repository Actions secrets (e.g. `gh secret set USAJOBS_API_KEY`, which prompts for the value).
   - They're passed to the build step only for pushes, scheduled runs and manual runs, never for pull requests. PR builds run without counts.
 - **Weekly link check** (`link-check.yml`, cron every Monday plus a manual trigger):
-  - Requests every outbound link: each employer's `jobsUrl` and `secondaryUrl`, plus the resume help, "More ways" programs and event links. `--extra FILE` also checks a list under review, such as candidates. Uses HEAD and falls back to GET, follows redirects, and times out after 15 s. Sends a generic User-Agent such as `WorkAtHill-LinkCheck/1.0`.
+  - Requests every outbound link: each employer's `jobsUrl` and `secondaryUrl`, plus the resume help, "More ways" programs, Get Trained and event links. `--extra FILE` also checks a list under review, such as candidates. Uses HEAD and falls back to GET, follows redirects, and times out after 15 s. Sends a generic User-Agent such as `WorkAtHill-LinkCheck/1.0`.
   - Retries timeouts, 429s and 5xx errors (twice, with a short pause). Settings are in `data/link-check.json`.
   - Each link is **OK**, **Moved** (redirect to another domain: flagged for review, not broken), **Blocked** (bot protection: 401/403/429/999, a timeout after retries, a Cloudflare challenge or a Workday maintenance page), **Skipped** (a domain on the skip list that always blocks bots, e.g. careers.rtx.com, jobs.saic.com, hill.af.mil) or **Broken** (404/410, other 4xx/5xx, or a failed connection). Only Broken counts as a failure. The User-Agent stays the honest `WorkAtHill-LinkCheck/1.0`; it never pretends to be a browser.
   - If anything is Broken, the workflow opens or updates **one** GitHub issue titled "Broken links: <date>" that lists each employer, URL and status, without opening duplicates. When a later check finds nothing broken, it closes that issue with a comment. The run itself stays green either way (it only fails if the checker crashes); the report is also shown on the run's summary page.
@@ -448,6 +457,7 @@ Test on at least **one iPhone (Safari)** and **one Android phone (Chrome)**. If 
 - [ ] You approved every seed employer entry
 - [ ] You checked every role in `data/ROLES-REVIEW.md`, especially the ⚑ ones and the LO questions, and the groups in `data/synonyms.json`
 - [ ] You approved every resume help listing and event source in `data/RESOURCES-REVIEW.md`
+- [ ] You reviewed `data/TRAINING-REVIEW.md`, opened the ⚑ links in a browser, and decided on the Maybe list
 - [ ] You reviewed `data/PROGRAMS-REVIEW.md` and marked each candidate in `data/CANDIDATES.md` add / fix / skip
 - [ ] You read the hiring guide against `data/GUIDE-SOURCES.md`, opened the hill.af.mil visitor link in a browser, and replaced "PENDING" in `data/link-allowlist.json` with your name and the date
 - [ ] `node scripts/check-links.mjs` passes for every outbound link: employers, resume help, programs and events
