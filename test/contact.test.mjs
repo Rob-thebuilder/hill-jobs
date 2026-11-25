@@ -50,7 +50,7 @@ test('home page footer has the form only when set up; privacy page explains it',
   assert.ok(!page(off).includes('{{'), 'no unfilled placeholders');
 
   const privacy = await read('templates/privacy.html');
-  assert.match(renderPrivacy(ready, privacy), /The Let's Connect form \(optional\)[\s\S]*Web3Forms/);
+  assert.match(renderPrivacy(ready, privacy), /The contact and listing forms \(optional\)[\s\S]*Web3Forms/);
   assert.ok(!renderPrivacy(off, privacy).includes('Web3Forms'));
   assert.ok(!renderPrivacy(off, privacy).includes('{{'));
 });

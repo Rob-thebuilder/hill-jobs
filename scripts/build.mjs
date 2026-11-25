@@ -124,6 +124,21 @@ function formUrl(form, requestType, company) {
   return u.toString();
 }
 
+/**
+ * Where "Suggest a change" and "Recruiter? Add or update your company" point. With the
+ * Web3Forms key set, they open the listing form on the About page (same tab), with the request
+ * type and company filled in by about.html's script. Otherwise the optional Google Form.
+ */
+export function listingLink(site, prefix, topic, company) {
+  if (contactReady(site)) {
+    const q = new URLSearchParams({ topic });
+    if (company) q.set('company', company);
+    return { href: `${prefix}about/?${q}#update`, newTab: false };
+  }
+  const url = formUrl(site?.form, topic === 'add' ? site?.form?.addValue : site?.form?.fixValue, company);
+  return url ? { href: url, newTab: true } : null;
+}
+
 function verifiedLabel(ym) {
   const [y, m] = ym.split('-');
   return `${MONTHS[Number(m) - 1]} ${y}`;
@@ -142,10 +157,10 @@ export function openJobsLine(id, jobCounts) {
   return `<p class="open-jobs">${what} <span class="checked">· checked <time datetime="${esc(jobCounts.checkedAt)}">${dateLabel(jobCounts.checkedAt)}</time></span></p>\n`;
 }
 
-function renderCard(e, form, jobCounts, h = 'h2') {
+function renderCard(e, site, jobCounts, h = 'h2', prefix = './') {
   const typeLabel = LABELS.types[e.type];
   const catLabels = e.categories.map((c) => LABELS.categories[c]);
-  const suggest = formUrl(form, form?.fixValue, e.name);
+  const suggest = listingLink(site, prefix, 'fix', e.name);
   return `<li><article class="card" data-type="${esc(e.type)}" data-cats="${esc(e.categories.join(' '))}" data-id="${esc(e.id)}" aria-labelledby="e-${esc(e.id)}">
 <div class="card-top"><span class="badge badge-${esc(e.type)}">${esc(typeLabel)}</span></div>
 <${h} id="e-${esc(e.id)}">${esc(e.name)}</${h}>
@@ -156,7 +171,7 @@ function renderCard(e, form, jobCounts, h = 'h2') {
 ${openJobsLine(e.id, jobCounts)}<a class="btn-jobs" href="${esc(e.jobsUrl)}" target="_blank" rel="noopener">View jobs <span aria-hidden="true">→</span><span class="sr-only"> at ${esc(e.name)}</span>${NEW_TAB}</a>
 ${e.secondaryUrl ? `<a class="link-secondary" href="${esc(e.secondaryUrl)}" target="_blank" rel="noopener">${e.type === 'federal' ? 'Agency hiring page' : 'More openings'}<span class="sr-only"> for ${esc(e.name)}</span>${NEW_TAB}</a>` : ''}
 </div>
-<p class="meta"><span>Link verified ${verifiedLabel(e.verified)}</span>${suggest ? `<a href="${esc(suggest)}" target="_blank" rel="noopener">Suggest a change<span class="sr-only"> for ${esc(e.name)}</span>${NEW_TAB}</a>` : ''}</p>
+<p class="meta"><span>Link verified ${verifiedLabel(e.verified)}</span>${suggest ? `<a href="${esc(suggest.href)}"${suggest.newTab ? ' target="_blank" rel="noopener"' : ''}>Suggest a change<span class="sr-only"> for ${esc(e.name)}</span>${suggest.newTab ? NEW_TAB : ''}</a>` : ''}</p>
 </article></li>`;
 }
 
@@ -220,7 +235,7 @@ export function renderDirectory(baseId, base, allEmployers, site, template, jobC
     .map(([t, list]) => `    <section class="dir-group" id="type-${t}" aria-labelledby="g-${t}">
       <h2 class="group-title" id="g-${t}">${esc(GROUP_TITLES[t])} <span class="group-n">${list.length}</span></h2>
       <ul class="grid">
-${list.map((e) => renderCard(e, site.form, jobCounts, 'h3')).join('\n')}
+${list.map((e) => renderCard(e, site, jobCounts, 'h3', '../')).join('\n')}
       </ul>
     </section>`)
     .join('\n');
@@ -338,14 +353,75 @@ export function renderContact(site, prefix = './') {
     </form>`;
 }
 
+/** Request types on the About page's listing form: [value in the URL, label in the menu and the email]. */
+export const LISTING_TOPICS = [
+  ['add', 'Add my company'],
+  ['fix', 'Fix a listing'],
+  ['remove', 'Remove a listing'],
+  ['resume', 'List my resume service'],
+  ['event', 'Add an event'],
+  ['partner', 'Link to or partner with the site'],
+  ['other', 'Something else'],
+];
+
+/**
+ * The About page's listing form (recruiters, employers, partners). Same Web3Forms inbox as Let's
+ * Connect. A plain post, so it works without JavaScript; about.html's script only fills in the
+ * request type and company from ?topic= and ?company=.
+ */
+export function renderUpdateForm(site) {
+  if (!contactReady(site)) return '';
+  const root = site.siteUrl.replace(/\/$/, '');
+  const options = LISTING_TOPICS.map(([v, label]) => `<option value="${esc(label)}" data-topic="${v}">${esc(label)}</option>`).join('');
+  return `<form class="contact" id="update-form" action="${WEB3FORMS_ACTION}" method="post" aria-labelledby="update-title">
+      <h2 class="signup-title" id="update-title">Add or fix a listing</h2>
+      <p class="signup-lead">Tell me what to add or change. I check every request by hand, usually within a few days.</p>
+      <input type="hidden" name="access_key" value="${esc(site.contact.web3formsKey)}">
+      <input type="hidden" name="subject" value="Listing request from ${esc(new URL(root).host)}">
+      <input type="hidden" name="from_name" value="${esc(site.siteName)}">
+      <input type="hidden" name="redirect" value="${esc(root)}/thanks/">
+      <input type="checkbox" name="botcheck" class="hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+      <div class="contact-row">
+        <p class="field"><label for="update-topic">What's this about?</label><select id="update-topic" name="request" required>${options}</select></p>
+        <p class="field"><label for="update-company">Company or organization</label><input id="update-company" name="company" autocomplete="organization" maxlength="120"></p>
+      </div>
+      <div class="contact-row">
+        <p class="field"><label for="update-name">Your name</label><input id="update-name" name="name" required autocomplete="name" maxlength="100"></p>
+        <p class="field"><label for="update-email">Work email</label><input id="update-email" type="email" name="email" required autocomplete="email" inputmode="email" maxlength="200"></p>
+      </div>
+      <p class="field"><label for="update-message">Details</label><textarea id="update-message" name="message" required rows="5" maxlength="4000" placeholder="For example: the right careers link, what your team does at Hill, or the event date and link."></textarea></p>
+      <button type="submit" class="btn-signup">Send request</button>
+      <p class="signup-fine">Your email is used only to reply to you. <a href="../privacy/">Privacy</a></p>
+    </form>`;
+}
+
+export function renderAbout(site, template, employerCount) {
+  const root = site.siteUrl.replace(/\/$/, '');
+  const blurb = `${site.siteName} (${new URL(root).host}) is a free directory of the ${employerCount} employers hiring at Hill AFB, with direct links to each careers page, job fairs, training and resume help.`;
+  const updateForm = renderUpdateForm(site);
+  return fill(template, {
+    analytics: renderAnalytics(site),
+    siteName: esc(site.siteName),
+    canonical: esc(`${root}/about/`),
+    ogImage: esc(`${root}/assets/og.png`),
+    siteUrl: esc(root + '/'),
+    count: String(employerCount),
+    blurb: esc(blurb),
+    updateForm: updateForm
+      ? updateForm
+      : '<p>A request form will be posted here soon.</p>',
+  });
+}
+
 export function renderThanks(site, template) {
   return fill(template, { siteName: esc(site.siteName) });
 }
 
 const PRIVACY_CONTACT = `
-  <h2>The Let's Connect form (optional)</h2>
+  <h2>The contact and listing forms (optional)</h2>
   <ul>
-    <li><strong>What's sent:</strong> the name, email address and message you type. Nothing is sent until you press "Send message".</li>
+    <li><strong>Which forms:</strong> the Let's Connect form on the home page and the "Add or fix a listing" form on the <a href="../about/">About page</a>.</li>
+    <li><strong>What's sent:</strong> what you type: your name, email address and message, plus the request type and company on the listing form. Nothing is sent until you press the send button.</li>
     <li><strong>How it's sent:</strong> <a href="https://web3forms.com/privacy" rel="noopener">Web3Forms</a>, a form service, emails your message to Work At Hill. Work At Hill keeps it in its email inbox.</li>
     <li><strong>How it's used:</strong> only to read and reply to your message. It's never added to any mailing list, sold, rented or shared.</li>
     <li><strong>Deleting it:</strong> ask in a message, and it will be deleted.</li>
@@ -353,7 +429,7 @@ const PRIVACY_CONTACT = `
 `;
 
 // Change this whenever the privacy page's wording changes.
-export const PRIVACY_UPDATED = 'November 23, 2026';
+export const PRIVACY_UPDATED = 'November 25, 2026';
 
 const CONNECT_LINK = `the <a href="../#contact-form">Let's Connect form</a> on the home page`;
 
@@ -410,7 +486,7 @@ export function renderGuide(site, template) {
 
 /** Every indexable page the build writes. /thanks/ is left out: it's noindex. */
 export function sitemapPaths(bases) {
-  return [...new Set([...Object.values(bases).map((b) => b.path), '/employers/', '/get-trained/', '/how-hiring-works/', '/privacy/'])];
+  return [...new Set([...Object.values(bases).map((b) => b.path), '/employers/', '/get-trained/', '/how-hiring-works/', '/about/', '/privacy/'])];
 }
 
 /** sitemap.xml for the indexable pages; lastmod is the build date (YYYY-MM-DD). */
@@ -790,9 +866,9 @@ export function renderBase(baseId, base, allEmployers, site, template, jobCounts
   const depth = base.path.split('/').filter(Boolean).length;
   const prefix = depth ? '../'.repeat(depth) : './';
   const { typeChips, catChips } = renderChips(employers);
-  const addUrl = formUrl(site.form, site.form?.addValue);
-  const recruiterLink = addUrl
-    ? `<a class="recruiter" href="${esc(addUrl)}" target="_blank" rel="noopener">Recruiter? Add or update your company${NEW_TAB}</a>`
+  const add = listingLink(site, prefix, 'add');
+  const recruiterLink = add
+    ? `<a class="recruiter" href="${esc(add.href)}"${add.newTab ? ' target="_blank" rel="noopener"' : ''}>Recruiter? Add or update your company${add.newTab ? NEW_TAB : ''}</a>`
     : '';
   const canonical = site.siteUrl.replace(/\/$/, '') + base.path;
   const description = `${countText(employers.length)} hiring at ${base.name}, ${base.state}: defense contractors and federal employers, with direct links to each careers page.`;
@@ -815,7 +891,7 @@ export function renderBase(baseId, base, allEmployers, site, template, jobCounts
     contactForm: renderContact(site, prefix),
     typeChips,
     catChips,
-    cards: employers.map((e) => renderCard(e, site.form, jobCounts)).join('\n'),
+    cards: employers.map((e) => renderCard(e, site, jobCounts, 'h2', prefix)).join('\n'),
     searchData: searchData(employers, synonyms, jobCounts, careerTitles),
     resourceCount: String((extras.resources || []).length),
     eventCount: String((extras.events || []).length),
@@ -958,7 +1034,7 @@ async function main() {
   const eventList = upcoming([...curated, ...pulled], today);
   const extras = { resources: resourcesFile.resources, events: eventList, annual: eventsFile.annual, eventsChecked, programs: programsFile.programs };
 
-  if (!site.form) console.warn('WARN: data/site.json has no "form" config; "Suggest a change" and recruiter links are left out.');
+  if (!contactReady(site) && !site.form) console.warn('WARN: no contact.web3formsKey or "form" config in data/site.json; "Suggest a change" and recruiter links are left out.');
   if (!contactReady(site)) console.warn('WARN: data/site.json has no contact.web3formsKey; the Let\'s Connect form is left out.');
   if (!newsletterReady(site)) console.warn('WARN: data/site.json newsletter settings are not filled in; email signup forms are left out.');
 
@@ -1011,6 +1087,12 @@ async function main() {
   const trainingTemplate = await readFile(path.join(ROOT, 'templates/training.html'), 'utf8');
   await mkdir(path.join(DIST, 'get-trained'), { recursive: true });
   await writeFile(path.join(DIST, 'get-trained', 'index.html'), renderTraining(site, trainingTemplate, trainingFile));
+
+  // About / For recruiters: who runs the site, how listings work, and the listing request form.
+  const aboutTemplate = await readFile(path.join(ROOT, 'templates/about.html'), 'utf8');
+  await mkdir(path.join(DIST, 'about'), { recursive: true });
+  const hillCount = data.employers.filter((e) => e.base === 'hill').length;
+  await writeFile(path.join(DIST, 'about', 'index.html'), renderAbout(site, aboutTemplate, hillCount));
 
   // Sitemap and robots.txt for search engines (indexable pages only; /thanks/ is noindex).
   await writeFile(path.join(DIST, 'sitemap.xml'), renderSitemap(site, data.bases, today));
