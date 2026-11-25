@@ -1299,6 +1299,293 @@
       "secondaryUrl": null,
       "verified": "2026-11",
       "sourceUrl": "https://www.clearancejobs.com/jobs/9301228"
+    },
+    {
+      "id": "fed95",
+      "base": "hill",
+      "name": "Fed95 (Waseyabek Development Co.)",
+      "type": "services",
+      "description": "IT operations staff for the Hill Component Enterprise Data Center (CEDC) contract on Hill AFB",
+      "categories": [
+        "software-it",
+        "admin-business"
+      ],
+      "roles": [
+        "Computer user support specialist",
+        "Information systems security officer (ISSO)",
+        "Systems administrator",
+        "Database architect",
+        "Business intelligence analyst",
+        "Contract program manager",
+        "Senior document management specialist"
+      ],
+      "jobsUrl": "https://fed95.com/careers/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.jobtarget.com/jobs/jt-t6ycz7viy3/information-systems-security-officer-isso-hill-air-force-base-utah"
+    },
+    {
+      "id": "bionetics",
+      "base": "hill",
+      "name": "Bionetics",
+      "type": "services",
+      "description": "Contract depot maintenance crews working alongside the 309th Maintenance Groups at Hill AFB (DOCAT 5)",
+      "categories": [
+        "trades-maintenance"
+      ],
+      "roles": [
+        "Aircraft mechanic",
+        "Aircraft painter",
+        "Machinist",
+        "On-site supervisor"
+      ],
+      "jobsUrl": "https://www.bionetics.com/careers/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.career.com/job/the-bionetics-corporation/aircraft-mechanic-ii-54561/j202604101506067380735"
+    },
+    {
+      "id": "axient",
+      "base": "hill",
+      "name": "Axient",
+      "type": "services",
+      "description": "Test engineers and specialists for Sentinel and Minuteman III ICBM testing and the 719th Test Squadron at Hill AFB",
+      "categories": [
+        "engineering",
+        "software-it",
+        "admin-business"
+      ],
+      "roles": [
+        "ICBM missile test engineer",
+        "Software test engineer",
+        "Reentry vehicle test engineer",
+        "Loads and environments test engineer",
+        "Codes and cryptography test engineer",
+        "Systems engineer (MBSE)",
+        "Penetration tester (cybersecurity)",
+        "Security specialist"
+      ],
+      "jobsUrl": "https://careers-axient.icims.com/jobs/search?ss=1&searchKeyword=Hill",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://axientcorp.dejobs.org/hill-afb-ut/security-specialist/7F5A4B1D4EBE43BD9AB52BF079CEA4D2/job"
+    },
+    {
+      "id": "canvas",
+      "base": "hill",
+      "name": "Canvas",
+      "type": "services",
+      "description": "Sentinel ICBM test engineers and technical staff for the 719th Test Squadron (TMAS contract) at Hill AFB",
+      "categories": [
+        "engineering",
+        "software-it",
+        "admin-business"
+      ],
+      "roles": [
+        "Sentinel CTF test engineer",
+        "ICBM developmental test engineer",
+        "Flight test engineer",
+        "Command and control test engineer",
+        "Support equipment test engineer",
+        "Avionics equipment specialist",
+        "Aircraft structural maintenance specialist (F-16 tech data)",
+        "Communications network analyst",
+        "Senior technical writer",
+        "Facility manager/security technician"
+      ],
+      "jobsUrl": "https://canvasinc.wd108.myworkdayjobs.com/en-US/Canvas?q=Hill%20AFB",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://dejobs.org/clearfield-ut/senior-technical-writer/E37D388696814406B31F3B68E5292A3A/job"
+    },
+    {
+      "id": "tyonek",
+      "base": "hill",
+      "name": "Tyonek",
+      "type": "services",
+      "description": "Contract depot maintenance crews working alongside the 309th Maintenance Groups at Hill AFB (DOCAT 5)",
+      "categories": [
+        "trades-maintenance"
+      ],
+      "roles": [
+        "Aircraft mechanic II",
+        "Aircraft mechanic III (egress)",
+        "Machinist"
+      ],
+      "jobsUrl": "https://tyonekjobs.applicantpro.com/jobs/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://tallo.com/talent/job/maintenance-and-repair/aircraft-or-a-and-p-mechanic/ut/hill-air-force-base/aircraft-mechanic-ii-d93624c5"
+    },
+    {
+      "id": "koniag-integration-solutions",
+      "base": "hill",
+      "name": "Koniag Integration Solutions",
+      "type": "services",
+      "description": "Technical order library staff keeping F-16 and F-35 maintenance data flowing to the hangars at Hill AFB",
+      "categories": [
+        "admin-business",
+        "logistics-supply",
+        "internships-entry"
+      ],
+      "roles": [
+        "Technical order (TO) librarian",
+        "Print room technician (TO/digital output)",
+        "Library project lead",
+        "Engineering data specialist"
+      ],
+      "jobsUrl": "https://www.koniag-gs.com/open-positions/",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.clearancejobs.com/jobs/9138988/to-librarian-jr-swing-shift"
+    },
+    {
+      "id": "torch-technologies",
+      "base": "hill",
+      "name": "Torch Technologies",
+      "type": "services",
+      "description": "Engineers, cyber and logistics staff supporting AFLCMC program offices (EPASS, C3BM, digital) at Hill AFB",
+      "categories": [
+        "engineering",
+        "software-it",
+        "logistics-supply"
+      ],
+      "roles": [
+        "Equipment specialist",
+        "Senior cybersecurity engineer",
+        "Information system security officer",
+        "Senior network administrator",
+        "Electrical engineer",
+        "Senior logistics manager",
+        "Senior technical data manager"
+      ],
+      "jobsUrl": "https://starfish.wd501.myworkdayjobs.com/Careers?q=Hill",
+      "secondaryUrl": "https://www.clearancejobs.com/jobs/torch-technologies-inc/utah",
+      "verified": "2026-11",
+      "sourceUrl": "https://disabilities.dejobs.org/hill-afb-ut/equipment-specialist/6fce159339634e51b77a5cabd8015d9b/job/"
+    },
+    {
+      "id": "guidehouse",
+      "base": "hill",
+      "name": "Guidehouse",
+      "type": "services",
+      "description": "Engineers supporting the Air Force Nuclear Weapons Center ICBM Directorate (ISC 2.0) at Hill AFB",
+      "categories": [
+        "engineering"
+      ],
+      "roles": [
+        "Materials engineer",
+        "Mechanical engineer",
+        "Systems engineer"
+      ],
+      "jobsUrl": "https://guidehouse.wd1.myworkdayjobs.com/External?q=Hill%20AFB",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://guidehouse.dejobs.org/hill-afb-ut/materials-engineer/B6E2EC00CA374C48A0C5846280E655AD/job/"
+    },
+    {
+      "id": "viranim",
+      "base": "hill",
+      "name": "Viranim Technical Solutions",
+      "type": "subcontractor",
+      "description": "Systems engineers and cyber testers supporting Hill AFB programs from a Clearfield office",
+      "categories": [
+        "engineering",
+        "software-it"
+      ],
+      "roles": [
+        "Model-based systems engineer (MBSE)",
+        "Penetration tester",
+        "Sustainment engineer"
+      ],
+      "jobsUrl": "https://www.applicantpro.com/openings/viranim",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.ziprecruiter.com/Jobs/Engineer/-in-Hill-Afb,UT"
+    },
+    {
+      "id": "applied-research-solutions",
+      "base": "hill",
+      "name": "Applied Research Solutions (ARS)",
+      "type": "services",
+      "description": "Acquisition, engineering and cyber staff supporting Air Force program offices at Hill AFB (armament, aerospace)",
+      "categories": [
+        "engineering",
+        "software-it",
+        "admin-business"
+      ],
+      "roles": [
+        "Acquisition program specialist",
+        "Operations research analyst",
+        "Technical order manager",
+        "Information system security officer (ISSO)",
+        "Senior technical data manager",
+        "Senior systems engineer",
+        "Network administrator"
+      ],
+      "jobsUrl": "https://recruiting.ultipro.com/APP1013ARSS",
+      "secondaryUrl": "https://www.clearancejobs.com/jobs/applied-research-solutions/hill-afb-ut",
+      "verified": "2026-11",
+      "sourceUrl": "https://www.clearancejobs.com/jobs/applied-research-solutions/hill-afb-ut"
+    },
+    {
+      "id": "aptim",
+      "base": "hill",
+      "name": "APTIM",
+      "type": "services",
+      "description": "Environmental technicians and engineers on a long-term cleanup (remediation) project at Hill AFB",
+      "categories": [
+        "engineering",
+        "trades-maintenance"
+      ],
+      "roles": [
+        "Environmental technician",
+        "Environmental engineer",
+        "Remediation field technician"
+      ],
+      "jobsUrl": "https://recruiting.adp.com/srccar/public/RTI.home?c=1149111&d=Professional",
+      "secondaryUrl": "https://recruiting.adp.com/srccar/public/RTI.home?c=1149111&d=Craft",
+      "verified": "2026-11",
+      "sourceUrl": "https://aptim.dejobs.org/hill-afb-ut/environmental-engineer/0097071CA61B451AB14B243BA94A6741/job/"
+    },
+    {
+      "id": "hgl",
+      "base": "hill",
+      "name": "HydroGeoLogic (HGL)",
+      "type": "services",
+      "description": "Field technicians on the Hill AFB Optimized Remediation Contract (environmental cleanup)",
+      "categories": [
+        "trades-maintenance",
+        "engineering"
+      ],
+      "roles": [
+        "Environmental field technician",
+        "Groundwater sampling technician",
+        "Remediation system operator"
+      ],
+      "jobsUrl": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=132aceeb-628d-4505-9d7b-6d39cdc45adb&ccId=19000101_000001&lang=en_US",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.thejobnetwork.com/job/9542230c-d439-4bdb-b7e6-5ef5c5c5b463/environmental-field-technician-ii"
+    },
+    {
+      "id": "illumination-works",
+      "base": "hill",
+      "name": "Illumination Works",
+      "type": "services",
+      "description": "Data engineers and analysts on site at Hill AFB part of the week, building data and BI tools",
+      "categories": [
+        "software-it"
+      ],
+      "roles": [
+        "Data engineer",
+        "Data analyst",
+        "ServiceNow technical specialist"
+      ],
+      "jobsUrl": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=8121f84b-e5e9-4dd2-8d6b-05ce4c46080b&ccId=9200055961405_2&lang=en_US",
+      "secondaryUrl": null,
+      "verified": "2026-11",
+      "sourceUrl": "https://www.clearancejobs.com/jobs/9090423/data-engineeranalyst"
     }
   ]
 }

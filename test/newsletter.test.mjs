@@ -46,11 +46,29 @@ test('forms: none before setup; after setup they post to Buttondown with the rig
   assert.match(alert, /name="tag" id="alert-tag" value=""/);
 });
 
-test('privacy page shows the postal address, or a placeholder before setup', async () => {
+test('privacy page describes the weekly email only while signup is live', async () => {
   const template = await readFile(path.join(ROOT, 'templates/privacy.html'), 'utf8');
-  assert.match(renderPrivacy(ready, template), /Work At Hill, PO Box 123, Layton, UT 84041/);
-  assert.match(renderPrivacy(baseSite, template), /will be posted here/);
-  assert.match(renderPrivacy(ready, template), /No accounts, no cookies, no analytics/);
+  const on = renderPrivacy(ready, template);
+  assert.match(on, /Work At Hill, PO Box 123, Layton, UT 84041/);
+  assert.match(on, /The weekly email \(optional\)/);
+  assert.match(on, /uses Google Analytics, which sets cookies/);
+  assert.match(on, /mentioned in the next weekly email/);
+  const off = renderPrivacy({ ...ready, newsletter: { ...ready.newsletter, buttondownUsername: null } }, template);
+  assert.ok(!/weekly email|Buttondown|PO Box/.test(off), 'no weekly-email wording before signup is live');
+  for (const html of [on, off]) assert.ok(!html.includes('{{'), 'no unfilled placeholders');
+});
+
+test('privacy page has a date, children and changes sections, and a working contact route', async () => {
+  const template = await readFile(path.join(ROOT, 'templates/privacy.html'), 'utf8');
+  const withForm = renderPrivacy({ ...baseSite, contact: { web3formsKey: '00000000-0000-4000-8000-000000000000' } }, template);
+  assert.match(withForm, /Last updated [A-Z][a-z]+ \d{1,2}, \d{4}/);
+  assert.match(withForm, /<h2>Children<\/h2>[\s\S]*under 13/);
+  assert.match(withForm, /<h2>Changes to this page<\/h2>/);
+  assert.match(withForm, /<h2>Contact<\/h2>\s*<p>Questions, or want something deleted\? Use the <a href="\.\.\/#contact-form">Let's Connect form<\/a>/);
+  assert.ok(!withForm.includes('will be posted here'));
+  const nothing = renderPrivacy({ ...baseSite, contact: { web3formsKey: null }, newsletter: { buttondownUsername: null, postalAddress: null } }, template);
+  assert.match(nothing, /A way to contact Work At Hill will be posted here soon/);
+  assert.ok(!nothing.includes('{{'));
 });
 
 // ---------- saved-search tags ----------

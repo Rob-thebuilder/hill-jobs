@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { renderBase, openJobsLine } from '../scripts/build.mjs';
+import { renderBase, openJobsLine, renderAnalytics } from '../scripts/build.mjs';
 import { apiParamsFromJobsUrl } from '../scripts/lib/usajobs.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
@@ -79,7 +79,9 @@ test('search data: roles always, live titles only when fetched, never counts', (
 test('search data cannot break out of its <script> tag', () => {
   const evil = [{ ...data.employers[0], name: 'Evil </script><script>alert(1)</script>', roles: ['a\u2028b', 'x</script>'] }];
   const html = renderBase('hill', data.bases.hill, evil, site, template, null, { groups: [] });
-  assert.equal((html.match(/<\/script>/g) || []).length, (template.match(/<\/script>/g) || []).length);
+  const closings = (s) => (s.match(/<\/script>/g) || []).length;
+  // The template's own scripts plus the analytics tag's two; any more would mean the data broke out.
+  assert.equal(closings(html), closings(template) + closings(renderAnalytics(site)));
   assert.equal(searchDataOf(html).employers[0].name, 'Evil </script><script>alert(1)</script>');
 });
 

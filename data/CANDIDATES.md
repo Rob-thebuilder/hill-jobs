@@ -2,6 +2,72 @@
 
 Researched 2026-11-09 by four research agents plus a careers-link check.
 
+## Round 6 (2026-11-23): job-site location search + careers-link check
+
+Source: web searches of DirectEmployers (dejobs/usnlx), Indeed, Glassdoor, ZipRecruiter and ClearanceJobs pages for Hill AFB, Clearfield and Layton. SAM.gov interested-vendor lists were also planned, but SAM.gov only shows them in a live browser session, so they weren't read. All 15 finds are logged in the sheet's Employers tab (rows 79–93).
+
+### Added (7)
+- **Torch Technologies**: fixes Round 1's "needs a fix": its own board is Workday (starfish.wd501), linked from torchtechnologies.com/careers; Hill Equipment Specialist posting for AFLCMC/HB. Live titles via Workday ("Hill"). ClearanceJobs Utah page kept as second link.
+- **Guidehouse**: Materials Engineer posting for the AFNWC ICBM Directorate ISC 2.0 project at Hill (was "weak" in Round 2 because postings were contingent). Workday board; live titles ("Hill AFB").
+- **Viranim Technical Solutions**: Round 4 maybe; now a Hill AFB MBSE posting (Oct 2026) and a Clearfield office. ApplicantPro board.
+- **Applied Research Solutions (ARS)**: fixes Round 3's "needs a fix": its own board is UKG UltiPro, linked from appliedres.com/now-hiring. Round 3 roles kept, plus Operations research analyst.
+- **APTIM**: Environmental technician and engineer postings at Hill (long-term remediation project). Professional board first, Craft board second.
+- **HydroGeoLogic (HGL)**: Environmental field technician postings for the Hill AFB Optimized Remediation Contract (2022, Jun 2025). Two of its three roles are inferred from the contract work (medium confidence).
+- **Illumination Works**: Data Engineer/Analyst at Hill (hybrid, 2–3 days on base) and a ServiceNow technical specialist. ADP board.
+
+### Not added
+| Employer | Why not yet |
+|---|---|
+| Tope Technology | Sentinel jobs at Hill (IT configuration management specialist Apr 2026, logistic analyst 2024, principal system engineer), but no careers site found. |
+| Professional Solutions Delivered (ProSoDel) | Hill "Site Lead – RFID" on JobTarget; prosodel.com careers page errors. |
+| Tetra Tech, Dark Wolf Solutions, Ladgov | One posting each; Tetra Tech's is undated, Dark Wolf's is in Ogden. |
+| CEMML | Seasonal (usual rules). |
+| Janicki Industries, Kenai Defense | Off-base manufacturers (usual rules). |
+
+## Round 5 (2026-11-23): second pass over the contract-awards sheet
+
+Source: the sheet's Employers tab (rows not yet on the site) plus three companies found while checking the Pelatron and SABER V recompetes. Each one was checked for Hill job postings by web search. Construction, the architect-engineer pool and supply-only firms were skipped by the usual rules.
+
+### Added (4)
+- **Axient**: many Hill AFB postings for Sentinel/Minuteman III test engineers (ICBM CTF, 804th Test Group) and a security specialist for the 719th Test Squadron. iCIMS board, so no live titles.
+- **Canvas**: Hill AFB postings for Sentinel CTF and ICBM test engineers, a technical writer and a facility/security technician on the TMAS II contract (719th Test Squadron); won TMAS 3 in Aug 2026. Its Workday board is set up for live titles ("Hill AFB").
+- **Tyonek**: DOCAT 5 depot-maintenance awardee; Hill AFB postings for Aircraft Mechanic II and a machinist (2026). Some postings say "contingent upon contract award". Board: tyonekjobs.applicantpro.com.
+- **Koniag Integration Solutions**: technical order library at Hill (TO Librarian Jr. swing shift, Hill Library Project Lead), supporting F-16 and F-35 maintenance; Mar 2026 TO/engineering-data order at Hill. Entry-level (high-school diploma plus Secret clearance).
+
+### Maybes
+| Employer | Why not yet |
+|---|---|
+| Strategic Technology Institute (STi) | DOCAT 5; Hill AFB Aircraft Mechanic II posting (ClearanceJobs), but no careers page of its own and only one Hill role found. |
+| Stantec | Hill AFB hazardous-waste technician/supervisor postings, but from 2024–Jan 2025; careers site blocks automated checks. |
+| GMRE | South Ogden HQ (engineers, work card planner, production specialist) and an F-16 systems engineer at Hill; its Paylocity board link wasn't found. |
+| NexOne | Senior Security Manager for the Munitions Sustainment Division at Hill; no careers board found. |
+| Serco | Utah acquisition SME "near Hill AFB" and Ogden air traffic controllers; the Hill DOL TAP posting is gone. |
+| Environmental Abatement Inc. | Layton abatement technicians (KSL Jobs, 2025); no website of its own. |
+
+### New leads, not yet researched
+HydroGeoLogic (HGL) and APTIM (environmental technicians on long-term Hill remediation contracts), E-Logic and Applied Global Technologies (small Hill IT/VTC orders).
+
+## Round 4 (2026-11-18): Hill AFB contract-awards sheet + USAspending subawards
+
+Source: the "Hill AFB Contract Awards & Contractors" sheet (Awards + Local contractors tabs) plus USAspending subawards with place of performance ZIP 84056, 2023-11-01 to 2026-11-17. The full 74-company list, with merges, Hill flags, job types and careers links, is the sheet's **Employers** tab. Nearby-ZIP subawards weren't pulled (a TLS-inspecting proxy blocked api.usaspending.gov partway through).
+
+### Added (2)
+- **Fed95**: fixes the Round 3 "needs a fix": its ADP board (cid 5330343c-…) lists 2 Hill AFB openings today (Contract Program Manager, 2026-11-10; Business Intelligence Analyst, 2026-10-20). New GSA IT O&M task order at Hill, Jul 2026 (~$27M ceiling).
+- **Bionetics**: DOCAT 5 depot-maintenance awardee; Hill postings Apr–May 2026 (aircraft mechanic II, aircraft painter, machinist, on-site supervisor). Paycom board renders by script, so today's openings weren't readable.
+
+### Maybes
+| Employer | Why not yet |
+|---|---|
+| Kay and Associates (KAI) | Hill 309th CMXG postings (supervisor, expeditor, painter), but marked "pending contract award" and no official careers page found. kayandassociates.com is a different firm (private investigators). |
+| Serco | HX5 sub at Hill; its Hill AFB DOL TAP navigator posting now 404s and its iCIMS search isn't readable by script. |
+| Tyonek Technical Services | DOCAT 5 awardee; one aggregator mentions a Hill aircraft mechanic, but its ApplicantPro board shows no Utah jobs. |
+| Strategic Technology Institute, SkyQuest Aviation | DOCAT 5 awardees; no careers page found. |
+| Pelatron Technologies | Base IT contract period ended 2026-06-30; recompete winner unknown. |
+| Tyto Athene, Viranim | Hill work on paper; no Hill postings found. |
+
+### Skipped by the usual rules
+Construction (Mortenson, SES, West Coast JV, SABER III holders, NH1 JV, Floor Styles, local builders), architect-engineer pool (11 firms), supply-only (AIS, Fastenal, ALSCO), product-only subs (ThunderCat, Clean Earth), and awards performed away from Hill (GE Aerospace, AAR, Sherwood, V2X, Honeywell).
+
 **Status, 2026-11-09:** at your request, all 17 "Ready to add" employers were added to `employers.json` (the directory went from 23 to 40). Six of them also get live job titles: KBR/Trinzic, Booz Allen, The Aerospace Corporation, Draper and PARC/ServiceSource on Workday, and MITRE on Phenom; the other 11 are listed in `job-sources.json` "skipped" with the reason. Pelatron ("Needs a fix"), the weak ones and the maybes were **not** added.
 
 ## Round 3 (2026-11-16): new search

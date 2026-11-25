@@ -60,6 +60,10 @@ const server = http.createServer(async (req, res) => {
 });
 await new Promise((r) => server.listen(0, '127.0.0.1', r));
 const ORIGIN = `http://127.0.0.1:${server.address().port}`;
+// Google Analytics (gtag.js) is the one third party the pages may load.
+const GA_HOSTS = ['www.googletagmanager.com', 'www.google-analytics.com', 'analytics.google.com'];
+const GA_BLOCK = ['*googletagmanager.com*', '*google-analytics.com*', '*analytics.google.com*'];
+const isGa = (u) => { try { const h = new URL(u).hostname; return GA_HOSTS.includes(h) || h.endsWith('.google-analytics.com'); } catch { return false; } };
 
 // ---------- Chrome + CDP ----------
 await stat(path.join(DIST, 'index.html')).catch(() => {
@@ -86,12 +90,18 @@ async function openPage(url, { width = 390, height = 844, js = true, scheme = 'l
   await s('Page.enable');
   await s('Runtime.enable');
   await s('Network.enable');
+  // Google Analytics is blocked in every check, so test runs never send fake visits to the real property.
+  await s('Network.setBlockedURLs', { urls: GA_BLOCK });
   const requests = [];
-  let bytes = 0;
+  const urlOf = new Map();
+  let bytes = 0; // first-party only: the 100 KB budget covers the site's own files
   const onNet = (m) => {
     if (m.sessionId !== sessionId) return;
-    if (m.method === 'Network.requestWillBeSent') requests.push(m.params.request.url);
-    if (m.method === 'Network.loadingFinished') bytes += m.params.encodedDataLength;
+    if (m.method === 'Network.requestWillBeSent') {
+      requests.push(m.params.request.url);
+      urlOf.set(m.params.requestId, m.params.request.url);
+    }
+    if (m.method === 'Network.loadingFinished' && (urlOf.get(m.params.requestId) || '').startsWith(ORIGIN)) bytes += m.params.encodedDataLength;
   };
   listeners.add(onNet);
   await s('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 3, mobile: true });
@@ -394,11 +404,21 @@ try {
     check('tapping a suggestion runs that search', s.q === 'mechanic' && s.shown === expected({ q: 'mechanic' }) && s.shown > 0 && s.search === '?q=mechanic', JSON.stringify(s));
     await p.close();
 
-    const f = await openPage(H + '?q=painter&type=services', { width: 390 });
-    const msg = await f.evaluate(`(() => { const e = document.querySelector('#empty-filtered'); return e.hidden ? '' : e.textContent; })()`);
+    // Live job titles change which employers match "painter", so pick a chip that hides them all
+    // at test time instead of hard-coding one.
     const without = expected({ q: 'painter' });
-    check('empty state says when the chips are hiding matches', expected({ q: 'painter', type: 'services' }) === 0 && msg.includes(`${without} employer`), msg || '(nothing shown)');
-    await f.close();
+    const allCats = [...new Set(hill.flatMap((e) => e.categories))];
+    const hiding = [...['prime', 'subcontractor', 'federal', 'services'].map((type) => ({ type, cats: [] })), ...allCats.map((c) => ({ type: '', cats: [c] }))]
+      .find((f) => expected({ q: 'painter', ...f }) === 0);
+    if (!hiding) {
+      check('empty state says when the chips are hiding matches', true, 'skipped: every chip shows a "painter" match in this build');
+    } else {
+      const qs = hiding.type ? `type=${hiding.type}` : `cat=${hiding.cats[0]}`;
+      const f = await openPage(H + `?q=painter&${qs}`, { width: 390 });
+      const msg = await f.evaluate(`(() => { const e = document.querySelector('#empty-filtered'); return e.hidden ? '' : e.textContent; })()`);
+      check('empty state says when the chips are hiding matches', without > 0 && msg.includes(`${without} employer`), `${qs}: ${msg || '(nothing shown)'}`);
+      await f.close();
+    }
   }
 
   // 6d. "More ways to find Hill jobs": only on the Employers tab; the empty-state link jumps to it.
@@ -484,14 +504,20 @@ try {
     await q.close();
   }
 
-  // 11. Network: no third-party requests; transfer under 100 KB.
+  // 11. Network: no third parties except Google Analytics (blocked here); the site's own files under 100 KB.
   {
     const p = await openPage(H, { width: 390 });
     await sleep(300);
     const third = p.requests.filter((u) => !u.startsWith(ORIGIN) && !u.startsWith('data:'));
-    check('zero third-party requests', third.length === 0, third.join(', ') || `${p.requests.length} same-origin requests`);
+    const other = third.filter((u) => !isGa(u));
+    check('no third-party requests except Google Analytics', other.length === 0, other.join(', ') || `${p.requests.length - third.length} same-origin, ${third.length} Google Analytics (blocked in tests)`);
+    const own = p.requests.filter((u) => u.startsWith(ORIGIN)).length;
     const kb = p.bytes / 1024;
-    check('page transfer under 100 KB', kb < 100, `${kb.toFixed(1)} KB over ${p.requests.length} requests`);
+    check('site\'s own files transfer under 100 KB (Google Analytics not counted)', kb < 100, `${kb.toFixed(1)} KB over ${own} same-origin requests`);
+    const tag = await p.evaluate(`(() => { const h = document.head.firstElementChild; return h && h.tagName === 'SCRIPT' ? h.src : ''; })()`);
+    const gaId = JSON.parse(await readFile(path.join(ROOT, 'data/site.json'), 'utf8')).analyticsId;
+    if (gaId) check('GA4 tag is the first thing in <head>', tag === `https://www.googletagmanager.com/gtag/js?id=${gaId}`, tag || '(no tag)');
+    else check('no GA4 tag when analyticsId is null', !tag.includes('googletagmanager'), tag || '(no tag)');
     const missing = await p.evaluate(`Promise.all([...document.querySelectorAll('link[rel~=icon], link[rel=apple-touch-icon], link[rel=stylesheet]')].map(l => fetch(l.href).then(r => r.ok ? null : l.getAttribute('href'))))`);
     check('linked css/icons all load', missing.every((x) => !x), missing.filter(Boolean).join(', '));
     await p.close();
