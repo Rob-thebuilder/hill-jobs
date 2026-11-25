@@ -52,7 +52,7 @@ HydroGeoLogic (HGL) and APTIM (environmental technicians on long-term Hill remed
 Source: the "Hill AFB Contract Awards & Contractors" sheet (Awards + Local contractors tabs) plus USAspending subawards with place of performance ZIP 84056, 2023-11-01 to 2026-11-17. The full 74-company list, with merges, Hill flags, job types and careers links, is the sheet's **Employers** tab. Nearby-ZIP subawards weren't pulled (a TLS-inspecting proxy blocked api.usaspending.gov partway through).
 
 ### Added (2)
-- **Fed95**: fixes the Round 3 "needs a fix": its ADP board (cid 5330343c-…) lists 2 Hill AFB openings today (Contract Program Manager, 2026-11-10; Business Intelligence Analyst, 2026-10-20). New GSA IT O&M task order at Hill, Jul 2026 (~$27M ceiling).
+- **Fed95**: fixes the Round 3 "needs a fix": its ADP board (cid 5330343c-…) lists 2 Hill AFB openings today (Contract Program Manager, 2026-11-10; Business Intelligence Analyst, 2026-10-20). New GSA IT O&M task order at Hill, Jul 2026.
 - **Bionetics**: DOCAT 5 depot-maintenance awardee; Hill postings Apr–May 2026 (aircraft mechanic II, aircraft painter, machinist, on-site supervisor). Paycom board renders by script, so today's openings weren't readable.
 
 ### Maybes
@@ -355,7 +355,7 @@ Construction (Mortenson, SES, West Coast JV, SABER III holders, NH1 JV, Floor St
 | VA, IRS, DHS, U.S. Courts, NTSB, NRC, Forest Service, USDA, ICE, Justice | skip | Ogden offices or nationwide/remote announcements that list Hill-area towns; not Hill employers. |
 
 ### Contract recipients ranked 101–200
-65 recipients ranked 101–200 by Hill contract dollars (each $1–3M over 3 years) weren't researched one by one: most are equipment, furniture, IT resale or construction (e.g., Kardex Remstar, Dell Federal, Allsteel, Mazak, Cummins, construction JVs), which our rules skip. Ones that may be on-site services and are worth a look next round: Maintenance Engineers Inc, Logistic Specialties Inc, Leader Communications, Strategic Technology Institute, T Square Logistics, PM Jenkins Group, Chenega Reliable Services, Koniag Integration Solutions, Parsons, CGI Federal, Sytronics, BKW GSE Consulting, Anautics. Ranks 81–100 couldn't be loaded (the USAspending API timed out on that page).
+65 recipients ranked 101–200 by Hill contract award totals weren't researched one by one: most are equipment, furniture, IT resale or construction (e.g., Kardex Remstar, Dell Federal, Allsteel, Mazak, Cummins, construction JVs), which our rules skip. Ones that may be on-site services and are worth a look next round: Maintenance Engineers Inc, Logistic Specialties Inc, Leader Communications, Strategic Technology Institute, T Square Logistics, PM Jenkins Group, Chenega Reliable Services, Koniag Integration Solutions, Parsons, CGI Federal, Sytronics, BKW GSE Consulting, Anautics. Ranks 81–100 couldn't be loaded (the USAspending API timed out on that page).
 
 ---
 
@@ -837,7 +837,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 | EMCOR Government Services | maybe | Facilities O&M for the DISA data center at Hill (HVAC tech, general maintenance, landscape, O&M manager); postings 2022–early 2025, some contingent on recompete. |
 | Embry-Riddle Aeronautical University | maybe | Northern Utah campus in Bldg 180 on Hill (worldwide.erau.edu/locations/northern-utah); hiring is tiny (temporary site advisor, adjuncts). |
 | Webster University | maybe | Hill campus in the Bldg 180 education center since 2000; no Hill job postings found. |
-| FPM Remediations | maybe | $29M Hill environmental remediation contract through Aug 2031 (lasting work), but no job postings or careers page found. |
+| FPM Remediations | maybe | Hill environmental remediation contract through Aug 2031 (lasting work), but no job postings or careers page found. |
 | LinQuest | maybe | Hill Sentinel roles (modeling & flight simulation lead, principal test engineer). LinQuest is now part of KBR, so these may belong under a KBR card rather than a new one. |
 
 ### Weak or dropped (16)
@@ -848,7 +848,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 | Honu Services | weak | One old posting (real property specialist jr); a related KaiHonua help-desk post; no careers page. |
 | Integrated Data Services | weak | One AFNWC business analyst posting; nothing else at Hill. |
 | Belcan | drop | No Hill postings found. |
-| Shipcom Federal Solutions | drop | No Hill evidence: its Air Force award found is at Warner Robins, GA; the "$9.3M Aug 2026" award couldn't be confirmed. |
+| Shipcom Federal Solutions | drop | No Hill evidence: its Air Force award found is at Warner Robins, GA; the reported Aug 2026 award couldn't be confirmed. |
 | PlanIT Group | drop | No Hill evidence found. |
 | AxioLogic Solutions | drop | No Hill evidence found (Northern Virginia firm). |
 | PALADIN Consulting | weak | Staffing-style client roles at the Hill CEDC (project managers), 2025–early 2026; not the employer. |
@@ -907,7 +907,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 - STS Government Solutions and STS Systems Support are sister companies of the listed STS Systems Defense, which already links their shared hiring portal; you may want to widen that card instead of adding them.
 
 ## Ready to add (17)
-### KBR (Trinzic) · $72M in Hill contracts (3 yrs)
+### KBR (Trinzic)
 - **Hill evidence:** https://careers.trinzic.com/us/en/job/R2129737
 - **Careers:** https://careers.trinzic.com/us/en/search-results?keywords=Hill%20AFB (filtered to Hill/Utah) · platform: Phenom
 - **Open near Hill now:** 3 near Hill (server-rendered Phenom data): USAF-PBL EPBL Lead Engineering Technician, Hill AFB (R2129737, posted ~14 days ago); Warehouseman, Ogden (R3000244, ~17 days); Warehouseman, Ogden (R3001049, today). Workday mirror: https://trinzic.wd115.myworkdayjobs.com/en-US/Trinzic_Careers (Utah search = 8 hits, 3 local)
@@ -940,7 +940,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 }
 ```
 
-### Southwest Research Institute · $42M in Hill contracts (3 yrs)
+### Southwest Research Institute
 - **Hill evidence:** https://www.swri.org/contact/locations
 - **Careers:** https://resapp.swri.org/resapp/Job_Search_Results.aspx?TYPE=HOURLY · platform: custom SwRI resapp
 - **Open near Hill now:** none found — 91 listings across TYPE=HOURLY and TYPE=SALARIED, none in Utah (locations are San Antonio, Oklahoma City, Dayton, Boulder, Warner Robins)
@@ -971,7 +971,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 }
 ```
 
-### Johns Hopkins APL · $36M in Hill contracts (3 yrs)
+### Johns Hopkins APL
 - **Hill evidence:** https://careers.jhuapl.edu/jobs/59005
 - **Careers:** https://careers.jhuapl.edu/jobs?keywords=Hill%20AFB (filtered to Hill/Utah) · platform: iCIMS Jibe
 - **Open near Hill now:** 1: On-Site Rad-Hard Electrical Engineer (Hill AFB, Utah), req 59005, posted 2026-05-15, still listed (JSON: https://careers.jhuapl.edu/api/jobs?keywords=Hill%20AFB). ClearanceJobs https://www.clearancejobs.com/jobs/johns-hopkins-university-applied-physics-laboratory/hill-afb-ut (200) shows the same 1 job.
@@ -1003,7 +1003,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 }
 ```
 
-### HX5 · $30M in Hill contracts (3 yrs)
+### HX5
 - **Hill evidence:** https://www.clearancejobs.com/jobs/hx5-llc/utah
 - **Careers:** https://www.clearancejobs.com/jobs/hx5-llc/utah (filtered to Hill/Utah) · platform: unknown
 - **Open near Hill now:** 6 open in Ogden UT on ClearanceJobs: General/Interdisciplinary Engineer Senior (9300184, posted 2026-11-09), ISSO Senior (9272616), Equipment Specialist Senior (9143652), Electrical Engineer Journeyman (9105001), ISSO Journeyman (9101658), Electrical Engineer EPASS HB (8985586). Note: /jobs/hx5-llc/hill-afb-ut shows no cards and /jobs/hx5/hill-afb-ut shows other companies' jobs; use /utah.
@@ -1038,7 +1038,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 }
 ```
 
-### PARC Community Partnership Foundation (ServiceSource) · $29M in Hill contracts (3 yrs)
+### PARC Community Partnership Foundation (ServiceSource)
 - **Hill evidence:** https://defensedaily.com/contract-awards/contract-award-parc-community-partnership-foundation-clearfield-utah-92946958
 - **Careers:** https://servicesourceinc.wd1.myworkdayjobs.com/en-US/ServiceSource_Staff?q=Hill (filtered to Hill/Utah) · platform: Workday
 - **Open near Hill now:** 1: Lead Janitor, Hill AFB-UT (2026-9414, posted ~5 days ago) https://servicesourceinc.wd1.myworkdayjobs.com/en-US/ServiceSource_Staff/job/Hill-AFB-UT/Lead-Janitor_2026-9414 (200)
@@ -1070,7 +1070,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 }
 ```
 
-### Resource Management Concepts · $25M in Hill contracts (3 yrs)
+### Resource Management Concepts
 - **Hill evidence:** https://jobs.workable.com/jobs/d31331b7-9047-458c-85f8-e3e76c9049e9
 - **Careers:** https://jobs.workable.com/companies/chjfRDfAfQJs9EQSR11s4h · platform: Workable
 - **Open near Hill now:** 7 at 'Hill Air Force Base' of 30 total (from https://jobs.workable.com/jobs.md?companyId=5b5bad23-8ab3-42b6-9bfc-1b682f013886): Software Engineer Senior, Radar Technical Advisor, Configuration Manager, Computer Support Technician, Network Administrator, Network Administrator Senior, Information System Security Officer.
@@ -1100,7 +1100,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 }
 ```
 
-### City Light & Power · $24M in Hill contracts (3 yrs)
+### City Light & Power
 - **Hill evidence:** https://www.defensedaily.com/contract-awards/contract-award-city-light-power-inc-greenwood-village-colorado-23470368
 - **Careers:** https://careers.jobscore.com/careers/clpinc · platform: JobScore
 - **Open near Hill now:** none found — 15 JobScore listings, none at Hill (the location filter dropdown includes 'Hill Air Force Base, UT')
@@ -1129,7 +1129,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 }
 ```
 
-### Booz Allen Hamilton · $22M in Hill contracts (3 yrs)
+### Booz Allen Hamilton
 - **Hill evidence:** https://bah.wd1.myworkdayjobs.com/en-US/BAH_Jobs/job/Hill-AFB-UT/Virtual-Desktop-Infrastructure-Engineer--Mid_R0253222
 - **Careers:** https://bah.wd1.myworkdayjobs.com/en-US/BAH_Jobs?q=Hill%20AFB (filtered to Hill/Utah) · platform: Workday
 - **Open near Hill now:** 1 located at Hill AFB: Virtual Desktop Infrastructure Engineer, Mid (R0253222, posted today). The 'Hill AFB' keyword search returns 23, but the other 22 are multi-location jobs elsewhere. ClearanceJobs https://www.clearancejobs.com/jobs/booz-allen-hamilton/hill-afb-ut (200) shows the same 1.
@@ -1163,7 +1163,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 }
 ```
 
-### American Water (Military Services Group) · $17M in Hill contracts (3 yrs)
+### American Water (Military Services Group)
 - **Hill evidence:** https://www.waterworld.com/wastewater-treatment/article/16214894/american-water-awarded-water-wastewater-contract-for-utah-air-force-base
 - **Careers:** https://jobs.amwater.com/ · platform: SAP SuccessFactors RMK
 - **Open near Hill now:** not verifiable: search results render via JS (search/?q=Hill returns an empty shell). The candidate jobsUrl (req 1302043700, General Maintenance Worker SCA) now says 'You can't view this job because it's not available'.
@@ -1194,7 +1194,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 }
 ```
 
-### Command Cyber Solutions · $16M in Hill contracts (3 yrs)
+### Command Cyber Solutions
 - **Hill evidence:** https://phf.tbe.taleo.net/phf01/ats/careers/v2/viewRequisition?org=PFS&cws=51&rid=4376
 - **Careers:** https://phf.tbe.taleo.net/phf01/ats/careers/v2/jobSearch?act=redirectCwsV2&cws=51&org=PFS · platform: Taleo Business Edition
 - **Open near Hill now:** 4 'UT-Ogden' (Hill AFB data center) of 10 total: Senior Systems Administrator (rid 4376, HOT JOB), HPE Senior Systems Administrator (4401), Data Scientist Senior (4402), 'Command Cyber Job Opportunities' general pool (4229).
@@ -1228,7 +1228,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 }
 ```
 
-### ASRC Federal (NetCentric Technologies) · $6.0M in Hill contracts (3 yrs)
+### ASRC Federal (NetCentric Technologies)
 - **Hill evidence:** https://www.clearancejobs.com/jobs/asrc-federal/utah
 - **Careers:** https://us242.dayforcehcm.com/CandidatePortal/en-US/asrcfh · platform: Dayforce
 - **Open near Hill now:** 2 on ClearanceJobs: Site Manager (Ogden Air Logistics Complex, Hill AFB) 9300451, posted 2026-11-09; Booster Sustainment Engineer, Layton UT 9237016.
@@ -1460,7 +1460,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 ```
 
 ## Needs a fix (1)
-### Pelatron Technologies · $8.3M in Hill contracts (3 yrs)
+### Pelatron Technologies
 - **Hill evidence:** https://www.pelatrontech.com/contact-us
 - **Careers:** https://www.pelatrontech.com/careers · platform: ADP Workforce Now recruitment
 - **Open near Hill now:** none found: the ADP WFN requisitions API (cid af40839a-…) returned 0 openings
@@ -1503,131 +1503,131 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 | Space Dynamics Laboratory | weak | No current Ogden/Hill jobs on the official feed, and no durable SDL page found for an Ogden/Hill office. Evidence is past aggregator postings (C4ISR program manager, Ogden). |
 
 ## Maybes
-| Employer | Hill contracts (3 yrs) | Confidence | Notes |
-|---|---|---|---|
-| HHI Corporation | $110M | medium | Construction (project-based crews), but local HQ and multi-year Hill IDIQ work. Postings hosted via Eide Bailly iCIMS; no official HHI careers page found. |
-| Sabel Systems | $28M | uncertain | Only posting found is Beavercreek OH-based with 2-3 days/week onsite at WPAFB or Hill. Search summary says careers at sabelsystems.isolvedhire.com (not loaded). |
-| Alaska Northstar Federal | $19M | uncertain | No web evidence of Hill-based staff or postings found in one search; recheck later. |
-| PowerHouse Resources International | $14M | uncertain | Contract is clearly on-site labor, but web evidence is a single aggregator painter listing (per search summary); careers page not found. 'Aircraft mechanic' rol |
-| Vangarde | $11M | medium | Evidence thin (two aggregator mentions); careers page not found. |
-| SkyQuest Aviation | $9.8M | medium | Only Hill posting found is 2022 (7981 Georgia St, Hill AFB). FOM/transient-alert roles inferred from contract descriptions, not postings. Careers page not found |
-| Advanced Systems Technology & Management | $7.4M | uncertain | No AST postings at Hill found in one search. |
-| Argos Business Innovations | $6.5M | uncertain | No postings found in one search. |
-| Lincoln Environmental Services | $5.3M | uncertain | Contract confirmed; no job postings or careers page found. Team size likely small. |
-| Georgia Tech Research Institute (GTRI) | – | medium | Office verified (Bldg 1578 Suite 101) but small; only one Utah posting seen and its date unknown. Fewer than 3 distinct roles evidenced. |
-| America First Credit Union | – | medium | The on-base presence is certain, but on-base hiring is low-volume and not separately advertised. The jobsUrl is one sample teller posting, location not verified |
-| Boyer Hill Military Housing | – | medium | This is a real on-base employer, but no current postings or careers page were found. Evidence is from 2024 (older). It may use RealPage, since boyerhill.com lin |
-| Blackson Arrow (BSH Management Service LLC) | – | medium | Only one role was found, and it has expired. DLA Energy is re-competing GOCO fuel services for Hill and 5 other bases (SPE603-26-R-0538), so the incumbent may c |
-| CW Resources | – | uncertain | This is a small single-tenant contract, and no posting could be loaded or dated. Low priority. |
-| Aerospace Heritage Foundation of Utah | – | medium | The museum is on base, though outside the gate. Paid hiring is tiny, but the internship is a nice entry-level item. Could fit as an internships-only listing; ot |
+| Employer | Confidence | Notes |
+|---|---|---|
+| HHI Corporation | medium | Construction (project-based crews), but local HQ and multi-year Hill IDIQ work. Postings hosted via Eide Bailly iCIMS; no official HHI careers page found. |
+| Sabel Systems | uncertain | Only posting found is Beavercreek OH-based with 2-3 days/week onsite at WPAFB or Hill. Search summary says careers at sabelsystems.isolvedhire.com (not loaded). |
+| Alaska Northstar Federal | uncertain | No web evidence of Hill-based staff or postings found in one search; recheck later. |
+| PowerHouse Resources International | uncertain | Contract is clearly on-site labor, but web evidence is a single aggregator painter listing (per search summary); careers page not found. 'Aircraft mechanic' rol |
+| Vangarde | medium | Evidence thin (two aggregator mentions); careers page not found. |
+| SkyQuest Aviation | medium | Only Hill posting found is 2022 (7981 Georgia St, Hill AFB). FOM/transient-alert roles inferred from contract descriptions, not postings. Careers page not found |
+| Advanced Systems Technology & Management | uncertain | No AST postings at Hill found in one search. |
+| Argos Business Innovations | uncertain | No postings found in one search. |
+| Lincoln Environmental Services | uncertain | Contract confirmed; no job postings or careers page found. Team size likely small. |
+| Georgia Tech Research Institute (GTRI) | medium | Office verified (Bldg 1578 Suite 101) but small; only one Utah posting seen and its date unknown. Fewer than 3 distinct roles evidenced. |
+| America First Credit Union | medium | The on-base presence is certain, but on-base hiring is low-volume and not separately advertised. The jobsUrl is one sample teller posting, location not verified |
+| Boyer Hill Military Housing | medium | This is a real on-base employer, but no current postings or careers page were found. Evidence is from 2024 (older). It may use RealPage, since boyerhill.com lin |
+| Blackson Arrow (BSH Management Service LLC) | medium | Only one role was found, and it has expired. DLA Energy is re-competing GOCO fuel services for Hill and 5 other bases (SPE603-26-R-0538), so the incumbent may c |
+| CW Resources | uncertain | This is a small single-tenant contract, and no posting could be loaded or dated. Low priority. |
+| Aerospace Heritage Foundation of Utah | medium | The museum is on base, though outside the gate. Paid hiring is tiny, but the internship is a nice entry-level item. Could fit as an internships-only listing; ot |
 
 ## Table 1: USAspending, place of performance Hill AFB (ZIP 84056), 2023-11-01 to 2026-11-09
-Top 80 by contract obligations (185 recipients received over $1M in total).
+Top 80 by contract obligations.
 
-| # | Recipient | Obligations | Work | Status |
-|---|---|---|---|---|
-| 1 | ADVANTAGED SOLUTIONS, LLC | $445M | on-site | skip |
-| 2 | NORTHROP GRUMMAN SYSTEMS CORPORATION | $257M |  | already listed |
-| 3 | THE BOEING COMPANY | $121M |  | already listed |
-| 4 | HHI CORPORATION | $110M | construction | flag: construction |
-| 5 | CACI, INC. - FEDERAL | $103M |  | already listed |
-| 6 | STS SYSTEMS DEFENSE LLC | $83M |  | already listed |
-| 7 | KBR WYLE SERVICES, LLC | $72M | on-site | add |
-| 8 | AMENTUM SERVICES, INC. | $68M |  | already listed |
-| 9 | SYSTEMS IMPLEMENTERS INC | $59M |  | already listed |
-| 10 | SHOFAR COMMUNICATIONS LLC | $51M | construction | flag: construction |
-| 11 | SOUTHWEST RESEARCH INSTITUTE | $42M | on-site | add |
-| 12 | RHI LLC | $36M | construction | flag: construction |
-| 13 | SAHARA PALMS INC | $36M | construction | flag: construction |
-| 14 | THE JOHNS HOPKINS UNIVERSITY APPLIED PHYSICS LABORATORY LLC | $36M | on-site | add |
-| 15 | SINCLAIR OIL CORPORATION | $32M | supply-only | skip: supply only |
-| 16 | HX5 LLC | $30M | on-site | add |
-| 17 | GEORGIA TECH APPLIED RESEARCH CORP | $30M | on-site | new |
-| 18 | KEKOLU-RIO VISTA JOINT VENTURE, LLC | $30M | construction | flag: construction |
-| 19 | PARC COMMUNITY PARTNERSHIP FOUNDATION | $29M | on-site | add |
-| 20 | SABEL SYSTEMS TECHNOLOGY SOLUTIONS, LLC | $28M | on-site | maybe |
-| 21 | STS GOVERNMENT SOLUTIONS, LLC | $26M | on-site | already listed |
-| 22 | RESOURCE MANAGEMENT CONCEPTS, INC. | $25M | on-site | add |
-| 23 | LEIDOS, INC. | $25M |  | already listed |
-| 24 | CITY LIGHT & POWER, INC. | $24M | on-site | add |
-| 25 | BOOZ ALLEN HAMILTON INC | $22M | on-site | add |
-| 26 | ENGINEERING AND SOFTWARE SYSTEM SOLUTIONS, INC. | $20M |  | already listed |
-| 27 | NVE-HHI JV | $20M | construction | flag: construction |
-| 28 | DH TECHNOLOGIES, INC. | $20M | supply-only | skip: supply only |
-| 29 | ALASKA NORTHSTAR FEDERAL, LLC | $19M | on-site | maybe |
-| 30 | MSC INDUSTRIAL DIRECT CO., INC. | $18M | supply-only | skip: supply only |
-| 31 | R2C LIMITED LIABILITY COMPANY | $17M | on-site | add |
-| 32 | AMERICAN WATER OPERATIONS AND MAINTENANCE, LLC | $17M | on-site | add |
-| 33 | FASTENAL COMPANY | $16M | supply-only | skip: supply only |
-| 34 | AUTOMOTIVE & INDUSTRIAL SUPPLY, LLC | $16M | supply-only | skip: supply only |
-| 35 | COMMAND CYBER SOLUTIONS LLC | $16M | on-site | add |
-| 36 | APRO INTERNATIONAL, INC | $16M | on-site | add |
-| 37 | SIEMENS GOVERNMENT TECHNOLOGIES INC | $16M | supply-only | skip: supply only |
-| 38 | SGJV, LLC | $15M | construction | flag: construction |
-| 39 | POWERHOUSE RESOURCES INTERNATIONAL LLC | $14M | on-site | maybe |
-| 40 | PURE ENVIRO-MANAGEMENT, LLC | $13M | construction | flag: construction |
-| 41 | WEST COAST JV, LLC | $13M | construction | flag: construction |
-| 42 | WESTEST ENGINEERING CORPORATION | $12M | supply-only | skip: supply only |
-| 43 | FED95 LLC | $12M | on-site | new |
-| 44 | LOCKHEED MARTIN CORPORATION | $11M |  | already listed |
-| 45 | HGL-APTIM JV LLC | $11M | on-site | new |
-| 46 | STS SYSTEMS SUPPORT, LLC | $11M | on-site | already listed |
-| 47 | VANGARDE LLC. | $11M | on-site | maybe |
-| 48 | MICROSOFT CORPORATION | $11M | supply-only | skip: supply only |
-| 49 | BEACON GROUP, INC. | $10M | on-site | add |
-| 50 | DDC IT SERVICES LLC | $10M | on-site | add |
-| 51 | MICHAEL BAKER INTERNATIONAL, INC. | $9.9M | construction | flag: construction |
-| 52 | SKYQUEST AVIATION LLC | $9.8M | on-site | maybe |
-| 53 | CV INTERNATIONAL, INC. | $9.7M | supply-only | skip: supply only |
-| 54 | LEO TECH LLC | $9.2M | on-site | add |
-| 55 | FILIUS CORPORATION | $8.4M | on-site | add |
-| 56 | CARAHSOFT TECHNOLOGY CORP | $8.2M | supply-only | skip: supply only |
-| 57 | IRON BOW TECHNOLOGIES, LLC | $8.2M | supply-only | skip: supply only |
-| 58 | CHICKASAW BUSINESS SOLUTIONS, LLC | $7.6M | on-site | add |
-| 59 | BRINKERHOFF EXCAVATING AND CONSTRUCTION, INC. | $7.5M | construction | flag: construction |
-| 60 | MOTOROLA SOLUTIONS, INC. | $7.4M | supply-only | skip: supply only |
-| 61 | ADVANCED SYSTEMS TECHNOLOGY & MANAGEMENT, INC. | $7.4M | on-site | maybe |
-| 62 | MARIETTA NONDESTRUCTIVE TESTING LLC | $7.4M | supply-only | skip: supply only |
-| 63 | PARAGON MICRO INC | $7.2M | supply-only | skip: supply only |
-| 64 | CYKOR LLC | $6.9M | supply-only | skip: supply only |
-| 65 | MILITARY INSTALLATION DEVELOPMENT AUTHORITY | $6.8M | construction | flag: construction |
-| 66 | STERLING COMPUTERS CORPORATION | $6.6M | supply-only | skip: supply only |
-| 67 | ARGOS BUSINESS INNOVATIONS LLC | $6.5M | on-site | maybe |
-| 68 | UTAH DEPARTMENT OF WORKFORCE SERVICES | $6.4M | on-site | skip |
-| 69 | NEW TECH SOLUTIONS, INC. | $6.4M | supply-only | skip: supply only |
-| 70 | CLEAN HARBORS ENVIRONMENTAL SERVICES INC | $6.4M | supply-only | skip: supply only |
-| 71 | NETCENTRIC TECHNOLOGY, LLC | $6.0M | on-site | add |
-| 72 | CTI COMPANIES, LLC | $5.8M | construction | flag: construction |
-| 73 | DOYON MANAGEMENT SERVICES, LLC | $5.5M | construction | flag: construction |
-| 74 | RAYTHEON COMPANY | $5.4M |  | already listed |
-| 75 | NH1 JV | $5.3M | construction | flag: construction |
-| 76 | ADVANCED COMPUTER CONCEPTS, INC. | $5.2M | supply-only | skip: supply only |
-| 77 | FLATWATER PROFESSIONAL SERVICES COMPANY | $5.1M | supply-only | skip: supply only |
-| 78 | NORTHROP GRUMMAN SYSTEMS CORP | $4.7M |  | already listed |
-| 79 | ARCHITECTURAL DESIGN WEST PC | $4.6M | construction | flag: construction |
-| 80 | FEDERAL PRISON INDUSTRIES, INC | $4.4M | supply-only | skip: supply only |
+| # | Recipient | Work | Status |
+|---|---|---|---|
+| 1 | ADVANTAGED SOLUTIONS, LLC | on-site | skip |
+| 2 | NORTHROP GRUMMAN SYSTEMS CORPORATION |  | already listed |
+| 3 | THE BOEING COMPANY |  | already listed |
+| 4 | HHI CORPORATION | construction | flag: construction |
+| 5 | CACI, INC. - FEDERAL |  | already listed |
+| 6 | STS SYSTEMS DEFENSE LLC |  | already listed |
+| 7 | KBR WYLE SERVICES, LLC | on-site | add |
+| 8 | AMENTUM SERVICES, INC. |  | already listed |
+| 9 | SYSTEMS IMPLEMENTERS INC |  | already listed |
+| 10 | SHOFAR COMMUNICATIONS LLC | construction | flag: construction |
+| 11 | SOUTHWEST RESEARCH INSTITUTE | on-site | add |
+| 12 | RHI LLC | construction | flag: construction |
+| 13 | SAHARA PALMS INC | construction | flag: construction |
+| 14 | THE JOHNS HOPKINS UNIVERSITY APPLIED PHYSICS LABORATORY LLC | on-site | add |
+| 15 | SINCLAIR OIL CORPORATION | supply-only | skip: supply only |
+| 16 | HX5 LLC | on-site | add |
+| 17 | GEORGIA TECH APPLIED RESEARCH CORP | on-site | new |
+| 18 | KEKOLU-RIO VISTA JOINT VENTURE, LLC | construction | flag: construction |
+| 19 | PARC COMMUNITY PARTNERSHIP FOUNDATION | on-site | add |
+| 20 | SABEL SYSTEMS TECHNOLOGY SOLUTIONS, LLC | on-site | maybe |
+| 21 | STS GOVERNMENT SOLUTIONS, LLC | on-site | already listed |
+| 22 | RESOURCE MANAGEMENT CONCEPTS, INC. | on-site | add |
+| 23 | LEIDOS, INC. |  | already listed |
+| 24 | CITY LIGHT & POWER, INC. | on-site | add |
+| 25 | BOOZ ALLEN HAMILTON INC | on-site | add |
+| 26 | ENGINEERING AND SOFTWARE SYSTEM SOLUTIONS, INC. |  | already listed |
+| 27 | NVE-HHI JV | construction | flag: construction |
+| 28 | DH TECHNOLOGIES, INC. | supply-only | skip: supply only |
+| 29 | ALASKA NORTHSTAR FEDERAL, LLC | on-site | maybe |
+| 30 | MSC INDUSTRIAL DIRECT CO., INC. | supply-only | skip: supply only |
+| 31 | R2C LIMITED LIABILITY COMPANY | on-site | add |
+| 32 | AMERICAN WATER OPERATIONS AND MAINTENANCE, LLC | on-site | add |
+| 33 | FASTENAL COMPANY | supply-only | skip: supply only |
+| 34 | AUTOMOTIVE & INDUSTRIAL SUPPLY, LLC | supply-only | skip: supply only |
+| 35 | COMMAND CYBER SOLUTIONS LLC | on-site | add |
+| 36 | APRO INTERNATIONAL, INC | on-site | add |
+| 37 | SIEMENS GOVERNMENT TECHNOLOGIES INC | supply-only | skip: supply only |
+| 38 | SGJV, LLC | construction | flag: construction |
+| 39 | POWERHOUSE RESOURCES INTERNATIONAL LLC | on-site | maybe |
+| 40 | PURE ENVIRO-MANAGEMENT, LLC | construction | flag: construction |
+| 41 | WEST COAST JV, LLC | construction | flag: construction |
+| 42 | WESTEST ENGINEERING CORPORATION | supply-only | skip: supply only |
+| 43 | FED95 LLC | on-site | new |
+| 44 | LOCKHEED MARTIN CORPORATION |  | already listed |
+| 45 | HGL-APTIM JV LLC | on-site | new |
+| 46 | STS SYSTEMS SUPPORT, LLC | on-site | already listed |
+| 47 | VANGARDE LLC. | on-site | maybe |
+| 48 | MICROSOFT CORPORATION | supply-only | skip: supply only |
+| 49 | BEACON GROUP, INC. | on-site | add |
+| 50 | DDC IT SERVICES LLC | on-site | add |
+| 51 | MICHAEL BAKER INTERNATIONAL, INC. | construction | flag: construction |
+| 52 | SKYQUEST AVIATION LLC | on-site | maybe |
+| 53 | CV INTERNATIONAL, INC. | supply-only | skip: supply only |
+| 54 | LEO TECH LLC | on-site | add |
+| 55 | FILIUS CORPORATION | on-site | add |
+| 56 | CARAHSOFT TECHNOLOGY CORP | supply-only | skip: supply only |
+| 57 | IRON BOW TECHNOLOGIES, LLC | supply-only | skip: supply only |
+| 58 | CHICKASAW BUSINESS SOLUTIONS, LLC | on-site | add |
+| 59 | BRINKERHOFF EXCAVATING AND CONSTRUCTION, INC. | construction | flag: construction |
+| 60 | MOTOROLA SOLUTIONS, INC. | supply-only | skip: supply only |
+| 61 | ADVANCED SYSTEMS TECHNOLOGY & MANAGEMENT, INC. | on-site | maybe |
+| 62 | MARIETTA NONDESTRUCTIVE TESTING LLC | supply-only | skip: supply only |
+| 63 | PARAGON MICRO INC | supply-only | skip: supply only |
+| 64 | CYKOR LLC | supply-only | skip: supply only |
+| 65 | MILITARY INSTALLATION DEVELOPMENT AUTHORITY | construction | flag: construction |
+| 66 | STERLING COMPUTERS CORPORATION | supply-only | skip: supply only |
+| 67 | ARGOS BUSINESS INNOVATIONS LLC | on-site | maybe |
+| 68 | UTAH DEPARTMENT OF WORKFORCE SERVICES | on-site | skip |
+| 69 | NEW TECH SOLUTIONS, INC. | supply-only | skip: supply only |
+| 70 | CLEAN HARBORS ENVIRONMENTAL SERVICES INC | supply-only | skip: supply only |
+| 71 | NETCENTRIC TECHNOLOGY, LLC | on-site | add |
+| 72 | CTI COMPANIES, LLC | construction | flag: construction |
+| 73 | DOYON MANAGEMENT SERVICES, LLC | construction | flag: construction |
+| 74 | RAYTHEON COMPANY |  | already listed |
+| 75 | NH1 JV | construction | flag: construction |
+| 76 | ADVANCED COMPUTER CONCEPTS, INC. | supply-only | skip: supply only |
+| 77 | FLATWATER PROFESSIONAL SERVICES COMPANY | supply-only | skip: supply only |
+| 78 | NORTHROP GRUMMAN SYSTEMS CORP |  | already listed |
+| 79 | ARCHITECTURAL DESIGN WEST PC | construction | flag: construction |
+| 80 | FEDERAL PRISON INDUSTRIES, INC | supply-only | skip: supply only |
 
 ## Table 2: nearby ZIPs, Air Force awards from Hill contracting offices only
-| ZIP | Recipient | Obligations | Status |
-|---|---|---|---|
-| 84067 | NORTHROP GRUMMAN SYSTEMS CORP | $8.3B | already listed |
-| 84041 | THE BOEING COMPANY | $314M | already listed |
-| 84041 | KIHOMAC INC | $76M | already listed |
-| 84015 | ENGINEERING AND SOFTWARE SYSTEM SOLUTIONS, INC. | $42M | already listed |
-| 84401 | AUTOMOTIVE & INDUSTRIAL SUPPLY, LLC | $24M | new |
-| 84015 | ENGINEERING AND SOFTWARE SYSTEM SOLUTIONS, INC. | $16M | already listed |
-| 84015 | NORTHROP GRUMMAN SYSTEMS CORPORATION | $13M | already listed |
-| 84067 | NORTHROP GRUMMAN SYSTEMS CORPORATION | $11M | already listed |
-| 84404 | RICHARD MANUFACTURING COMPANY | $9.8M | new |
-| 84405 | BORSIGHT, INC | $9.0M | new |
-| 84041 | PARAGON MICRO INC | $8.5M | new |
-| 84015 | PELATRON TECHNOLOGIES LLC | $8.3M | new |
-| 84041 | MARK G. MILLER, INC | $7.2M | new |
-| 84015 | NORTHROP GRUMMAN SYSTEMS CORPORATION | $6.0M | already listed |
-| 84401 | LINCOLN ENVIRONMENTAL SERVICES, INC. | $5.3M | new |
-| 84015 | PARC COMMUNITY PARTNERSHIP FOUNDATION | $3.0M | new |
-| 84015 | SHOFAR COMMUNICATIONS LLC | $2.3M | new |
-| 84040 | ENGINEERING AND SOFTWARE SYSTEM SOLUTIONS, INC. | $1.2M | already listed |
+| ZIP | Recipient | Status |
+|---|---|---|
+| 84067 | NORTHROP GRUMMAN SYSTEMS CORP | already listed |
+| 84041 | THE BOEING COMPANY | already listed |
+| 84041 | KIHOMAC INC | already listed |
+| 84015 | ENGINEERING AND SOFTWARE SYSTEM SOLUTIONS, INC. | already listed |
+| 84401 | AUTOMOTIVE & INDUSTRIAL SUPPLY, LLC | new |
+| 84015 | ENGINEERING AND SOFTWARE SYSTEM SOLUTIONS, INC. | already listed |
+| 84015 | NORTHROP GRUMMAN SYSTEMS CORPORATION | already listed |
+| 84067 | NORTHROP GRUMMAN SYSTEMS CORPORATION | already listed |
+| 84404 | RICHARD MANUFACTURING COMPANY | new |
+| 84405 | BORSIGHT, INC | new |
+| 84041 | PARAGON MICRO INC | new |
+| 84015 | PELATRON TECHNOLOGIES LLC | new |
+| 84041 | MARK G. MILLER, INC | new |
+| 84015 | NORTHROP GRUMMAN SYSTEMS CORPORATION | already listed |
+| 84401 | LINCOLN ENVIRONMENTAL SERVICES, INC. | new |
+| 84015 | PARC COMMUNITY PARTNERSHIP FOUNDATION | new |
+| 84015 | SHOFAR COMMUNICATIONS LLC | new |
+| 84040 | ENGINEERING AND SOFTWARE SYSTEM SOLUTIONS, INC. | already listed |
 
 ## Table 3: Falcon Hill Aerospace Research Park and Utah Defense Alliance
 Falcon Hill has no public tenant list; tenants were found by building address in job postings, company location pages and the Ogden-Weber Chamber directory. About 5,500 people work in the park (Utah Business, Sep 2025).
@@ -1645,7 +1645,7 @@ Falcon Hill has no public tenant list; tenants were found by building address in
 ## Table 4: on-base and support employers
 | Employer | Category | Recommendation | Confidence | Notes |
 |---|---|---|---|---|
-| ServiceSource / PARC Community Partnership Foundation | custodial (base support) | add | high | Contract FA8201-24-D-0015 has a $92.9M ceiling (Aug 2024 to Feb 2031) and covers Hill AFB, Little Mountain and UTTR Oasis. Hiring prioritize |
+| ServiceSource / PARC Community Partnership Foundation | custodial (base support) | add | high | Contract FA8201-24-D-0015 runs Aug 2024 to Feb 2031 and covers Hill AFB, Little Mountain and UTTR Oasis. Hiring prioritize |
 | Nurses Etc. Staffing | medical contract staffing | add | high | This is the most consistently active 75 MDG contract staffer found. The listed type of 'services' is the closest fit. The careers index URL  |
 | America First Credit Union | credit union | maybe | medium | The on-base presence is certain, but on-base hiring is low-volume and not separately advertised. The jobsUrl is one sample teller posting, l |
 | Boyer Hill Military Housing | housing privatization | maybe | medium | This is a real on-base employer, but no current postings or careers page were found. Evidence is from 2024 (older). It may use RealPage, sin |
@@ -1653,7 +1653,7 @@ Falcon Hill has no public tenant list; tenants were found by building address in
 | CW Resources | custodial (tenant facility) | maybe | uncertain | This is a small single-tenant contract, and no posting could be loaded or dated. Low priority. |
 | Aerospace Heritage Foundation of Utah | museum | maybe | medium | The museum is on base, though outside the gate. Paid hiring is tiny, but the internship is a nice entry-level item. Could fit as an internsh |
 | Hill AFB Dining Facility contractor (Utah DWS / Randolph-Sheppard) | food service (DFAC) | skip | uncertain | The actual operating vendor or teaming partner and the hiring entity are unknown. Revisit if the operator can be identified. |
-| Robinson Waste Services | refuse | skip | medium | The contract is small (about $4.7M over 5 yr) and ends around Oct 2026. A successor solicitation went out in 2026. Drivers are based off bas |
+| Robinson Waste Services | refuse | skip | medium | The contract is small and ends around Oct 2026. A successor solicitation went out in 2026. Drivers are based off bas |
 | Smiley's Kitchen Mediterranean Grill | food service (Exchange concession) | skip | medium | Too small, and there's no hiring channel. |
 
 **Already covered by existing cards**
