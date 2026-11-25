@@ -375,6 +375,11 @@ A short form at the bottom of the home page (name, email, message) for questions
 - **Validation on every push and PR:** schema check, duplicate-id check, all URLs must be `https://`, `node --test`, and the automated phone checks. Any failure blocks the deploy.
 - **Daily refresh:** `deploy.yml` also runs on a daily schedule (13:15 UTC, about 6–7 am Mountain) to rebuild and redeploy with fresh open-job counts.
   - GitHub pauses scheduled workflows in a public repo after 60 days with no repo activity; re-enable it in the Actions tab if that happens.
+- **IndexNow (Bing and other engines):** after each successful deploy from `main`, the `indexnow` job runs `scripts/indexnow.mjs`, which posts changed URLs to `https://api.indexnow.org/indexnow` so Bing doesn't have to wait for its next crawl.
+  - A push sends every sitemap page; the daily rebuild sends only the home page, where the job counts and events change.
+  - The key lives in `data/site.json` → `indexNowKey`. It's public by design: the build writes it to `/<key>.txt` so the engines can confirm the ping came from this site. Set it to `null` to turn IndexNow off.
+  - No visitor data is sent, and a failed ping never fails the run. The result shows in the job log: 200/202 means accepted, and 403 means the key file wasn't found.
+  - Bing Webmaster Tools was set up on 2026-11-25 by importing the site from Google Search Console.
 - **Secrets:** add `USAJOBS_API_KEY` and `USAJOBS_EMAIL` as repository Actions secrets (e.g. `gh secret set USAJOBS_API_KEY`, which prompts for the value).
   - They're passed to the build step only for pushes, scheduled runs and manual runs, never for pull requests. PR builds run without counts.
 - **Weekly link check** (`link-check.yml`, cron every Monday plus a manual trigger):

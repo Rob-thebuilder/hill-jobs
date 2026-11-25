@@ -322,6 +322,20 @@ export function renderAnalytics(site) {
 `;
 }
 
+// ---- IndexNow (site.indexNowKey; null = off). The key file proves to search engines that pings come from this site. ----
+const INDEXNOW_KEY = /^[A-Za-z0-9-]{8,128}$/;
+
+export function validateIndexNow(site) {
+  const key = site?.indexNowKey;
+  return key != null && !INDEXNOW_KEY.test(key) ? ['indexNowKey should be 8–128 letters, digits or dashes, or null'] : [];
+}
+
+/** { name, body } of the key file served at the site root, or null when IndexNow is off. */
+export function indexNowKeyFile(site) {
+  const key = site?.indexNowKey;
+  return key && INDEXNOW_KEY.test(key) ? { name: `${key}.txt`, body: key } : null;
+}
+
 export function validateContact(site) {
   const key = site?.contact?.web3formsKey;
   return key != null && !WEB3FORMS_KEY.test(key) ? ['web3formsKey should look like xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx'] : [];
@@ -968,6 +982,7 @@ async function main() {
     ...validateNewsletter(site).map((e) => `site.json newsletter: ${e}`),
     ...validateContact(site).map((e) => `site.json contact: ${e}`),
     ...validateAnalytics(site).map((e) => `site.json: ${e}`),
+    ...validateIndexNow(site).map((e) => `site.json: ${e}`),
   ];
   if (errors.length) {
     console.error(`✗ ${errors.length} data error(s):\n  - ${errors.join('\n  - ')}`);
@@ -1098,6 +1113,11 @@ async function main() {
   await writeFile(path.join(DIST, 'sitemap.xml'), renderSitemap(site, data.bases, today));
   await writeFile(path.join(DIST, 'robots.txt'), renderRobots(site));
   console.log(`✓ wrote sitemap.xml (${sitemapPaths(data.bases).length} pages) and robots.txt`);
+  const keyFile = indexNowKeyFile(site);
+  if (keyFile) {
+    await writeFile(path.join(DIST, keyFile.name), keyFile.body);
+    console.log(`✓ wrote IndexNow key file /${keyFile.name}`);
+  }
 
   // Snapshot for the weekly email: this build's live job titles and upcoming events.
   const snapshotOut = argv.includes('--snapshot') ? argv[argv.indexOf('--snapshot') + 1] : null;

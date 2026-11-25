@@ -58,3 +58,18 @@ jobs:
     steps:
       - id: deployment
         uses: actions/deploy-pages@v4
+
+  # After the site is live (so the key file is reachable), tell Bing and the other IndexNow
+  # engines what changed. A push to main may change any page; the daily rebuild only refreshes
+  # job counts and events on the home page. Never fails the run.
+  indexnow:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: deploy
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 22
+      - name: Notify IndexNow (Bing and others)
+        run: node scripts/indexnow.mjs --scope ${{ github.event_name == 'schedule' && 'home' || 'all' }}
