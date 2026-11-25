@@ -23,7 +23,7 @@ test('About page: casual intro, how listings work, recruiter form and a copyable
   assert.match(html, /<h1>About Work At Hill<\/h1>/);
   assert.match(html, /Rob Smith/);
   assert.match(html, /aviation maintenance world for 10\+ years/);
-  assert.match(html, /Free, with no paid placement/);
+  assert.match(html, /Free for job seekers, always\.<\/strong> Every employer is listed free, sorted A–Z, and nobody can pay to rank higher in the directory\. If the site carries sponsors, they're clearly labeled and kept separate from the listings\./);
   assert.match(html, new RegExp(`Each of the ${hill.length} employers`));
   assert.match(html, /<div class="form-panel" id="update">\s*<form class="contact" id="update-form"/);
   assert.match(html, /<link rel="canonical" href="https:\/\/workathill\.com\/about\/">/);
@@ -85,5 +85,13 @@ test('every page footer links to About', async () => {
     const html = await read(`templates/${f}.html`);
     const footer = html.slice(html.indexOf('<footer'));
     assert.match(footer, /about\/">About<\/a>|href="\.\/">About<\/a>/, f);
+  }
+});
+
+test('footers promise free listings with no pay-to-rank, and drop the old "No paid placement" line', async () => {
+  for (const f of ['base', 'employers']) {
+    const html = await read(`templates/${f}.html`);
+    assert.match(html, /Free for job seekers\. Every employer is listed free, sorted A–Z[^.]*, and nobody can pay to rank higher\./, f);
+    assert.ok(!/No paid placement/i.test(html), f);
   }
 });
