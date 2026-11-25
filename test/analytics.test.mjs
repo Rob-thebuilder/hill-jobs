@@ -51,7 +51,9 @@ function runBuild(outDir) {
   });
 }
 
-test('every indexable page has the tag right after <head>; /thanks/ and the GTM container never appear', async () => {
+const SECURITY_META = /<head>\n<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="[^"]+">\n<meta name="referrer" content="strict-origin-when-cross-origin">\n/;
+
+test('every indexable page has the tag right after <head> (after only the charset and security meta tags); /thanks/ and the GTM container never appear', async () => {
   const out = await mkdtemp(path.join(tmpdir(), 'wah-ga-'));
   try {
     const r = await runBuild(out);
@@ -62,7 +64,9 @@ test('every indexable page has the tag right after <head>; /thanks/ and the GTM 
     ];
     for (const rel of pages) {
       const html = await readFile(path.join(out, rel), 'utf8');
-      assert.ok(html.includes(`<head>\n${TAG}<meta charset="utf-8">`), `${rel}: tag missing or not immediately after <head>`);
+      const head = html.match(SECURITY_META);
+      assert.ok(head, `${rel}: charset, CSP and referrer meta must open <head>`);
+      assert.ok(html.slice(head.index + head[0].length).startsWith(TAG), `${rel}: tag missing or not right after the meta tags`);
       assert.equal(html.split('googletagmanager.com/gtag/js').length - 1, 1, `${rel}: tag appears once`);
       assert.ok(!html.includes('GTM-'), `${rel}: GTM container must not be added`);
     }

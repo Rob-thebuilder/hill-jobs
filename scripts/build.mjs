@@ -13,6 +13,7 @@ import { gzipSync } from 'node:zlib';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
 import { existsSync } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { createRequire } from 'node:module';
 import { fetchUsajobs } from './lib/usajobs.mjs';
 import { fetchCareers } from './lib/careers.mjs';
@@ -320,6 +321,41 @@ export function renderAnalytics(site) {
   gtag('config', '${id}');
 </script>
 `;
+}
+
+// ---- Security: Content-Security-Policy and Referrer-Policy as <meta> tags ----
+// GitHub Pages can't send custom response headers, so the policy rides in each page's <head>.
+// Inline scripts are allowed by their SHA-256 hash only, so injected markup can't run code.
+// The Google domains are the ones Google documents for GA4 (with Google signals).
+const GA_HOSTS = 'https://*.google-analytics.com https://*.analytics.google.com https://*.googletagmanager.com https://*.g.doubleclick.net https://*.google.com';
+
+export function cspPolicy(html) {
+  const hashes = [...html.matchAll(/<script>([\s\S]*?)<\/script>/g)]
+    .map((m) => `'sha256-${createHash('sha256').update(m[1]).digest('base64')}'`);
+  // Pages without the GA tag (e.g. /thanks/) don't allow any Google hosts.
+  const ga = html.includes('googletagmanager.com/gtag/js');
+  const gaScript = ga ? ' https://www.googletagmanager.com' : '';
+  const gaHosts = ga ? ` ${GA_HOSTS}` : '';
+  return [
+    "default-src 'self'",
+    `script-src 'self'${gaScript} ${[...new Set(hashes)].join(' ')}`.trim(),
+    "style-src 'self'",
+    `img-src 'self' data:${gaHosts}`,
+    `connect-src 'self' https://api.web3forms.com${gaHosts}`,
+    "font-src 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self' https://api.web3forms.com https://buttondown.com",
+    'upgrade-insecure-requests',
+  ].join('; ');
+}
+
+/** Puts charset first, then the CSP and referrer tags, ahead of every script (including GA). */
+export function withSecurityMeta(html) {
+  const head = html.match(/<head>\n([\s\S]*?)<meta charset="utf-8">\n/);
+  if (!head) throw new Error('page has no <head> followed by <meta charset="utf-8">');
+  const meta = `<meta charset="utf-8">\n<meta http-equiv="Content-Security-Policy" content="${esc(cspPolicy(html))}">\n<meta name="referrer" content="strict-origin-when-cross-origin">\n`;
+  return html.replace(head[0], `<head>\n${meta}${head[1]}`);
 }
 
 // ---- IndexNow (site.indexNowKey; null = off). The key file proves to search engines that pings come from this site. ----
@@ -1063,7 +1099,7 @@ async function main() {
   const sharedAssets = ['assets/styles.css', 'assets/search.js', 'assets/app.js', 'assets/favicon.svg'];
   let failed = false;
   for (const [id, base] of Object.entries(data.bases)) {
-    const html = renderBase(id, base, data.employers, site, template, jobCounts, synonyms, careerTitles, extras);
+    const html = withSecurityMeta(renderBase(id, base, data.employers, site, template, jobCounts, synonyms, careerTitles, extras));
     const dir = path.join(DIST, base.path);
     await mkdir(dir, { recursive: true });
     await writeFile(path.join(dir, 'index.html'), html);
@@ -1081,33 +1117,33 @@ async function main() {
   // Privacy page (always: it also covers what browsing collects, which is nothing).
   const privacyTemplate = await readFile(path.join(ROOT, 'templates/privacy.html'), 'utf8');
   await mkdir(path.join(DIST, 'privacy'), { recursive: true });
-  await writeFile(path.join(DIST, 'privacy', 'index.html'), renderPrivacy(site, privacyTemplate));
+  await writeFile(path.join(DIST, 'privacy', 'index.html'), withSecurityMeta(renderPrivacy(site, privacyTemplate)));
 
   // Employer Directory: every Hill employer on one page, grouped by type.
   const dirTemplate = await readFile(path.join(ROOT, 'templates/employers.html'), 'utf8');
   await mkdir(path.join(DIST, 'employers'), { recursive: true });
-  await writeFile(path.join(DIST, 'employers', 'index.html'), renderDirectory('hill', data.bases.hill, data.employers, site, dirTemplate, jobCounts, synonyms, careerTitles));
+  await writeFile(path.join(DIST, 'employers', 'index.html'), withSecurityMeta(renderDirectory('hill', data.bases.hill, data.employers, site, dirTemplate, jobCounts, synonyms, careerTitles)));
 
   // Thank-you page the contact form returns to when JavaScript is off.
   const thanksTemplate = await readFile(path.join(ROOT, 'templates/thanks.html'), 'utf8');
   await mkdir(path.join(DIST, 'thanks'), { recursive: true });
-  await writeFile(path.join(DIST, 'thanks', 'index.html'), renderThanks(site, thanksTemplate));
+  await writeFile(path.join(DIST, 'thanks', 'index.html'), withSecurityMeta(renderThanks(site, thanksTemplate)));
 
   // "How hiring at Hill works" guide (every fact sourced; see data/GUIDE-SOURCES.md).
   const guideTemplate = await readFile(path.join(ROOT, 'templates/guide.html'), 'utf8');
   await mkdir(path.join(DIST, 'how-hiring-works'), { recursive: true });
-  await writeFile(path.join(DIST, 'how-hiring-works', 'index.html'), renderGuide(site, guideTemplate));
+  await writeFile(path.join(DIST, 'how-hiring-works', 'index.html'), withSecurityMeta(renderGuide(site, guideTemplate)));
 
   // Get Trained: schools, apprenticeships and funding for trades jobs (evidence in data/TRAINING-REVIEW.md).
   const trainingTemplate = await readFile(path.join(ROOT, 'templates/training.html'), 'utf8');
   await mkdir(path.join(DIST, 'get-trained'), { recursive: true });
-  await writeFile(path.join(DIST, 'get-trained', 'index.html'), renderTraining(site, trainingTemplate, trainingFile));
+  await writeFile(path.join(DIST, 'get-trained', 'index.html'), withSecurityMeta(renderTraining(site, trainingTemplate, trainingFile)));
 
   // About / For recruiters: who runs the site, how listings work, and the listing request form.
   const aboutTemplate = await readFile(path.join(ROOT, 'templates/about.html'), 'utf8');
   await mkdir(path.join(DIST, 'about'), { recursive: true });
   const hillCount = data.employers.filter((e) => e.base === 'hill').length;
-  await writeFile(path.join(DIST, 'about', 'index.html'), renderAbout(site, aboutTemplate, hillCount));
+  await writeFile(path.join(DIST, 'about', 'index.html'), withSecurityMeta(renderAbout(site, aboutTemplate, hillCount)));
 
   // Sitemap and robots.txt for search engines (indexable pages only; /thanks/ is noindex).
   await writeFile(path.join(DIST, 'sitemap.xml'), renderSitemap(site, data.bases, today));

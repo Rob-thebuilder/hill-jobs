@@ -83,6 +83,12 @@ const hardStop = setTimeout(async () => {
 }, 300_000);
 
 /** Opens a fresh tab with the given emulation and returns helpers bound to it. */
+const cspViolations = [];
+const CSP_WATCH = `window.__cspViolations = [];
+document.addEventListener('securitypolicyviolation', (e) => {
+  window.__cspViolations.push(e.violatedDirective + ' blocked ' + (e.blockedURI || 'inline'));
+});`;
+
 async function openPage(url, { width = 390, height = 844, js = true, scheme = 'light', reducedMotion = false } = {}) {
   const { targetId } = await send('Target.createTarget', { url: 'about:blank' });
   const { sessionId } = await send('Target.attachToTarget', { targetId, flatten: true });
@@ -92,6 +98,8 @@ async function openPage(url, { width = 390, height = 844, js = true, scheme = 'l
   await s('Network.enable');
   // Google Analytics is blocked in every check, so test runs never send fake visits to the real property.
   await s('Network.setBlockedURLs', { urls: GA_BLOCK });
+  // Record any Content-Security-Policy violation from the first byte, so a too-strict policy is caught.
+  await s('Page.addScriptToEvaluateOnNewDocument', { source: CSP_WATCH });
   const requests = [];
   const urlOf = new Map();
   let bytes = 0; // first-party only: the 100 KB budget covers the site's own files
@@ -131,7 +139,14 @@ async function openPage(url, { width = 390, height = 844, js = true, scheme = 'l
       await sleep(250); // > 100 ms debounce
     },
     nextLoad: () => waitFor(sessionId, 'Page.loadEventFired'),
-    close: async () => { listeners.delete(onNet); await send('Target.closeTarget', { targetId }); },
+    close: async () => {
+      if (js) {
+        const v = await evaluate('window.__cspViolations || []').catch(() => []);
+        for (const x of v) cspViolations.push(`${url}: ${x}`);
+      }
+      listeners.delete(onNet);
+      await send('Target.closeTarget', { targetId });
+    },
   };
 }
 
@@ -514,9 +529,10 @@ try {
     const own = p.requests.filter((u) => u.startsWith(ORIGIN)).length;
     const kb = p.bytes / 1024;
     check('site\'s own files transfer under 100 KB (Google Analytics not counted)', kb < 100, `${kb.toFixed(1)} KB over ${own} same-origin requests`);
-    const tag = await p.evaluate(`(() => { const h = document.head.firstElementChild; return h && h.tagName === 'SCRIPT' ? h.src : ''; })()`);
+    // Only charset, CSP and referrer <meta> tags may come before the GA tag.
+    const tag = await p.evaluate(`(() => { let h = document.head.firstElementChild; while (h && h.tagName === 'META') h = h.nextElementSibling; return h && h.tagName === 'SCRIPT' ? h.src : ''; })()`);
     const gaId = JSON.parse(await readFile(path.join(ROOT, 'data/site.json'), 'utf8')).analyticsId;
-    if (gaId) check('GA4 tag is the first thing in <head>', tag === `https://www.googletagmanager.com/gtag/js?id=${gaId}`, tag || '(no tag)');
+    if (gaId) check('GA4 tag is the first script in <head> (after the charset and security meta tags)', tag === `https://www.googletagmanager.com/gtag/js?id=${gaId}`, tag || '(no tag)');
     else check('no GA4 tag when analyticsId is null', !tag.includes('googletagmanager'), tag || '(no tag)');
     const missing = await p.evaluate(`Promise.all([...document.querySelectorAll('link[rel~=icon], link[rel=apple-touch-icon], link[rel=stylesheet]')].map(l => fetch(l.href).then(r => r.ok ? null : l.getAttribute('href'))))`);
     check('linked css/icons all load', missing.every((x) => !x), missing.filter(Boolean).join(', '));
@@ -698,6 +714,14 @@ try {
     check('internal sourceUrl values never appear on the page', leaked.length === 0, leaked.map((e) => e.id).join(', '));
     await p.close();
   }
+
+  // Every page, once more, then: nothing on the site may trip the Content-Security-Policy.
+  for (const rel of ['', 'employers/', 'how-hiring-works/', 'get-trained/', 'about/?topic=fix&company=Boeing', 'privacy/', 'thanks/']) {
+    const p = await openPage(`${ORIGIN}/${rel}`, { width: 390 });
+    await sleep(300);
+    await p.close();
+  }
+  check('no Content-Security-Policy violations on any page', cspViolations.length === 0, cspViolations.slice(0, 5).join(' | '));
 } catch (err) {
   failures++;
   console.error('FAIL  verify crashed:', err);
