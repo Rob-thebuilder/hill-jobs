@@ -2,6 +2,8 @@
   "siteName": "Work At Hill",
   "siteUrl": "https://workathill.com",
   "analyticsId": "G-BGK14WRT9L",
+  "_indexNowNote": "IndexNow key (public by design: it is served at /<key>.txt so search engines can confirm the site sent the ping). After each deploy, scripts/indexnow.mjs tells Bing and other IndexNow engines which pages changed. Set to null to turn it off.",
+  "indexNowKey": "86315aaabae8c3df67880260b17fc5d4",
   "form": null,
   "newsletter": {
     "_note": "Fill these in after creating the Buttondown account. Until buttondownUsername and postalAddress are both set, the signup forms stay off the page. postalAddress goes in every email (CAN-SPAM); a PO box is fine. sendMode 'draft' leaves each weekly email in Buttondown for you to review and send; 'send' sends it automatically.",
