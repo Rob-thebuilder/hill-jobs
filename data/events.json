@@ -10,6 +10,30 @@
       "host": "Utah Department of Workforce Services",
       "url": "https://jobs.utah.gov/",
       "sourceUrl": "https://www.utah.gov/pmn/files/1497469.pdf"
+    },
+    {
+      "id": "weber-spring-fair-2027-01",
+      "title": "Weber State Spring Career & Internship Fair",
+      "type": "job-fair",
+      "start": "2027-01-20T10:00",
+      "end": "2027-01-20T14:00",
+      "venue": "Shepherd Union Ballrooms, Weber State",
+      "city": "Ogden, UT",
+      "host": "Weber State University Career Services",
+      "url": "https://www.weber.edu/careerservices/events/",
+      "sourceUrl": "https://www.weber.edu/careerservices/events/"
+    },
+    {
+      "id": "davis-tech-career-fair-2027-03",
+      "title": "Davis Tech Career Fair",
+      "type": "job-fair",
+      "start": "2027-03-10T15:30",
+      "end": "2027-03-10T18:30",
+      "venue": "Davis Tech Main Building, 550 E 300 S",
+      "city": "Kaysville, UT",
+      "host": "Davis Technical College",
+      "url": "https://davistech.edu/calendar/career-fair/",
+      "sourceUrl": "https://davistech.edu/calendar/career-fair/"
     }
   ],
   "annual": [
@@ -30,6 +54,33 @@
       "host": "Utah Department of Workforce Services",
       "url": "https://jobs.utah.gov/",
       "sourceUrl": "https://jobs.utah.gov/department/press/2026/010526.html"
+    },
+    {
+      "id": "ogden-community-job-fair",
+      "title": "Ogden Community Job Fair",
+      "type": "job-fair",
+      "timing": "Several times a year (recently January, May, July and September), 1–4 p.m. at The Monarch, 455 25th St, Ogden. Free, 30+ employers",
+      "host": "Compass Career Fairs",
+      "url": "https://www.compasscareerfairs.com/",
+      "sourceUrl": "https://www.laytoncityutah.gov/LC/CommunityCalendar/Event/5724"
+    },
+    {
+      "id": "hill-veterans-job-fair",
+      "title": "Hill AFB Area Veterans Job Fair",
+      "type": "job-fair",
+      "timing": "Late summer at the Davis Conference Center in Layton (Aug 8, 2024; Sep 4, 2025), for veterans, service members and military spouses",
+      "host": "RecruitMilitary and DAV",
+      "url": "https://recruitmilitary.com/career-fairs-2",
+      "sourceUrl": "https://www.dea.gov/events/2025/2025-09/2025-09-04/recruitmilitary-hill-afb-area-veterans-job-fair"
+    },
+    {
+      "id": "mino-hill",
+      "title": "Military Informational Network & Outreach (MINO)",
+      "type": "meet-greet",
+      "timing": "On base in February (last held Feb 11, 2025). For service members, spouses and veterans with base access",
+      "host": "Hill AFB Military & Family Readiness Center and Workforce Services",
+      "url": "https://veterans.utah.gov/events/",
+      "sourceUrl": "https://veterans.utah.gov/event/military-informational-network-outreach-mino-event-hill-afb/"
     },
     {
       "id": "davis-tech-career-fair",
