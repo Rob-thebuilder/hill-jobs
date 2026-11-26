@@ -60,6 +60,65 @@
     }
   }
 
+  // ---- site pages (training, resume help, events, hiring guide…) found by the same search ----
+  const PAGE_LIMIT = 5;
+  const pagesBox = $('#page-hits');
+  const pagesList = $('#page-hits-list');
+  const pagesMore = $('#page-hits-more');
+  const pageById = {};
+  let pageIndex = null;
+  try {
+    const data = JSON.parse($('#search-data').textContent);
+    if (Array.isArray(data.pages) && data.pages.length) {
+      for (const p of data.pages) pageById[p.id] = p;
+      pageIndex = Search.createIndex(
+        data.pages.map((p) => ({ id: p.id, name: p.title, description: p.text, roles: p.keywords, titles: [], last: p.last })),
+        data.synonyms,
+      );
+    }
+  } catch {
+    pageIndex = null;
+  }
+  const pageItem = (p) => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = p.url;
+    const kind = document.createElement('span');
+    kind.className = 'ph-kind';
+    kind.textContent = p.kind;
+    a.append(kind, p.title);
+    if (p.ext) {
+      a.target = '_blank';
+      a.rel = 'noopener';
+      const sr = document.createElement('span');
+      sr.className = 'sr-only';
+      sr.textContent = ' (opens in new tab)';
+      a.append(sr);
+    }
+    if (p.here) a.dataset.here = '1';
+    li.append(a);
+    if (p.context) {
+      const c = document.createElement('span');
+      c.className = 'ph-context';
+      c.textContent = p.context;
+      li.append(c);
+    }
+    return li;
+  };
+  const renderPages = (q) => {
+    if (!pagesBox) return;
+    const r = q && pageIndex ? Search.rank(pageIndex, q, PAGE_LIMIT) : { ids: [], total: 0 };
+    const key = r.ids.join('|');
+    if (pagesBox.dataset.key !== key) {
+      pagesBox.dataset.key = key;
+      pagesList.replaceChildren(...r.ids.map((id) => pageItem(pageById[id])));
+    }
+    pagesBox.hidden = !r.ids.length;
+    const more = r.total - r.ids.length;
+    pagesMore.textContent = more > 0 ? `${more} more. Add a word to narrow it down.` : '';
+    pagesMore.hidden = more <= 0;
+  };
+
   // ---- state <-> URL ----
   const fromUrl = () => {
     const p = new URLSearchParams(location.search);
@@ -99,6 +158,7 @@
     renderTabs();
     const q = state.q.trim();
     const { results, corrected } = Search.search(index, q);
+    renderPages(q);
     let shown = 0;
     for (const c of cards) {
       const hit = results[c.id];
@@ -280,8 +340,29 @@
     input.select();
   });
 
+  // Page results that live on this page ("?tab=resume#r-…", "#more-ways") switch tabs in place.
+  const scrollToHash = (hash, smooth = true) => {
+    let target = null;
+    try { target = hash && document.getElementById(decodeURIComponent(hash.slice(1))); } catch { target = null; }
+    const behavior = smooth && !matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'auto';
+    if (!target || target.classList.contains('panel')) { if (smooth) tabsRow?.scrollIntoView({ block: 'start', behavior }); return; }
+    target.scrollIntoView({ block: 'start', behavior });
+    if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+    target.focus({ preventScroll: true });
+  };
+  pagesList?.addEventListener('click', (e) => {
+    const a = e.target.closest('a[data-here]');
+    if (!a || e.ctrlKey || e.metaKey || e.shiftKey || e.button) return;
+    e.preventDefault();
+    const u = new URL(a.href);
+    showTab(TABS.has(u.searchParams.get('tab')) ? u.searchParams.get('tab') : 'employers');
+    scrollToHash(u.hash);
+  });
+
   input.value = state.q;
   render();
+  // Arriving from another page at an item inside a tab (e.g. /?tab=resume#r-hill-mfrc).
+  if (location.hash && !HASH_TO_TAB[location.hash]) requestAnimationFrame(() => scrollToHash(location.hash, false));
 })();
 
 // "Let's Connect" form: send in the background and show the result here, instead of leaving the page.

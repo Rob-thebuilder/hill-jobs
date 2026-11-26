@@ -17,6 +17,8 @@
  * - Typos: if nothing matches, a word of 5+ letters that isn't on the site is swapped for the
  *   closest word that is (same first letter, 1 edit, or 2 for 8+ letters) and the search runs
  *   again; the result then says which word it used ("northrup" -> "northrop").
+ * - Site pages (data/site-pages.json plus every training, resource, program and event) use the same
+ *   rules through rank(): title = name, keywords = roles, details = description.
  */
 (function (root, factory) {
   var api = factory();
@@ -106,6 +108,7 @@
       };
       return {
         id: e.id,
+        last: !!e.last,
         name: words(e.name || ''),
         description: words(e.description || ''),
         roles: list(e.roles),
@@ -279,6 +282,40 @@
     return { query: normalize(query), results: results };
   }
 
+  /** How strongly one item matches the query: title 3, keyword 2 (+1 if a keyword is exactly the query word), details 1. */
+  function score(item, clauses) {
+    var s = 0;
+    clauses.forEach(function (c) {
+      if (clauseIn(item.name, c)) s += 3;
+      if (firstMatch(item.roles, c) || firstMatch(item.titles, c)) s += 2;
+      var key = c.words.join(' ');
+      if (item.roles.some(function (r) { return r.words.join(' ') === key; })) s += 1;
+      if (clauseIn(item.description, c)) s += 1;
+    });
+    return s;
+  }
+
+  /**
+   * Ranked search for site pages (training, resources, guide sections...): the best `limit` ids,
+   * strongest first, ties in data order; entries with `last` (paid listings) come after the rest. Returns { ids: [...], total, corrected }.
+   */
+  function rank(index, query, limit) {
+    var out = search(index, query);
+    var clauses = parseQuery(index, out.corrected || query);
+    var order = {};
+    var byId = {};
+    index.items.forEach(function (it, i) { order[it.id] = i; byId[it.id] = it; });
+    var scored = Object.keys(out.results).map(function (id) {
+      return { id: id, s: score(byId[id], clauses) };
+    });
+    // Entries marked `last` (paid resume writers) always follow the free ones, as on the page.
+    scored.sort(function (a, b) {
+      return byId[a.id].last - byId[b.id].last || b.s - a.s || order[a.id] - order[b.id];
+    });
+    var ids = scored.map(function (x) { return x.id; });
+    return { ids: limit ? ids.slice(0, limit) : ids, total: ids.length, corrected: out.corrected };
+  }
+
   /** One-line explanation for a card, or '' (name-only matches need no explanation). */
   function explain(reasons) {
     var parts = [];
@@ -319,6 +356,7 @@
     createIndex: createIndex,
     parseQuery: parseQuery,
     search: search,
+    rank: rank,
     explain: explain,
     validateSynonyms: validateSynonyms,
   };

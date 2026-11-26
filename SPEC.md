@@ -123,7 +123,7 @@ The page has three tabs below the hero: **Employers** (the default), **Resume he
   - Without JavaScript, the tabs are plain links to three sections that are all visible.
   - With JavaScript, they're ARIA tabs: arrow keys move between them, and the open tab goes in the URL (`?tab=resume`, `?tab=events`), so Back works and a tab can be shared.
   - Old `#resume-help` / `#events` links open the right tab.
-  - The hero search searches employers, so typing in it switches to Employers.
+  - The hero search searches employers (and site pages, §5), so typing in it switches to Employers.
   - On phones under 400 px the count badges are hidden, so all three tabs fit.
 
 ### Resume help (`data/resources.json`)
@@ -212,6 +212,11 @@ Everything runs in the browser, with no server.
 - **Search box** (in the hero): matches as you type, debounced (~100 ms). Type `/` on desktop to focus it. The rules live in `assets/search.js`, which the page and the tests share.
   - **What it searches:** each employer's name, description, researched `roles`, and the **live job titles** open when the site was built. Federal cards get theirs from USAJOBS; contractors get theirs from their own careers sites, limited to Hill AFB and Northern Utah (§6).
   - **Not searched:** category labels; the category chips do that.
+  - **Site pages ("Also on Work At Hill"):** the same search also runs over the rest of the site and shows up to 5 matches in a box above the employer results (on the homepage and the Employer Directory), with "N more. Add a word to narrow it down." when there are more. It's hidden when nothing matches.
+    - **What's in it:** hand-listed pages and sections in `data/site-pages.json` (Get Trained and its sections, Resume Resources, Events, More ways, each hiring-guide section, For recruiters), plus every training card, resume resource, program and event, added automatically from their own data files at build time.
+    - **Matching:** the same rules and synonym groups as employers (title = name, keywords = roles, details = description). Ranked: title match 3, keyword 2 (+1 for an exact keyword), details 1; ties keep data order. Paid resume writers always come after free help.
+    - **Links:** on-site links stay on the site (`get-trained/#t-…`, `?tab=resume#r-…`); on the homepage, results inside a tab switch tabs in place and scroll to the card, and arriving at `/?tab=resume#r-…` from another page scrolls to it. Programs link straight to their own site in a new tab.
+    - **Checks:** the build validates `site-pages.json`; a test fails if any page link points at an anchor that doesn't exist; the phone checks cover "welder" → welding schools, an in-page resume result, the directory page and contrast.
   - **Normalizing:** case and accents are ignored. "A&P" equals "AP". Other punctuation splits words, and a hyphenated term like "F-35" is matched as one phrase. Letters and digits split too, so "F35", "F-35" and "F 35" are the same search, and "L3" finds "L3Harris".
   - **Word endings:** a last query word longer than 4 letters also tries its stem ("mechanics" → "mechanic", "contracts" → "contract", "internship" → "intern", "welding" → "weld"). A plural of a synonym term uses its group ("painters" = "painter").
   - **Typos:** only when nothing matches, a word of 5+ letters that isn't on the site is swapped for the closest site word (same first letter; 1 edit, or 2 for 8+ letters; swapped letters count as 1) and the search runs again. The count line says so: "1 employer · showing results for “northrop”".

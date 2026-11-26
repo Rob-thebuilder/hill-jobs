@@ -20,12 +20,73 @@
   }));
   const TYPES = new Set(chips.map((c) => c.dataset.type).filter(Boolean));
 
+  const $ = (sel) => document.querySelector(sel);
+  // ---- site pages (training, resume help, events, hiring guide…) found by the same search ----
+  const PAGE_LIMIT = 5;
+  const pagesBox = $('#page-hits');
+  const pagesList = $('#page-hits-list');
+  const pagesMore = $('#page-hits-more');
+  const pageById = {};
+  let pageIndex = null;
+  try {
+    const data = JSON.parse($('#search-data').textContent);
+    if (Array.isArray(data.pages) && data.pages.length) {
+      for (const p of data.pages) pageById[p.id] = p;
+      pageIndex = Search.createIndex(
+        data.pages.map((p) => ({ id: p.id, name: p.title, description: p.text, roles: p.keywords, titles: [], last: p.last })),
+        data.synonyms,
+      );
+    }
+  } catch {
+    pageIndex = null;
+  }
+  const pageItem = (p) => {
+    const li = document.createElement('li');
+    const a = document.createElement('a');
+    a.href = p.url;
+    const kind = document.createElement('span');
+    kind.className = 'ph-kind';
+    kind.textContent = p.kind;
+    a.append(kind, p.title);
+    if (p.ext) {
+      a.target = '_blank';
+      a.rel = 'noopener';
+      const sr = document.createElement('span');
+      sr.className = 'sr-only';
+      sr.textContent = ' (opens in new tab)';
+      a.append(sr);
+    }
+    if (p.here) a.dataset.here = '1';
+    li.append(a);
+    if (p.context) {
+      const c = document.createElement('span');
+      c.className = 'ph-context';
+      c.textContent = p.context;
+      li.append(c);
+    }
+    return li;
+  };
+  const renderPages = (q) => {
+    if (!pagesBox) return;
+    const r = q && pageIndex ? Search.rank(pageIndex, q, PAGE_LIMIT) : { ids: [], total: 0 };
+    const key = r.ids.join('|');
+    if (pagesBox.dataset.key !== key) {
+      pagesBox.dataset.key = key;
+      pagesList.replaceChildren(...r.ids.map((id) => pageItem(pageById[id])));
+    }
+    pagesBox.hidden = !r.ids.length;
+    const more = r.total - r.ids.length;
+    pagesMore.textContent = more > 0 ? `${more} more. Add a word to narrow it down.` : '';
+    pagesMore.hidden = more <= 0;
+  };
+
   const p = new URLSearchParams(location.search);
   let state = { q: p.get('q') || '', type: TYPES.has(p.get('type')) ? p.get('type') : '' };
 
   const render = () => {
     const q = state.q.trim();
     const { results, corrected } = Search.search(index, q);
+    renderPages(q);
     let shown = 0;
     for (const c of cards) {
       const hit = results[c.id];

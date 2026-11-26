@@ -177,7 +177,7 @@ const CONTRAST = `(() => {
     for (const l of layers.reverse()) bg = blend(l, bg);
     return bg;
   };
-  const sels = ['h1', '.eyebrow', '.tagline', '.stat', '.stat strong', '.search label', '.chip-label', '.chip', '.count', '.badge', '.card h2', '.desc', '.tags li', '.btn-jobs', '.link-secondary', '.open-jobs', '.open-jobs .checked', '.meta span', '.meta a', '.site-footer p', '.recruiter', '.reset', '.empty p', '.btn-clear', '.search input', '.why', '.suggest', '.empty-usajobs a', '.tab', '.tab-n', '.nu-date', '.nu-title', '.nu-where', '.next-up-head h2', '.next-up-all', '.panel-intro h2', '.panel-intro p', '.group-n', '.note', '.kind', '.res-facts dt', '.res-facts dd', '.btn-outline', '.ev-mon', '.ev-day', '.ev-when', '.ev-repeats', '.ev-where', '.ev-host', '.ev-link', '.annual-timing', '.empty-note', '.more-cal a', '.fine-print', '.alert-title', '.signup-fine', '.signup-fine a', '.btn-signup', '.signup-title', '.signup-lead', '.signup-row input', '.more-ways h2', '.more-ways-lead', '.way-name', '.way-who', '.way-checked', '.empty-more a'];
+  const sels = ['h1', '.eyebrow', '.tagline', '.stat', '.stat strong', '.search label', '.chip-label', '.chip', '.count', '.badge', '.card h2', '.desc', '.tags li', '.btn-jobs', '.link-secondary', '.open-jobs', '.open-jobs .checked', '.meta span', '.meta a', '.site-footer p', '.recruiter', '.reset', '.empty p', '.btn-clear', '.search input', '.why', '.suggest', '.empty-usajobs a', '.tab', '.tab-n', '.nu-date', '.nu-title', '.nu-where', '.next-up-head h2', '.next-up-all', '.panel-intro h2', '.panel-intro p', '.group-n', '.note', '.kind', '.res-facts dt', '.res-facts dd', '.btn-outline', '.ev-mon', '.ev-day', '.ev-when', '.ev-repeats', '.ev-where', '.ev-host', '.ev-link', '.annual-timing', '.empty-note', '.more-cal a', '.fine-print', '.alert-title', '.signup-fine', '.signup-fine a', '.btn-signup', '.signup-title', '.signup-lead', '.signup-row input', '.more-ways h2', '.more-ways-lead', '.way-name', '.way-who', '.way-checked', '.empty-more a', '.page-hits-title', '.page-hits-list a', '.ph-kind', '.ph-context', '.page-hits-more'];
   const out = [];
   for (const sel of sels) for (const el of document.querySelectorAll(sel)) {
     const r = el.getBoundingClientRect();
@@ -491,7 +491,7 @@ try {
 
   // 9. Contrast in both themes (with a pressed chip and the empty state rendered too).
   for (const scheme of ['light', 'dark']) {
-    for (const qs of ['?cat=engineering', '?q=zzqqxx', '?tab=resume', '?tab=events']) {
+    for (const qs of ['?cat=engineering', '?q=zzqqxx', '?q=resume', '?tab=resume', '?tab=events']) {
       const p = await openPage(H + qs, { width: 390, scheme });
       const res = await p.evaluate(CONTRAST);
       const bad = res.filter((x) => !x.ok);
@@ -712,6 +712,55 @@ try {
     const html = await readFile(path.join(DIST, 'index.html'), 'utf8');
     const leaked = hill.filter((e) => html.includes(e.sourceUrl) && e.sourceUrl !== e.jobsUrl && e.sourceUrl !== e.secondaryUrl);
     check('internal sourceUrl values never appear on the page', leaked.length === 0, leaked.map((e) => e.id).join(', '));
+    await p.close();
+  }
+
+  // 3c. Site-wide search: training, resume help and events show above employers, and lead to the right spot.
+  {
+    const HITS = `(() => {
+      const box = document.querySelector('#page-hits');
+      return {
+        shown: !!box && box.getClientRects().length > 0,
+        links: box ? [...box.querySelectorAll('a')].map(a => a.getAttribute('href')) : [],
+        small: box ? [...box.querySelectorAll('a')].filter(a => a.getBoundingClientRect().height < 44).length : 0,
+        overflow: document.documentElement.scrollWidth > innerWidth,
+      };
+    })()`;
+    let p = await openPage(`${H}?q=welder`, { width: 320 });
+    let r = await p.evaluate(HITS);
+    check('site search: "welder" (no employer) shows Get Trained welding schools', r.shown && r.links.some((h) => h.includes('get-trained/#t-') && h.includes('welding')), r.links.join(' '));
+    check('site search: result links are 44 px tall and the page never scrolls sideways at 320 px', r.small === 0 && !r.overflow, JSON.stringify(r));
+    await p.close();
+
+    p = await openPage(H, { width: 390 });
+    await p.type('federal resume');
+    r = await p.evaluate(HITS);
+    check('site search: typing "federal resume" shows resume help', r.shown && r.links.some((h) => h.includes('?tab=resume')), r.links.join(' '));
+    await p.evaluate(`document.querySelector('#page-hits a[href*="#r-"]').click()`);
+    await sleep(800);
+    const at = await p.evaluate(`(() => {
+      const id = decodeURIComponent(new URL(document.querySelector('#page-hits a[href*="#r-"]').href).hash.slice(1));
+      const t = document.getElementById(id);
+      const b = t.getBoundingClientRect();
+      return { panel: [...document.querySelectorAll('.panel')].filter(s => s.getClientRects().length > 0).map(s => s.id).join(), inView: b.top >= -1 && b.top < innerHeight, focused: document.activeElement === t, search: location.search };
+    })()`);
+    check('site search: an in-page result opens its tab and scrolls to the card', at.panel === 'resume-help' && at.inView && at.focused && at.search.includes('tab=resume'), JSON.stringify(at));
+    await p.close();
+
+    p = await openPage(`${H}?tab=resume#r-hill-mfrc`, { width: 390 });
+    await sleep(400);
+    const arrive = await p.evaluate(`(() => { const b = document.getElementById('r-hill-mfrc').getBoundingClientRect(); return { inView: b.top >= -1 && b.top < innerHeight, panel: [...document.querySelectorAll('.panel')].filter(s => s.getClientRects().length > 0).map(s => s.id).join() }; })()`);
+    check('site search: arriving at /?tab=resume#r-… from another page lands on the card', arrive.inView && arrive.panel === 'resume-help', JSON.stringify(arrive));
+    await p.close();
+
+    p = await openPage(`${ORIGIN}/employers/?q=apprentice`, { width: 390 });
+    r = await p.evaluate(HITS);
+    check('site search: the Employer Directory shows page results too, linking back with ../', r.shown && r.links.every((h) => h.startsWith('../')), r.links.join(' '));
+    await p.close();
+
+    p = await openPage(`${H}?q=painter`, { width: 390 });
+    r = await p.evaluate(HITS);
+    check('site search: the box stays hidden when no page matches', !r.shown, r.links.join(' '));
     await p.close();
   }
 

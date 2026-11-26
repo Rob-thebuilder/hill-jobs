@@ -1,0 +1,96 @@
+{
+  "_note": "Pages and sections of Work At Hill that the search box should find, besides employers. Every training school, resume resource, program and event is added automatically from its own data file; list here only whole pages and sections. `path` is relative to the site root (\"get-trained/#funding\", \"?tab=resume\", \"#more-ways\"). `keywords` are lowercase words people type; the synonym groups apply to them. The build checks the format.",
+  "pages": [
+    {
+      "id": "get-trained",
+      "title": "Get Trained: schools and apprenticeships for Hill trades",
+      "kind": "Training",
+      "path": "get-trained/",
+      "keywords": ["training", "trade school", "school", "college", "tech college", "certificate", "certification", "classes", "course", "trades", "learn a trade", "career change"]
+    },
+    {
+      "id": "get-trained-apprenticeships",
+      "title": "Apprenticeships: get paid while you learn",
+      "kind": "Training",
+      "path": "get-trained/#apprenticeships",
+      "keywords": ["apprentice", "apprenticeship", "union", "earn while you learn", "on the job training", "journeyman"]
+    },
+    {
+      "id": "get-trained-aviation",
+      "title": "Aircraft mechanic (A&P) schools",
+      "kind": "Training",
+      "path": "get-trained/#aviation",
+      "keywords": ["a&p school", "airframe and powerplant", "aircraft mechanic", "aviation maintenance", "faa", "mechanic school"]
+    },
+    {
+      "id": "get-trained-funding",
+      "title": "Paying for training: grants and free tuition",
+      "kind": "Training",
+      "path": "get-trained/#funding",
+      "keywords": ["financial aid", "grant", "pell", "pell grant", "scholarship", "free tuition", "pay for school", "gi bill", "high school"]
+    },
+    {
+      "id": "resume-help",
+      "title": "Resume Resources Near Hill",
+      "kind": "Resume help",
+      "path": "?tab=resume",
+      "keywords": ["resume", "cv", "federal resume", "resume help", "resume review", "resume writer", "cover letter", "interview", "interview practice", "linkedin", "career center", "job center", "career counseling"]
+    },
+    {
+      "id": "events",
+      "title": "Job Fairs, Workshops and Meet-and-Greets",
+      "kind": "Events",
+      "path": "?tab=events",
+      "keywords": ["job fair", "career fair", "hiring event", "hiring fair", "workshop", "meet and greet", "networking event", "events", "recruiting event"]
+    },
+    {
+      "id": "more-ways",
+      "title": "More ways to find Hill jobs: programs and job boards",
+      "kind": "Programs",
+      "path": "#more-ways",
+      "keywords": ["skillbridge", "pathways", "intern", "student", "recent graduate", "new grad", "job board", "clearancejobs", "transition", "separating", "leaving the military", "usajobs"]
+    },
+    {
+      "id": "guide-federal",
+      "title": "Federal job or contractor job?",
+      "kind": "How hiring works",
+      "path": "how-hiring-works/#h-federal",
+      "keywords": ["federal", "contractor", "civilian", "government job", "civil service", "usajobs", "how to apply", "hiring process"]
+    },
+    {
+      "id": "guide-pay",
+      "title": "How pay works: GS, WG and NH",
+      "kind": "How hiring works",
+      "path": "how-hiring-works/#h-pay",
+      "keywords": ["pay", "salary", "wage", "wages", "how much", "pay scale", "gs", "general schedule", "wg", "wage grade", "wl", "ws", "nh", "acqdemo", "locality", "service contract act", "sca"]
+    },
+    {
+      "id": "guide-clearances",
+      "title": "Security clearances explained",
+      "kind": "How hiring works",
+      "path": "how-hiring-works/#h-clearances",
+      "keywords": ["clearance", "security clearance", "secret", "top secret", "ts", "sci", "ts sci", "background check", "background investigation", "able to obtain", "citizenship"]
+    },
+    {
+      "id": "guide-base",
+      "title": "Getting on base for an interview",
+      "kind": "How hiring works",
+      "path": "how-hiring-works/#h-base",
+      "keywords": ["base access", "getting on base", "visitor", "visitor pass", "visitor center", "real id", "gate", "id card", "interview"]
+    },
+    {
+      "id": "guide-preferences",
+      "title": "Veteran and military spouse preferences",
+      "kind": "How hiring works",
+      "path": "how-hiring-works/#h-preferences",
+      "keywords": ["veteran", "veterans preference", "vets", "vra", "military spouse", "spouse", "disabled veteran", "direct hire", "dha", "vevraa"]
+    },
+    {
+      "id": "about-recruiters",
+      "title": "For recruiters and employers: add or fix a listing",
+      "kind": "About",
+      "path": "about/#h-recruiters",
+      "keywords": ["recruiter", "employer", "add listing", "add my company", "list my company", "post a job", "update listing", "hiring manager"]
+    }
+  ]
+}

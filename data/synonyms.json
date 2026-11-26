@@ -15,6 +15,9 @@
     ["qa", "qc", "quality assurance", "quality control"],
     ["intern", "internship", "student trainee"],
     ["driver", "cdl", "truck driver", "motor vehicle operator"],
-    ["electrician", "electrical worker", "lineman", "lineworker"]
+    ["electrician", "electrical worker", "lineman", "lineworker"],
+    ["welder", "welding"],
+    ["plumber", "plumbing", "pipefitter", "pipefitting"],
+    ["machinist", "machining"]
   ]
 }
