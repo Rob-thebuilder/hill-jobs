@@ -145,3 +145,50 @@ test('synonyms.json is valid, and bad files are caught', () => {
   assert.match(Search.validateSynonyms({ groups: [['Paint', 'coat']] }).join(), /lowercase/);
   assert.match(Search.validateSynonyms({ groups: [['paint']] }).join(), /at least 2/);
 });
+
+// ---------- keyword coverage (Nov 2026 audit) ----------
+
+test('letters and digits split: "F35", "F-35" and "F 35" are the same search; "L3" finds L3Harris', () => {
+  assert.deepEqual(ids('F35'), ids('F-35'));
+  assert.deepEqual(ids('f 35'), ids('F-35'));
+  assert.deepEqual(ids('c130'), ids('C-130'));
+  assert.deepEqual(ids('a10'), ids('A-10'));
+  assert.ok(ids('F35').length >= 1);
+  assert.ok(ids('L3').includes('l3harris'));
+});
+
+test('word endings: plurals, "-ing" and "-ship" find the base word', () => {
+  assert.deepEqual(ids('mechanics'), ids('mechanic'));
+  assert.deepEqual(ids('painters'), ids('painter'));
+  assert.deepEqual(ids('interns'), ids('intern'));
+  assert.deepEqual(ids('internship'), ids('intern'));
+  assert.ok(ids('contracts').includes('dla-hill'), '"contracts" finds Contract specialist');
+});
+
+test('typos: a misspelled word is swapped for the closest site word, and says so', () => {
+  for (const [typo, fixed, id] of [['northrup', 'northrop', 'northrop-grumman'], ['lockhead', 'lockheed', 'lockheed-martin'], ['machinst', 'machinist', null], ['avoinics', 'avionics', null]]) {
+    const r = Search.search(index, typo);
+    assert.equal(r.corrected, fixed, typo);
+    assert.ok(Object.keys(r.results).length >= 1, typo);
+    if (id) assert.ok(r.results[id], `${typo} -> ${id}`);
+  }
+  // Exact matches never get "corrected", and nonsense finds nothing.
+  assert.equal(Search.search(index, 'northrop').corrected, undefined);
+  assert.equal(Object.keys(run('zzzzzz')).length, 0);
+  assert.equal(Search.search(index, 'zzzzzz').corrected, undefined);
+});
+
+test('new synonym groups find the right roles', () => {
+  assert.ok(ids('programmer').includes('systems-implementers'), 'programmer -> developer');
+  assert.ok(ids('hr').length >= 1, 'hr -> human resources');
+  assert.deepEqual(ids('nde'), ids('ndi'));
+  assert.deepEqual(ids('ndt'), ids('ndi'));
+  assert.deepEqual(ids('accountant'), ids('accounting'));
+  assert.deepEqual(ids('qa'), ids('quality assurance'));
+  assert.deepEqual(ids('cdl'), ids('driver'));
+  assert.ok(ids('electrician').length >= 1, 'electrician -> electrical worker/lineman');
+  // "contract specialist" is one phrase now, not "contract" anywhere + "specialist" anywhere.
+  const cs = run('contract specialist');
+  assert.ok(!cs['el-blake'], 'Help desk specialist is not a contract specialist');
+  for (const r of Object.values(cs)) assert.ok(Search.explain(r.reasons), 'every result says why');
+});

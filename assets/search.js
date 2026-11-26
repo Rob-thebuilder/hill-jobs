@@ -2,7 +2,8 @@
  *
  * Rules:
  * - Text is lowercased, accents are dropped, "a&p" becomes "ap", and anything else that isn't a
- *   letter or digit splits words ("F-35" -> "f 35").
+ *   letter or digit splits words ("F-35" -> "f 35"). Letters and digits also split, so "F35",
+ *   "F-35" and "F 35" are the same search, and "L3" finds "L3Harris".
  * - A query term of 2 characters or fewer must equal a whole word ("lo" never matches "Lockheed").
  *   Longer terms match the start of a word ("paint" matches "painter").
  * - Each whitespace-separated query part must match somewhere (AND); a part like "F-35" is matched
@@ -11,6 +12,11 @@
  * - A query word or phrase that belongs to a synonym group matches whole words only (a plural "s"
  *   is allowed for terms longer than 2 letters), and also matches the group's other terms, but only in roles and job titles, so
  *   "admin" -> "office" doesn't hit "F-16 program office", and "office" doesn't hit "officer".
+ * - Word endings: a last query word longer than 4 letters also tries its stem, so "mechanics",
+ *   "contracts", "internship" and "welding" find "mechanic", "contract", "intern" and "weld".
+ * - Typos: if nothing matches, a word of 5+ letters that isn't on the site is swapped for the
+ *   closest word that is (same first letter, 1 edit, or 2 for 8+ letters) and the search runs
+ *   again; the result then says which word it used ("northrup" -> "northrop").
  */
 (function (root, factory) {
   var api = factory();
@@ -27,6 +33,7 @@
       .normalize('NFD')
       .replace(/[̀-ͯ]/g, '')
       .replace(/([a-z0-9])&([a-z0-9])/g, '$1$2')
+      .replace(/([a-z])(?=[0-9])|([0-9])(?=[a-z])/g, '$1$2 ')
       .replace(/[^a-z0-9]+/g, ' ')
       .trim();
   }
@@ -56,6 +63,16 @@
       } else if (last.length <= SHORT ? w === last : w.lastIndexOf(last, 0) === 0) return true;
     }
     return false;
+  }
+
+  /** Other forms of a query word to try: "contracts" -> "contract", "internship" -> "intern". */
+  function stems(w) {
+    var out = [];
+    if (w.length <= 4) return out;
+    if (/ship$/.test(w) && w.length - 4 >= 4) out.push(w.slice(0, -4));
+    if (/ing$/.test(w) && w.length - 3 >= 4) out.push(w.slice(0, -3));
+    if (/s$/.test(w) && !/(ss|us|is)$/.test(w)) out.push(w.slice(0, -1));
+    return out;
   }
 
   /** Synonym groups -> list of { terms: [[words]...], keys: Set of joined terms }. */
@@ -95,15 +112,24 @@
         titles: list(e.titles),
       };
     });
-    return { items: items, groups: groups, maxPhrase: maxPhrase };
+    var vocab = {};
+    var add = function (ws) { ws.forEach(function (w) { vocab[w] = (vocab[w] || 0) + 1; }); };
+    items.forEach(function (it) {
+      add(it.name); add(it.description);
+      it.roles.concat(it.titles).forEach(function (r) { add(r.words); });
+    });
+    return { items: items, groups: groups, maxPhrase: maxPhrase, vocab: vocab };
   }
 
   /** The synonym group whose longest term starts at q[i], as { len, group }, or null. */
   function synonymAt(index, q, i) {
     for (var len = Math.min(index.maxPhrase, q.length - i); len >= 1; len--) {
       var key = q.slice(i, i + len).map(function (x) { return x.w; }).join(' ');
+      // A plural finds its group too: "painters" -> "painter", "interns" -> "intern".
+      var single = /[a-z]{3}s$/.test(key) && !/ss$/.test(key) ? key.slice(0, -1) : null;
       for (var g = 0; g < index.groups.length; g++) {
-        if (index.groups[g].keys[key]) return { len: len, group: index.groups[g] };
+        if (index.groups[g].keys[key]) return { len: len, group: index.groups[g], words: key.split(' ') };
+        if (single && index.groups[g].keys[single]) return { len: len, group: index.groups[g], words: single.split(' ') };
       }
     }
     return null;
@@ -123,22 +149,34 @@
     while (i < q.length) {
       var syn = synonymAt(index, q, i);
       if (syn) {
-        clauses.push({ words: q.slice(i, i + syn.len).map(function (x) { return x.w; }), group: syn.group, exact: true });
+        clauses.push({ words: syn.words, group: syn.group, exact: true });
         i += syn.len;
         continue;
       }
       var j = i + 1;
       while (j < q.length && q[j].chunk === q[i].chunk && !synonymAt(index, q, j)) j++;
-      clauses.push({ words: q.slice(i, j).map(function (x) { return x.w; }), group: null, exact: false });
+      var cw = q.slice(i, j).map(function (x) { return x.w; });
+      var alts = stems(cw[cw.length - 1]).map(function (s) { return cw.slice(0, -1).concat([s]); });
+      clauses.push({ words: cw, group: null, exact: false, alts: alts });
       i = j;
     }
     return clauses;
   }
 
+  /** The clause's words, or one of its stems, appear in fieldWords. */
+  function clauseIn(fieldWords, clause) {
+    if (matchWords(fieldWords, clause.words, clause.exact)) return true;
+    var alts = clause.alts || [];
+    for (var a = 0; a < alts.length; a++) {
+      if (matchWords(fieldWords, alts[a], clause.exact)) return true;
+    }
+    return false;
+  }
+
   function firstMatch(list, clause) {
     for (var k = 0; k < list.length; k++) {
       var fw = list[k].words;
-      if (matchWords(fw, clause.words, clause.exact)) return list[k].text;
+      if (clauseIn(fw, clause)) return list[k].text;
       if (clause.group) {
         for (var t = 0; t < clause.group.terms.length; t++) {
           if (matchWords(fw, clause.group.terms[t], true)) return list[k].text;
@@ -154,16 +192,66 @@
     if (r) return { kind: 'role', text: r };
     r = firstMatch(item.titles, clause);
     if (r) return { kind: 'title', text: r };
-    if (matchWords(item.description, clause.words, clause.exact)) return { kind: 'description', text: null };
-    if (matchWords(item.name, clause.words, clause.exact)) return { kind: 'name', text: null };
+    if (clauseIn(item.description, clause)) return { kind: 'description', text: null };
+    if (clauseIn(item.name, clause)) return { kind: 'name', text: null };
     return null;
   }
 
+  /** Edit distance with adjacent swaps counted as one edit ("avoinics" -> "avionics" is 1). */
+  function distance(a, b, max) {
+    if (Math.abs(a.length - b.length) > max) return max + 1;
+    var d = [];
+    for (var i = 0; i <= a.length; i++) { d[i] = [i]; }
+    for (var j = 0; j <= b.length; j++) d[0][j] = j;
+    for (i = 1; i <= a.length; i++) {
+      for (j = 1; j <= b.length; j++) {
+        var cost = a[i - 1] === b[j - 1] ? 0 : 1;
+        d[i][j] = Math.min(d[i - 1][j] + 1, d[i][j - 1] + 1, d[i - 1][j - 1] + cost);
+        if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) d[i][j] = Math.min(d[i][j], d[i - 2][j - 2] + 1);
+      }
+    }
+    return d[a.length][b.length];
+  }
+
+  /** The closest site word to a misspelled one, or null. Words already on the site are left alone. */
+  function correctWord(index, w) {
+    if (w.length < 5 || /[0-9]/.test(w) || index.vocab[w]) return null;
+    var max = w.length >= 8 ? 2 : 1;
+    var best = null;
+    var bestD = max + 1;
+    for (var v in index.vocab) {
+      if (v.length < 4 || v[0] !== w[0]) continue;
+      if (v.lastIndexOf(w, 0) === 0) return null; // already a prefix of a site word
+      var dd = distance(w, v, max);
+      if (dd < bestD || (dd === bestD && best && index.vocab[v] > index.vocab[best])) { best = v; bestD = dd; }
+    }
+    return bestD <= max ? best : null;
+  }
+
   /**
-   * Returns { query: normalized, results: { id: { reasons: [...] } } } for matching items.
+   * Returns { query: normalized, results: { id: { reasons: [...] } } } for matching items, plus
+   * `corrected` (the words searched instead) when a typo fix was needed to find anything.
    * An empty query matches everything with no reasons.
    */
   function search(index, query) {
+    var out = searchExact(index, query);
+    if (!out.query || Object.keys(out.results).length) return out;
+    var changed = false;
+    var fixed = String(query).split(/\s+/).map(function (chunk) {
+      return words(chunk).map(function (w) {
+        var c = correctWord(index, w);
+        if (c) { changed = true; return c; }
+        return w;
+      }).join(' ');
+    }).filter(Boolean).join(' ');
+    if (!changed) return out;
+    var retry = searchExact(index, fixed);
+    if (!Object.keys(retry.results).length) return out;
+    retry.corrected = fixed;
+    return retry;
+  }
+
+  function searchExact(index, query) {
     var clauses = parseQuery(index, query);
     var results = {};
     index.items.forEach(function (item) {

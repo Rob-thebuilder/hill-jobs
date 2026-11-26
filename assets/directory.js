@@ -25,7 +25,7 @@
 
   const render = () => {
     const q = state.q.trim();
-    const { results } = Search.search(index, q);
+    const { results, corrected } = Search.search(index, q);
     let shown = 0;
     for (const c of cards) {
       const hit = results[c.id];
@@ -41,7 +41,7 @@
       g.hidden = n === 0;
       g.querySelector('.group-n').textContent = n;
     }
-    countEl.textContent = `${shown} employer${shown === 1 ? '' : 's'}`;
+    countEl.textContent = `${shown} employer${shown === 1 ? '' : 's'}${corrected && shown ? ` · showing results for “${corrected}”` : ''}`;
     emptyEl.hidden = shown !== 0;
     for (const c of chips) c.setAttribute('aria-pressed', String(c.dataset.type === state.type));
   };

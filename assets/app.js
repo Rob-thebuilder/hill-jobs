@@ -98,7 +98,7 @@
   const render = () => {
     renderTabs();
     const q = state.q.trim();
-    const { results } = Search.search(index, q);
+    const { results, corrected } = Search.search(index, q);
     let shown = 0;
     for (const c of cards) {
       const hit = results[c.id];
@@ -109,7 +109,8 @@
       c.why.hidden = !why;
       if (match) shown++;
     }
-    const text = `${shown} employer${shown === 1 ? '' : 's'}`;
+    // A typo fix ("northrup" -> "northrop") says which word it searched instead.
+    const text = `${shown} employer${shown === 1 ? '' : 's'}${corrected && shown ? ` · showing results for “${corrected}”` : ''}`;
     if (countEl.textContent !== text) countEl.textContent = text;
 
     const filtersOn = !!(state.type || state.cats.size);
