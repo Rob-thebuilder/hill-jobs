@@ -5,6 +5,11 @@
       "url": "https://www.hill.af.mil/News/Article-Display/Article/3737475/new-visitor-access-procedures-at-hill-afb/",
       "why": "hill.af.mil returns 403 to automated requests. Used on the How hiring at Hill works page (Getting on base).",
       "checkedBy": "Site owner, 2026-11-16: opens and still describes visitor access to Hill AFB"
+    },
+    {
+      "url": "https://www.systemsimplementers.com/careers/",
+      "why": "Returns HTTP 500 to the weekly link check from GitHub Actions (every run since 2026-11-23), but loads for visitors. Used on the Systems Implementers card (jobsUrl).",
+      "checkedBy": "Claude for the site owner, 2026-11-27: page loads outside GitHub Actions and lists a current opening (Supply Chain Jr. Analyst) with Apply buttons"
     }
   ]
 }
