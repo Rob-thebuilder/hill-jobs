@@ -715,8 +715,25 @@ try {
     await p.close();
   }
 
+  // 11d. Employer pages: fit a small phone, and card names on the home page lead to them.
+  {
+    const longest = [...hill].sort((a, b) => b.name.length - a.name.length)[0];
+    for (const e of [hill[0], longest]) {
+      for (const w of [320, 390]) {
+        const p = await openPage(`${ORIGIN}/employers/${e.id}/`, { width: w });
+        const r = await p.evaluate(`({ sw: document.documentElement.scrollWidth, iw: innerWidth, h1: document.querySelectorAll('h1').length, btn: !!document.querySelector('.emp-apply .btn-jobs[target="_blank"]'), crumbs: document.querySelectorAll('.crumbs li').length })`);
+        check(`employer page ${e.id} at ${w}px: no sideways scroll, one h1, careers button, breadcrumbs`, r.sw <= w && r.iw === w && r.h1 === 1 && r.btn && r.crumbs === 3, JSON.stringify(r));
+        await p.close();
+      }
+    }
+    const p = await openPage(`${ORIGIN}/`, { width: 390 });
+    const href = await p.evaluate(`document.querySelector('.card .card-name')?.getAttribute('href') || ''`);
+    check('home card names link to employer pages', /^\.\/employers\/[a-z0-9-]+\/$/.test(href), href);
+    await p.close();
+  }
+
   // Every page, once more, then: nothing on the site may trip the Content-Security-Policy.
-  for (const rel of ['', 'employers/', 'how-hiring-works/', 'get-trained/', 'about/?topic=fix&company=Boeing', 'privacy/', 'thanks/']) {
+  for (const rel of ['', 'employers/', `employers/${hill[0].id}/`, 'how-hiring-works/', 'get-trained/', 'about/?topic=fix&company=Boeing', 'privacy/', 'thanks/']) {
     const p = await openPage(`${ORIGIN}/${rel}`, { width: 390 });
     await sleep(300);
     await p.close();

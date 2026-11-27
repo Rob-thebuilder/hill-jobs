@@ -586,3 +586,31 @@ button { font: inherit; }
 .blurb p { margin-top: 0; }
 .blurb .blurb-url { margin-top: .4rem; font-weight: 700; }
 @media (min-width: 640px) { .form-panel { padding: 1.5rem 1.5rem 1.75rem; } }
+
+/* ---------- Employer pages (/employers/<id>/) ---------- */
+.card-name { display: inline-block; min-width: 44px; padding: .6rem 0; margin: -.6rem 0; color: inherit; text-decoration: none; }
+.card-name:hover, .card-name:focus-visible { text-decoration: underline; text-underline-offset: 3px; }
+.crumbs ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; align-items: center; font-size: .9rem; }
+.crumbs li { display: inline-flex; align-items: center; min-width: 0; }
+.crumbs li + li::before { content: "›"; margin: 0 .45rem; color: #b4c0d3; }
+.crumbs a { display: inline-flex; align-items: center; min-height: 44px; color: var(--amber); text-decoration: none; }
+.crumbs [aria-current] { color: #d3dceb; overflow-wrap: anywhere; }
+.emp-badge { margin-top: .25rem; }
+.employer h1 { overflow-wrap: anywhere; }
+.emp-apply {
+  margin-top: .5rem; padding: 1rem;
+  display: flex; flex-direction: column; gap: .25rem;
+  background: var(--surface); border: 1px solid var(--line); border-top: 4px solid var(--amber);
+  border-radius: 14px; box-shadow: var(--shadow);
+}
+.emp-apply .open-jobs { margin: 0 0 .35rem; }
+.emp-fine { margin-top: .5rem; font-size: .85rem; color: var(--muted); }
+.emp-cats { margin-top: .75rem; }
+.emp-cats li { margin-top: 0; padding: 0 .7rem; border: 1px solid var(--line); }
+.emp-cats a { display: inline-flex; align-items: center; min-height: 32px; color: inherit; text-decoration: none; }
+.emp-cats a:hover, .emp-cats a:focus-visible { text-decoration: underline; }
+.emp-titles, .emp-similar { padding-left: 1.25rem; }
+.emp-titles li { overflow-wrap: anywhere; }
+.emp-similar a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; overflow-wrap: anywhere; }
+.emp-sim-type { font-size: .8rem; color: var(--muted); white-space: nowrap; }
+.emp-suggest a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
