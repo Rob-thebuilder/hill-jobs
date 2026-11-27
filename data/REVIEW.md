@@ -153,7 +153,7 @@ Your review template still had placeholders for these items, so they're unchange
 - Categories: software-it, engineering
 - Jobs: https://elblakecorp.applicantpro.com/jobs/ — ✅ 200
 - Secondary: https://elblakecorp.com/careers/ — ✅ 200
-- Source: https://www.defensedaily.com/contract-awards/contract-award-elb-services-llc-columbus-georgia-600000000 — ✅ 200
+- Source: https://www.career.com/job/e-l-blake-inc/technical-operations-lead-sme/j202605300815143199473 — ✅ 200
 - ⚑ Contract names 'ELB Services LLC'; Hill job ads say 'E.L. Blake'. Probably the same company, but not confirmed.
 - Your call: ☐ keep ☐ fix ☐ drop
 
@@ -162,7 +162,7 @@ Your review template still had placeholders for these items, so they're unchange
 - Engineering support for the F-16 program office at Hill AFB and F-35 paint booth construction there
 - Categories: engineering, trades-maintenance
 - Jobs: https://jobs.dayforcehcm.com/brs/SGSCANDIDATEPORTAL — ✅ 200
-- Source: https://www.highergov.com/news/sts-systems-defense-awarded-21-6-million-f-35-pai-6447945 — ✅ 200
+- Source: https://www.dice.com/job-detail/330d4149-89a0-4ea0-963e-fddf1677b4b4 — ✅ 200
 - ⚑ Hill presence is solid, but the careers link is uncertain: this job portal may belong to a related company (STS Government Solutions). No company website found.
 - Your call: ☐ keep ☐ fix ☐ drop
 

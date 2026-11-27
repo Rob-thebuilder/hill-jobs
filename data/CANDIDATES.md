@@ -1039,7 +1039,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 ```
 
 ### PARC Community Partnership Foundation (ServiceSource)
-- **Hill evidence:** https://defensedaily.com/contract-awards/contract-award-parc-community-partnership-foundation-clearfield-utah-92946958
+- **Hill evidence:** https://jobs.disabilitytalent.org/jobs/273172125-janitor-hafb
 - **Careers:** https://servicesourceinc.wd1.myworkdayjobs.com/en-US/ServiceSource_Staff?q=Hill (filtered to Hill/Utah) · platform: Workday
 - **Open near Hill now:** 1: Lead Janitor, Hill AFB-UT (2026-9414, posted ~5 days ago) https://servicesourceinc.wd1.myworkdayjobs.com/en-US/ServiceSource_Staff/job/Hill-AFB-UT/Lead-Janitor_2026-9414 (200)
 - **Confidence:** medium
@@ -1066,7 +1066,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
   "jobsUrl": "https://servicesourceinc.wd1.myworkdayjobs.com/en-US/ServiceSource_Staff?q=Hill",
   "secondaryUrl": null,
   "verified": "2026-11",
-  "sourceUrl": "https://defensedaily.com/contract-awards/contract-award-parc-community-partnership-foundation-clearfield-utah-92946958"
+  "sourceUrl": "https://jobs.disabilitytalent.org/jobs/273172125-janitor-hafb"
 }
 ```
 
@@ -1101,7 +1101,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 ```
 
 ### City Light & Power
-- **Hill evidence:** https://www.defensedaily.com/contract-awards/contract-award-city-light-power-inc-greenwood-village-colorado-23470368
+- **Hill evidence:** https://www.kuer.org/military/2014-06-13/hill-air-force-base-privatizes-electrical-system
 - **Careers:** https://careers.jobscore.com/careers/clpinc · platform: JobScore
 - **Open near Hill now:** none found — 15 JobScore listings, none at Hill (the location filter dropdown includes 'Hill Air Force Base, UT')
 - **Confidence:** high
@@ -1125,7 +1125,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
   "jobsUrl": "https://careers.jobscore.com/careers/clpinc",
   "secondaryUrl": null,
   "verified": "2026-11",
-  "sourceUrl": "https://www.defensedaily.com/contract-awards/contract-award-city-light-power-inc-greenwood-village-colorado-23470368"
+  "sourceUrl": "https://www.kuer.org/military/2014-06-13/hill-air-force-base-privatizes-electrical-system"
 }
 ```
 
@@ -1396,7 +1396,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
 ```
 
 ### Summit Technologies
-- **Hill evidence:** https://defensedaily.com/contract-awards/contract-award-summit-technologies-inc-navarre-florida-40000000
+- **Hill evidence:** https://app.trinethire.com/companies/20517-summit-technologies-inc/jobs/125504-foreign-military-sales-subject-matter-expert
 - **Careers:** https://app.trinethire.com/companies/20517-summit-technologies-inc/jobs · platform: TriNet Hire
 - **Open near Hill now:** 1: Foreign Military Sales Subject Matter Expert — 'Hill AFB - Client Location' https://app.trinethire.com/companies/20517-summit-technologies-inc/jobs/125504-foreign-military-sales-subject-matter-expert (200)
 - **Confidence:** high
@@ -1426,7 +1426,7 @@ Source: `new-candidates.json` (separate research, Nov 2026; kept in the repo roo
   "jobsUrl": "https://app.trinethire.com/companies/20517-summit-technologies-inc/jobs",
   "secondaryUrl": null,
   "verified": "2026-11",
-  "sourceUrl": "https://defensedaily.com/contract-awards/contract-award-summit-technologies-inc-navarre-florida-40000000"
+  "sourceUrl": "https://app.trinethire.com/companies/20517-summit-technologies-inc/jobs/125504-foreign-military-sales-subject-matter-expert"
 }
 ```
 
