@@ -61,6 +61,7 @@
         "Logistics analyst",
         "IT systems administrator"
       ],
+      "aliases": ["LM", "LMCO"],
       "jobsUrl": "https://lockheedmartin.eightfold.ai/careers?location=Hill%20AFB%2C%20UT",
       "secondaryUrl": null,
       "verified": "2026-11",

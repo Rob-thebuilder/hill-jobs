@@ -91,6 +91,7 @@ The primary link is a **USAJOBS search pre-filtered to the agency and the Hill A
 }
 ```
 - `roles` (required, 3–25 unique job titles in sentence case, each 2–60 characters) lists the common jobs and trades the employer hires for **at Hill**, e.g. "Aircraft painter", "IT specialist (network/infosec)". It's used by search and isn't listed on the card.
+- `aliases` (optional, up to 8 short names people type, e.g. "LM", "LMCO" for Lockheed Martin) match in search like the name, but are never shown.
   - Each role needs evidence: USAJOBS postings at Hill (current or historic) for federal employers, or Hill-area job postings for contractors.
   - `data/ROLES-REVIEW.md` records the source and confidence of each role. Uncertain ones are flagged there for you to verify before launch.
 - `sourceUrl` is internal and never shown on the page. It links to evidence (news, a contract award, an official page) that the employer has a workforce at Hill. It's required, so every listing can be traced back to its evidence.
@@ -228,7 +229,7 @@ One page per kind of work ("Aircraft mechanic jobs at Hill AFB"), so people sear
 Everything runs in the browser, with no server.
 
 - **Search box** (in the hero): matches as you type, debounced (~100 ms). Type `/` on desktop to focus it. The rules live in `assets/search.js`, which the page and the tests share.
-  - **What it searches:** each employer's name, description, researched `roles`, and the **live job titles** open when the site was built. Federal cards get theirs from USAJOBS; contractors get theirs from their own careers sites, limited to Hill AFB and Northern Utah (§6).
+  - **What it searches:** each employer's name (plus any `aliases`), description, researched `roles`, and the **live job titles** open when the site was built. Federal cards get theirs from USAJOBS; contractors get theirs from their own careers sites, limited to Hill AFB and Northern Utah (§6).
   - **Not searched:** category labels; the category chips do that.
   - **Site pages ("Also on Work At Hill"):** the same search also runs over the rest of the site and shows up to 5 matches in a box above the employer results (on the homepage and the Employer Directory), with "N more. Add a word to narrow it down." when there are more. It's hidden when nothing matches.
     - **What's in it:** hand-listed pages and sections in `data/site-pages.json` (Get Trained and its sections, Resume Resources, Events, More ways, each hiring-guide section, For recruiters), plus every training card, resume resource, program and event, added automatically from their own data files at build time.
@@ -238,6 +239,7 @@ Everything runs in the browser, with no server.
   - **Normalizing:** case and accents are ignored. "A&P" equals "AP". Other punctuation splits words, and a hyphenated term like "F-35" is matched as one phrase. Letters and digits split too, so "F35", "F-35" and "F 35" are the same search, and "L3" finds "L3Harris".
   - **Word endings:** a last query word longer than 4 letters also tries its stem ("mechanics" → "mechanic", "contracts" → "contract", "internship" → "intern", "welding" → "weld"). A plural of a synonym term uses its group ("painters" = "painter").
   - **Typos:** only when nothing matches, a word of 5+ letters that isn't on the site is swapped for the closest site word (same first letter; 1 edit, or 2 for 8+ letters; swapped letters count as 1) and the search runs again. The count line says so: "1 employer · showing results for “northrop”".
+  - **Split names:** if that still finds nothing, neighbouring words are joined when the result (or its typo fix) is a site word, so "lock heed" and "lock head" find Lockheed and "north rop" finds Northrop. Same "showing results for" line.
   - **Whole words for short terms:** a term of 2 letters or fewer must match a whole word, so "LO" never matches "Lockheed" or "logistics", and "IT" never matches "its". Longer terms match the start of a word ("mech" → "mechanic"), never the middle.
   - **Multi-word searches:** every word must match (AND).
   - **Synonyms** (`data/synonyms.json`, editable):

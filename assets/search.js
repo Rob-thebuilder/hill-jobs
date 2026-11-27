@@ -247,11 +247,33 @@
         return w;
       }).join(' ');
     }).filter(Boolean).join(' ');
-    if (!changed) return out;
-    var retry = searchExact(index, fixed);
-    if (!Object.keys(retry.results).length) return out;
-    retry.corrected = fixed;
-    return retry;
+    if (changed) {
+      var retry = searchExact(index, fixed);
+      if (Object.keys(retry.results).length) { retry.corrected = fixed; return retry; }
+    }
+    // Last try: a name split by a space ("lock heed", "north rop"). Join neighbouring words
+    // when the joined word, or its typo fix, is a site word.
+    var joined = joinSplitWords(index, words(query));
+    if (!joined) return out;
+    var again = searchExact(index, joined);
+    if (!Object.keys(again.results).length) return out;
+    again.corrected = joined;
+    return again;
+  }
+
+  /** "lock head" -> "lockheed": joins neighbouring words into a site word (typo fix allowed), or null. */
+  function joinSplitWords(index, ws) {
+    var out = [];
+    var changed = false;
+    for (var i = 0; i < ws.length; i++) {
+      if (i + 1 < ws.length) {
+        var both = ws[i] + ws[i + 1];
+        var hit = index.vocab[both] ? both : correctWord(index, both);
+        if (hit) { out.push(hit); changed = true; i++; continue; }
+      }
+      out.push(ws[i]);
+    }
+    return changed ? out.join(' ') : null;
   }
 
   function searchExact(index, query) {

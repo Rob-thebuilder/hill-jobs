@@ -69,7 +69,7 @@ test('search data: roles always, live titles only when fetched, never counts', (
     const src = data.employers.find((x) => x.id === e.id);
     assert.deepEqual(e.roles, src.roles);
     assert.deepEqual(e.titles, []);
-    assert.equal(e.name, src.name);
+    assert.equal(e.name, [src.name, ...(src.aliases || [])].join(' '), 'aliases are searchable with the name');
   }
   const withTitles = searchDataOf(render({ checkedAt: '2026-11-06', counts: { 'dla-hill': 11 }, titles: { 'dla-hill': ['IT specialist (APPSW)'] } }));
   assert.deepEqual(withTitles.employers.find((e) => e.id === 'dla-hill').titles, ['IT specialist (APPSW)']);
