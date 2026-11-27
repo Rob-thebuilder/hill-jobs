@@ -614,3 +614,23 @@ button { font: inherit; }
 .emp-similar a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; overflow-wrap: anywhere; }
 .emp-sim-type { font-size: .8rem; color: var(--muted); white-space: nowrap; }
 .emp-suggest a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
+
+/* ---------- Jobs by type (/jobs/ and /jobs/<id>/) ---------- */
+.hero-link { color: var(--amber); font-weight: 800; white-space: nowrap; }
+.emp-jobtypes { margin-top: .9rem; }
+.emp-jobtypes a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
+.job-type { padding-bottom: 1rem; }
+.job-type .prose { padding-top: 0; padding-bottom: 0; }
+.jt-intro { padding-top: 1.5rem !important; }
+.jt-intro .note { margin-top: .75rem; }
+.jt-summary { margin-top: .75rem; font-weight: 700; }
+.jt-summary strong { font-weight: 900; font-size: 1.15em; }
+.jt-grid { margin-top: 1.25rem; }
+.jt-roles, .jt-open { margin-top: .5rem; font-size: .95rem; overflow-wrap: anywhere; }
+.jt-label { font-weight: 800; }
+.jt-more { color: var(--muted); font-size: .85rem; white-space: nowrap; }
+.job-type .card { padding-bottom: 1rem; }
+.jt-related, .jt-index { padding-left: 1.25rem; }
+.jt-related a, .jt-index a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 700; }
+.jt-n { font-size: .85rem; color: var(--muted); white-space: nowrap; }
+.job-type section:last-child { padding-bottom: 2rem; }

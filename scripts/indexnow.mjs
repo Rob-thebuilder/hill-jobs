@@ -20,11 +20,11 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow';
 
 /** The JSON body for one IndexNow submission, or null when IndexNow is off. */
-export function buildSubmission(site, bases, scope = 'all', employers = []) {
+export function buildSubmission(site, bases, scope = 'all', employers = [], jobTypes = null) {
   const keyFile = indexNowKeyFile(site);
   if (!keyFile) return null;
   const root = site.siteUrl.replace(/\/$/, '');
-  const paths = scope === 'home' ? ['/'] : sitemapPaths(bases, employers);
+  const paths = scope === 'home' ? ['/'] : sitemapPaths(bases, employers, jobTypes);
   return {
     host: new URL(root).host,
     key: keyFile.body,
@@ -56,7 +56,8 @@ async function main() {
   }
   const site = JSON.parse(await readFile(path.join(ROOT, 'data/site.json'), 'utf8'));
   const { bases, employers } = JSON.parse(await readFile(path.join(ROOT, 'data/employers.json'), 'utf8'));
-  const body = buildSubmission(site, bases, scope, employers);
+  const jobTypes = JSON.parse(await readFile(path.join(ROOT, 'data/job-types.json'), 'utf8'));
+  const body = buildSubmission(site, bases, scope, employers, jobTypes);
   if (!body) {
     console.log('IndexNow: off (no indexNowKey in data/site.json), nothing sent');
     return;

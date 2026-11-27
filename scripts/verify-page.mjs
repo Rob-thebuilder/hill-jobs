@@ -732,8 +732,23 @@ try {
     await p.close();
   }
 
+  // 11e. Jobs by type: the index and a type page fit a small phone; home links to the index.
+  {
+    for (const [rel, w] of [['jobs/', 320], ['jobs/sheet-metal-machinist/', 320], ['jobs/aircraft-mechanic/', 390]]) {
+      const p = await openPage(`${ORIGIN}/${rel}`, { width: w });
+      const r = await p.evaluate(`({ sw: document.documentElement.scrollWidth, iw: innerWidth, h1: document.querySelectorAll('h1').length, links: document.querySelectorAll('main a').length, cards: document.querySelectorAll('.jt-grid .card').length })`);
+      const cardsOk = rel === 'jobs/' ? r.cards === 0 : r.cards >= 2;
+      check(`${rel} at ${w}px: no sideways scroll, one h1, links${rel === 'jobs/' ? '' : ' and employer cards'}`, r.sw <= w && r.iw === w && r.h1 === 1 && r.links > 3 && cardsOk, JSON.stringify(r));
+      await p.close();
+    }
+    const p = await openPage(`${ORIGIN}/`, { width: 390 });
+    const has = await p.evaluate(`!!document.querySelector('.guide-link[href$="jobs/"]')`);
+    check('home hero links to Jobs by type', has);
+    await p.close();
+  }
+
   // Every page, once more, then: nothing on the site may trip the Content-Security-Policy.
-  for (const rel of ['', 'employers/', `employers/${hill[0].id}/`, 'how-hiring-works/', 'get-trained/', 'about/?topic=fix&company=Boeing', 'privacy/', 'thanks/']) {
+  for (const rel of ['', 'employers/', `employers/${hill[0].id}/`, 'jobs/', 'jobs/aircraft-mechanic/', 'how-hiring-works/', 'get-trained/', 'about/?topic=fix&company=Boeing', 'privacy/', 'thanks/']) {
     const p = await openPage(`${ORIGIN}/${rel}`, { width: 390 });
     await sleep(300);
     await p.close();
