@@ -198,7 +198,7 @@ function fill(template, values) {
 }
 
 /** JSON for the page's search: synonyms plus each employer's searchable text. Safe inside <script>. */
-export function searchData(employers, synonyms, jobCounts, careerTitles = null) {
+export function searchData(employers, synonyms, jobCounts, careerTitles = null, pages = null, prefix = './', home = false) {
   const data = {
     synonyms: { groups: synonyms?.groups || [] },
     employers: employers.map((e) => ({
@@ -209,6 +209,21 @@ export function searchData(employers, synonyms, jobCounts, careerTitles = null) 
       titles: jobCounts?.titles?.[e.id] || careerTitles?.[e.id] || [],
     })),
   };
+  if (pages?.length) {
+    data.pages = pages.map((p) => ({
+      id: p.id,
+      kind: p.kind,
+      title: p.title,
+      context: p.context || '',
+      keywords: p.keywords,
+      text: p.text || '',
+      url: p.url || prefix + p.path,
+      ext: !!p.url,
+      // On the homepage, "?tab=…" and "#…" links switch tabs in place instead of reloading.
+      here: home && !p.url && /^[?#]/.test(p.path),
+      ...(p.last ? { last: true } : {}),
+    }));
+  }
   return JSON.stringify(data).replace(/</g, '\\u003c').replace(/\u2028/g, '\\u2028').replace(/\u2029/g, '\\u2029');
 }
 
@@ -224,7 +239,7 @@ export const GROUP_TITLES = {
 };
 
 /** All employers for a base on one page, grouped by type, A–Z within each group. Built at deploy time. */
-export function renderDirectory(baseId, base, allEmployers, site, template, jobCounts = null, synonyms = null, careerTitles = null) {
+export function renderDirectory(baseId, base, allEmployers, site, template, jobCounts = null, synonyms = null, careerTitles = null, pages = null) {
   const employers = allEmployers
     .filter((e) => e.base === baseId)
     .sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base', numeric: true }));
@@ -250,7 +265,7 @@ ${list.map((e) => renderCard(e, site, jobCounts, 'h3', '../')).join('\n')}
     count: countText(employers.length),
     typeChips: renderChips(employers).typeChips,
     groups,
-    searchData: searchData(employers, synonyms, jobCounts, careerTitles),
+    searchData: searchData(employers, synonyms, jobCounts, careerTitles, pages, '../'),
   });
 }
 
@@ -1228,6 +1243,73 @@ export function validateEvents(file, sourcesFile) {
   return errors;
 }
 
+// ---------- site-wide search (pages, training, resources, programs, events) ----------
+
+const PAGE_PATH = /^(?:(?:get-trained|how-hiring-works|about|employers)\/(?:#[a-z0-9-]+)?|\?tab=(?:resume|events)|#[a-z0-9-]+)$/;
+const PAGE_KEYS = ['id', 'title', 'kind', 'path', 'keywords'];
+
+/** Checks data/site-pages.json: the hand-listed pages and sections the search box should find. */
+export function validateSitePages(file) {
+  const errors = [];
+  if (!Array.isArray(file?.pages)) return ['"pages" must be a list'];
+  const seen = new Set();
+  for (const p of file.pages) {
+    const at = `page "${p?.id}"`;
+    for (const k of Object.keys(p || {})) if (!PAGE_KEYS.includes(k)) errors.push(`${at}: unknown field "${k}"`);
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(p?.id || '') || seen.has(p?.id)) errors.push(`${at}: missing, bad or duplicate id`);
+    seen.add(p?.id);
+    if (!isText(p?.title, 90) || !isText(p?.kind, 30)) errors.push(`${at}: title (≤90) and kind (≤30) are required`);
+    if (!PAGE_PATH.test(p?.path || '')) errors.push(`${at}: path must be a site page like "get-trained/#funding", "?tab=resume" or "#more-ways"`);
+    const kw = p?.keywords;
+    if (!Array.isArray(kw) || !kw.length || kw.length > 30) errors.push(`${at}: keywords must be a list of 1–30 terms`);
+    else for (const k of kw) if (!isText(k, 40) || k !== k.toLowerCase()) errors.push(`${at}: keyword "${k}" must be lowercase text (≤40)`);
+  }
+  return errors;
+}
+
+/**
+ * Everything besides employers that the search box finds, in display-tie order: hand-listed
+ * pages first, then training, resume resources, programs and events (from their own data).
+ * Each entry has `path` (relative to the site root) or `url` (an outside site, opened in a new tab).
+ */
+export function pageEntries(sitePages, extras = {}, training = []) {
+  const out = [];
+  for (const p of sitePages || []) out.push({ id: `s-${p.id}`, kind: p.kind, title: p.title, path: p.path, keywords: p.keywords });
+  // Job-type pages: found by their name and by every employer role they list ("machinist", "isso").
+  for (const t of extras.jobTypes?.types || []) {
+    const roles = [...new Set(jobTypeEmployers(t, extras.employers || []).flatMap((r) => r.roles))];
+    out.push({ id: `j-${t.id}`, kind: 'Job type', title: `${t.name} jobs at Hill`, path: `jobs/${t.id}/`, keywords: [t.name, ...roles] });
+  }
+  for (const t of training) {
+    out.push({
+      id: `t-${t.id}`, kind: 'Training', title: t.name, context: `${t.provider} · ${t.city}`, path: `get-trained/#t-${t.id}`,
+      // The name is a keyword too, so synonym groups apply to it ("welder" finds "Welding Technology").
+      keywords: [t.name, t.search, TRAINING_SECTIONS[t.section]?.[0]].filter(Boolean),
+      text: [t.credential, t.note].filter(Boolean).join('. '),
+    });
+  }
+  for (const r of extras.resources || []) {
+    out.push({
+      id: `r-${r.id}`, kind: 'Resume help', title: r.name, context: `${RESOURCE_KINDS[r.kind] || ''} · ${r.city}`, path: `?tab=resume#r-${r.id}`,
+      keywords: [...r.services, RESOURCE_KINDS[r.kind]].filter(Boolean), text: `${r.description} ${r.who}`,
+      last: r.cost === 'paid', // paid resume writers follow free help, as on the Resume Resources tab
+    });
+  }
+  for (const p of extras.programs || []) {
+    out.push({ id: `p-${p.id}`, kind: 'Program', title: p.name, context: PROGRAM_KINDS[p.kind] || '', url: p.url, keywords: [PROGRAM_KINDS[p.kind]].filter(Boolean), text: p.who });
+  }
+  for (const a of extras.annual || []) {
+    out.push({ id: `an-${a.id}`, kind: 'Event', title: a.title, context: a.host, path: `?tab=events#an-${encodeURIComponent(a.id)}`, keywords: [EVENT_TYPES[a.type]].filter(Boolean), text: a.timing });
+  }
+  for (const e of extras.events || []) {
+    out.push({
+      id: `ev-${e.id}`, kind: 'Event', title: e.title, context: [eventWhen(e).split(' · ')[0], e.city].filter(Boolean).join(' · '),
+      path: `?tab=events#ev-${encodeURIComponent(e.id)}`, keywords: [EVENT_TYPES[e.type]].filter(Boolean), text: e.host,
+    });
+  }
+  return out;
+}
+
 export function renderBase(baseId, base, allEmployers, site, template, jobCounts = null, synonyms = null, careerTitles = null, extras = {}) {
   const employers = allEmployers
     .filter((e) => e.base === baseId)
@@ -1261,7 +1343,7 @@ export function renderBase(baseId, base, allEmployers, site, template, jobCounts
     typeChips,
     catChips,
     cards: employers.map((e) => renderCard(e, site, jobCounts, 'h2', prefix)).join('\n'),
-    searchData: searchData(employers, synonyms, jobCounts, careerTitles),
+    searchData: searchData(employers, synonyms, jobCounts, careerTitles, extras.pages, prefix, true),
     resourceCount: String((extras.resources || []).length),
     eventCount: String((extras.events || []).length),
     nextUp: renderNextUp(extras.events || []),
@@ -1306,7 +1388,7 @@ async function main() {
   const checkOnly = argv.includes('--check');
   const outArg = argv.includes('--out') ? argv[argv.indexOf('--out') + 1] : null;
   const DIST = outArg ? path.resolve(outArg) : path.join(ROOT, 'dist');
-  const [data, schema, site, synonyms, jobSources, places, resourcesFile, eventsFile, eventSources, programsFile, trainingFile] = await Promise.all([
+  const [data, schema, site, synonyms, jobSources, places, resourcesFile, eventsFile, eventSources, programsFile, trainingFile, sitePagesFile] = await Promise.all([
     readJson('data/employers.json'),
     readJson('data/employers.schema.json'),
     // --site FILE swaps in other site settings (e.g. to preview the email signup before setup).
@@ -1319,6 +1401,7 @@ async function main() {
     readJson('data/event-sources.json'),
     readJson('data/programs.json'),
     readJson('data/training.json'),
+    readJson('data/site-pages.json'),
   ]);
   const jobTypes = await readJson('data/job-types.json');
   const rolesIndex = Search.createIndex(
@@ -1334,6 +1417,7 @@ async function main() {
     ...validateResources(resourcesFile).map((e) => `resources.json: ${e}`),
     ...validatePrograms(programsFile).map((e) => `programs.json: ${e}`),
     ...validateTraining(trainingFile, rolesIndex).map((e) => `training.json: ${e}`),
+    ...validateSitePages(sitePagesFile).map((e) => `site-pages.json: ${e}`),
     ...validateEvents(eventsFile, eventSources).map((e) => `events.json: ${e}`),
     ...validateJobTypes(jobTypes, data.employers).map((e) => `job-types.json: ${e}`),
     ...validateNewsletter(site).map((e) => `site.json newsletter: ${e}`),
@@ -1405,6 +1489,7 @@ async function main() {
   const curated = eventsFile.events.map((e) => ({ ...e, start: e.start, end: e.end || null, allDay: !/T/.test(e.start), venue: e.venue || '' }));
   const eventList = upcoming([...curated, ...pulled], today);
   const extras = { resources: resourcesFile.resources, events: eventList, annual: eventsFile.annual, eventsChecked, programs: programsFile.programs };
+  extras.pages = pageEntries(sitePagesFile.pages, { ...extras, jobTypes, employers: data.employers }, trainingFile.training);
 
   if (!contactReady(site) && !site.form) console.warn('WARN: no contact.web3formsKey or "form" config in data/site.json; "Suggest a change" and recruiter links are left out.');
   if (!contactReady(site)) console.warn('WARN: data/site.json has no contact.web3formsKey; the Let\'s Connect form is left out.');
@@ -1443,7 +1528,7 @@ async function main() {
   // Employer Directory: every Hill employer on one page, grouped by type.
   const dirTemplate = await readFile(path.join(ROOT, 'templates/employers.html'), 'utf8');
   await mkdir(path.join(DIST, 'employers'), { recursive: true });
-  await writeFile(path.join(DIST, 'employers', 'index.html'), withSecurityMeta(renderDirectory('hill', data.bases.hill, data.employers, site, dirTemplate, jobCounts, synonyms, careerTitles)));
+  await writeFile(path.join(DIST, 'employers', 'index.html'), withSecurityMeta(renderDirectory('hill', data.bases.hill, data.employers, site, dirTemplate, jobCounts, synonyms, careerTitles, extras.pages)));
 
   // One page per Hill employer, linked from every card.
   const empTemplate = await readFile(path.join(ROOT, 'templates/employer.html'), 'utf8');

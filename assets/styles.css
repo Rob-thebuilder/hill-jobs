@@ -461,6 +461,20 @@ button { font: inherit; }
 .empty-more { margin-top: .25rem; font-size: 1rem !important; font-weight: 700 !important; }
 .empty-more a { display: inline-flex; align-items: center; min-height: 44px; }
 
+/* ---------- site pages in search results ---------- */
+.page-hits {
+  margin: 0 0 1rem; padding: .6rem 1rem .8rem;
+  background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--navy); border-radius: 12px;
+}
+@media (prefers-color-scheme: dark) { .page-hits { border-left-color: var(--amber); } }
+.page-hits-title { font-size: .85rem; font-weight: 800; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); margin: 0 0 .2rem; }
+.page-hits-list { list-style: none; margin: 0; padding: 0; display: grid; gap: .15rem; }
+.page-hits-list li { min-width: 0; }
+.page-hits-list a { display: inline-flex; align-items: center; min-height: 44px; font-weight: 800; overflow-wrap: anywhere; }
+.ph-kind { display: inline-block; margin-right: .4rem; padding: .05rem .45rem; border-radius: 999px; border: 1px solid var(--line); font-size: .75rem; font-weight: 700; color: var(--muted); vertical-align: .1em; }
+.ph-context { display: block; margin-top: -.4rem; padding-bottom: .2rem; font-size: .85rem; color: var(--muted); overflow-wrap: anywhere; }
+.page-hits-more { margin-top: .3rem; font-size: .85rem; color: var(--muted); }
+
 /* ---------- email signup ---------- */
 .alert-box {
   margin: 0 0 1rem;

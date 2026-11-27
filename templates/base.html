@@ -43,7 +43,7 @@
         <input id="q" name="q" type="search" autocomplete="off" autocapitalize="off" spellcheck="false" enterkeyhint="search" placeholder="Try “painter” or “F-35”" aria-describedby="q-hint">
         <kbd class="slash" aria-hidden="true">/</kbd>
       </div>
-      <p id="q-hint" class="sr-only">Search by employer or by job, like painter, LO, networking or admin. Results update as you type.</p>
+      <p id="q-hint" class="sr-only">Search by employer or by job, like painter, LO, networking or admin. Training, resume help, events and hiring tips that match show above the employers. Results update as you type.</p>
     </form>
     <a class="guide-link" href="{{prefix}}employers/">Employer Directory <span aria-hidden="true">→</span></a>
     <a class="guide-link" href="{{prefix}}jobs/">Browse jobs by type <span aria-hidden="true">→</span></a>
@@ -88,6 +88,11 @@
       <p id="count" class="count" role="status" aria-live="polite" aria-atomic="true">{{count}}</p>
       <button type="button" class="reset" id="reset" hidden>Clear filters</button>
     </div>
+    <aside id="page-hits" class="page-hits" aria-labelledby="page-hits-title" hidden>
+      <h3 id="page-hits-title" class="page-hits-title">Also on Work At Hill</h3>
+      <ul id="page-hits-list" class="page-hits-list"></ul>
+      <p id="page-hits-more" class="page-hits-more" hidden></p>
+    </aside>
     {{alertBox}}
     <div id="empty" class="empty" hidden>
       <p class="empty-title" id="empty-title">No employers match.</p>

@@ -5,6 +5,19 @@
     ["networking", "network", "it", "information technology", "cyber", "cybersecurity"],
     ["admin", "administrative", "clerk", "office", "secretary"],
     ["ap", "a&p", "airframe and powerplant", "aircraft mechanic"],
-    ["sheet metal", "sheetmetal"]
+    ["sheet metal", "sheetmetal"],
+    ["developer", "programmer", "software developer", "programming"],
+    ["help desk", "service desk", "desktop support", "it support", "tech support", "computer user support"],
+    ["hr", "human resources"],
+    ["accounting", "accountant", "finance", "financial", "budget"],
+    ["contracting", "contracts", "contract specialist", "procurement", "purchasing"],
+    ["ndi", "nde", "ndt", "nondestructive", "non destructive", "nondestructive inspection", "nondestructive testing"],
+    ["qa", "qc", "quality assurance", "quality control"],
+    ["intern", "internship", "student trainee"],
+    ["driver", "cdl", "truck driver", "motor vehicle operator"],
+    ["electrician", "electrical worker", "lineman", "lineworker"],
+    ["welder", "welding"],
+    ["plumber", "plumbing", "pipefitter", "pipefitting"],
+    ["machinist", "machining"]
   ]
 }
