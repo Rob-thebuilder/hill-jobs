@@ -89,3 +89,15 @@ test('home page cards link each name to its employer page', async () => {
   for (const e of hill) assert.ok(home.includes(`<a class="card-name" href="./employers/${e.id}/">`), e.id);
 });
 
+
+test('aliases ("LM", "LMCO") find the employer in search but never appear on the page', async () => {
+  const { createRequire } = await import('node:module');
+  const Search = createRequire(import.meta.url)('../assets/search.js');
+  const { searchData } = await import('../scripts/build.mjs');
+  const synonyms = JSON.parse(await read('data/synonyms.json'));
+  const sd = JSON.parse(searchData(data.employers, synonyms, null, null));
+  const index = Search.createIndex(sd.employers, synonyms);
+  for (const q of ['LM', 'lmco', 'Lockheed']) assert.ok(Search.search(index, q).results['lockheed-martin'], q);
+  const lm = hill.find((e) => e.id === 'lockheed-martin');
+  assert.ok(!page(lm).includes('LMCO'));
+});

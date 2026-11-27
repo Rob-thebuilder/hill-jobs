@@ -203,7 +203,8 @@ export function searchData(employers, synonyms, jobCounts, careerTitles = null, 
     synonyms: { groups: synonyms?.groups || [] },
     employers: employers.map((e) => ({
       id: e.id,
-      name: e.name,
+      // Short names people type ("LM") match like the name, but are never shown.
+      name: e.aliases?.length ? `${e.name} ${e.aliases.join(' ')}` : e.name,
       description: e.description,
       roles: e.roles || [],
       titles: jobCounts?.titles?.[e.id] || careerTitles?.[e.id] || [],

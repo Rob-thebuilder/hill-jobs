@@ -192,3 +192,14 @@ test('new synonym groups find the right roles', () => {
   assert.ok(!cs['el-blake'], 'Help desk specialist is not a contract specialist');
   for (const r of Object.values(cs)) assert.ok(Search.explain(r.reasons), 'every result says why');
 });
+
+test('a name split by a space is joined, with a typo fix if needed, and says so', () => {
+  for (const [q, fixed, id] of [['lock heed', 'lockheed', 'lockheed-martin'], ['lock head', 'lockheed', 'lockheed-martin'], ['north rop', 'northrop', 'northrop-grumman'], ['boe ing', 'boeing', 'boeing']]) {
+    const r = Search.search(index, q);
+    assert.equal(r.corrected, fixed, q);
+    assert.ok(r.results[id], `${q} -> ${id}`);
+  }
+  // Two real words that already match are never joined.
+  assert.equal(Search.search(index, 'sheet metal').corrected, undefined);
+  assert.equal(Search.search(index, 'booz allen').corrected, undefined);
+});

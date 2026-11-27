@@ -111,6 +111,17 @@
               "pattern": "^\\S(.*\\S)?$"
             }
           },
+          "aliases": {
+            "type": "array",
+            "maxItems": 8,
+            "uniqueItems": true,
+            "items": {
+              "type": "string",
+              "minLength": 2,
+              "maxLength": 30,
+              "pattern": "^\\S(.*\\S)?$"
+            }
+          },
           "jobsUrl": {
             "type": "string",
             "pattern": "^https://[^\\s]+$"
