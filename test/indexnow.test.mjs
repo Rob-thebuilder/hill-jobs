@@ -12,6 +12,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const read = async (rel) => readFile(path.join(ROOT, rel), 'utf8');
 const site = JSON.parse(await read('data/site.json'));
 const { bases, employers } = JSON.parse(await read('data/employers.json'));
+const jobTypes = JSON.parse(await read('data/job-types.json'));
 
 test('the IndexNow key in site.json is valid, and bad keys are caught', () => {
   assert.deepEqual(validateIndexNow(site), []);
@@ -42,12 +43,13 @@ test('the build writes the key file at the site root, containing only the key', 
 });
 
 test('submissions list every sitemap page after a push, and only the home page on the daily rebuild', () => {
-  const all = buildSubmission(site, bases, 'all', employers);
+  const all = buildSubmission(site, bases, 'all', employers, jobTypes);
   assert.equal(all.host, 'workathill.com');
   assert.equal(all.key, site.indexNowKey);
   assert.equal(all.keyLocation, `https://workathill.com/${site.indexNowKey}.txt`);
-  assert.deepEqual(all.urlList, sitemapPaths(bases, employers).map((p) => `https://workathill.com${p}`));
+  assert.deepEqual(all.urlList, sitemapPaths(bases, employers, jobTypes).map((p) => `https://workathill.com${p}`));
   assert.ok(all.urlList.includes('https://workathill.com/employers/boeing/'), 'employer pages are pinged after a push');
+  assert.ok(all.urlList.includes('https://workathill.com/jobs/aircraft-mechanic/'), 'job-type pages are pinged after a push');
   for (const u of all.urlList) assert.ok(new URL(u).host === all.host, u);
   assert.deepEqual(buildSubmission(site, bases, 'home').urlList, ['https://workathill.com/']);
   assert.equal(buildSubmission({ ...site, indexNowKey: null }, bases), null);

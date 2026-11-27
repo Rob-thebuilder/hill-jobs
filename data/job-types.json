@@ -1,0 +1,187 @@
+{
+  "_note": "One page per job type at /jobs/<id>/. An employer is listed when one of its roles matches a 'match' pattern (case-insensitive regular expressions, tested against each role) and no 'exclude' pattern; or, for a type with 'category', when it has that category. The same patterns pick matching live job titles. 'pay' picks the pay tip: wg (federal trades), gs (federal white-collar) or mixed. 'trades' adds the Get Trained link. Keep 'intro' to facts true for every Hill employer listed; no numbers that go stale.",
+  "groups": {
+    "trades": "Trades & maintenance",
+    "tech": "Engineering & tech",
+    "support": "Business & support"
+  },
+  "types": [
+    {
+      "id": "aircraft-mechanic",
+      "name": "Aircraft mechanic",
+      "group": "trades",
+      "intro": "Aircraft mechanics at Hill work on the flightline and in depot overhaul: engines, structures, egress, hydraulics and ground support equipment. The Air Force hires them as federal civilians and reservists, and contractors hire them for structural repair, field support and depot work.",
+      "match": ["aircraft (engine |structures? )?mechanic", "structural repair", "aircraft overhaul", "engine maintenance", "pneudraulic", "powered support systems", "aircraft survival", "wing shop", "ordnance", "crew chief", "a&p", "airframe"],
+      "exclude": [],
+      "pay": "wg",
+      "trades": true,
+      "related": ["sheet-metal-machinist", "avionics-electronics", "painting-coatings", "ndi-quality"]
+    },
+    {
+      "id": "painting-coatings",
+      "name": "Aircraft painting & LO coatings",
+      "group": "trades",
+      "intro": "Painters and coatings technicians strip, prep, paint and plate aircraft parts, and low observable (LO) technicians maintain the stealth coatings on F-35s and other aircraft. Look for titles like aircraft painter, aerospace coater, LO technician and electroplater.",
+      "match": ["paint", "coat(er|ing)", "low observable", "\\blo\\b", "plater"],
+      "exclude": ["research scientist"],
+      "pay": "wg",
+      "trades": true,
+      "related": ["aircraft-mechanic", "sheet-metal-machinist", "ndi-quality"]
+    },
+    {
+      "id": "avionics-electronics",
+      "name": "Avionics & electronics",
+      "group": "trades",
+      "intro": "Avionics and electronics technicians test, troubleshoot and repair aircraft systems, radar and test equipment. The Air Force lists many of these as electronics mechanic or electronic integrated systems mechanic, and contractors use titles like avionics technician and electronics technician.",
+      "match": ["avionics", "electronic (technician|integrated)", "electronics (mechanic|technician)", "radar tech"],
+      "exclude": [],
+      "pay": "wg",
+      "trades": true,
+      "related": ["aircraft-mechanic", "engineering", "it-cybersecurity"]
+    },
+    {
+      "id": "sheet-metal-machinist",
+      "name": "Sheet metal, composites & machinist",
+      "group": "trades",
+      "intro": "Sheet metal mechanics, composite technicians and machinists repair and make aircraft structures and parts, from skin panels and bonded composites to precision-machined components.",
+      "match": ["machinist", "sheet ?metal", "composite", "fabricat", "weld", "bonder"],
+      "exclude": [],
+      "pay": "wg",
+      "trades": true,
+      "related": ["aircraft-mechanic", "ndi-quality", "painting-coatings"]
+    },
+    {
+      "id": "ndi-quality",
+      "name": "NDI & quality inspection",
+      "group": "trades",
+      "intro": "Nondestructive inspection (NDI) technicians check aircraft parts for cracks and hidden damage without taking them apart, and quality inspectors and engineers make sure repairs meet the technical data.",
+      "match": ["nondestructive", "\\bndi\\b", "\\bnde\\b", "quality (inspector|assurance|engineer)"],
+      "exclude": [],
+      "pay": "wg",
+      "trades": true,
+      "related": ["aircraft-mechanic", "sheet-metal-machinist", "engineering"]
+    },
+    {
+      "id": "custodial-facilities",
+      "name": "Custodial & facilities",
+      "group": "trades",
+      "intro": "Custodial and facilities workers keep base buildings and utilities running, through Air Force services, base contractors and the utility companies that operate on base.",
+      "match": ["janitor", "custodi", "general maintenance", "laborer", "maintenance worker", "hvac", "plumb", "lineman", "electrician"],
+      "exclude": [],
+      "pay": "wg",
+      "trades": true,
+      "related": ["retail-food", "environmental"]
+    },
+    {
+      "id": "engineering",
+      "name": "Engineering",
+      "group": "tech",
+      "intro": "Engineers at Hill support aircraft sustainment, the ICBM and Sentinel programs, test ranges and base infrastructure. Employers range from Air Force civilian engineering jobs to defense primes, research labs and engineering services companies.",
+      "match": ["engineer\\b", "engineering tech"],
+      "exclude": [],
+      "pay": "gs",
+      "trades": false,
+      "related": ["software", "it-cybersecurity", "avionics-electronics", "ndi-quality"]
+    },
+    {
+      "id": "software",
+      "name": "Software development",
+      "group": "tech",
+      "intro": "Software developers and engineers at Hill build and test mission planning, test, data and business systems, plus embedded and FPGA work for weapon systems.",
+      "match": ["software", "developer", "devops", "programmer", "data engineer", "fpga"],
+      "exclude": [],
+      "pay": "gs",
+      "trades": false,
+      "related": ["it-cybersecurity", "engineering"]
+    },
+    {
+      "id": "it-cybersecurity",
+      "name": "IT, network & cybersecurity",
+      "group": "tech",
+      "intro": "IT and cyber jobs at Hill include help desk, system and network administration, network operations centers, cloud engineering and information system security officer (ISSO) roles. Many need a security clearance and a DoD 8140 certification such as Security+.",
+      "match": ["cyber", "systems? security (officer|manager|engineer)", "security analyst", "\\bisso\\b", "\\bissm\\b", "information (assurance|systems?) ", "it specialist", "it systems", "help desk", "systems administrator", "network", "\\bnoc\\b", "user support", "penetration", "cloud", "database"],
+      "exclude": ["facility security", "program security"],
+      "pay": "gs",
+      "trades": false,
+      "related": ["software", "engineering", "avionics-electronics"]
+    },
+    {
+      "id": "logistics-supply",
+      "name": "Logistics, supply & warehouse",
+      "group": "support",
+      "intro": "Logistics and supply jobs keep parts and equipment moving to the depot and flightline: warehouse and forklift work, inventory and supply specialists, production controllers and logistics analysts and managers.",
+      "match": ["logistic", "supply", "inventory", "material (handler|support)", "materials (handler|expediter)", "forklift", "distribution", "warehouse", "production controller", "property administrator"],
+      "exclude": [],
+      "pay": "mixed",
+      "trades": false,
+      "related": ["business-finance", "admin-hr", "aircraft-mechanic"]
+    },
+    {
+      "id": "business-finance",
+      "name": "Program management, contracts & finance",
+      "group": "support",
+      "intro": "Business jobs at Hill support the programs that buy and sustain aircraft and missiles: program managers and analysts, contract and procurement specialists, cost and budget analysts, and auditors.",
+      "match": ["program (manager|analyst|control|management)", "cost (analyst|estimat|engineer)", "budget", "financ", "accounting", "auditor", "contract (specialist|program)", "procurement", "acquisition (program|intel)", "schedule analyst"],
+      "exclude": [],
+      "pay": "gs",
+      "trades": false,
+      "related": ["admin-hr", "logistics-supply", "engineering"]
+    },
+    {
+      "id": "admin-hr",
+      "name": "Administrative & HR",
+      "group": "support",
+      "intro": "Administrative and HR jobs include office automation clerks, administrative and executive assistants, secretaries and human resources staff, across Air Force units, base agencies and contractors.",
+      "match": ["administrative", "secretary", "clerk", "office automation", "executive assistant", "human resources"],
+      "exclude": [],
+      "pay": "gs",
+      "trades": false,
+      "related": ["business-finance", "logistics-supply", "healthcare"]
+    },
+    {
+      "id": "healthcare",
+      "name": "Medical & dental",
+      "group": "support",
+      "intro": "Medical and dental jobs at Hill are mostly at the base clinic, plus staffing agencies that place clinical staff there: nurses, pharmacy and medical technicians, therapists, psychologists and dental staff.",
+      "match": ["nurse", "pharma", "dental", "medical", "psycholog", "radiolog", "physical therap"],
+      "exclude": [],
+      "pay": "gs",
+      "trades": false,
+      "related": ["admin-hr", "retail-food"]
+    },
+    {
+      "id": "retail-food",
+      "name": "Retail & food service",
+      "group": "support",
+      "intro": "Retail and food service jobs are at the base exchange, the commissary and Air Force services: cashiers and store workers, cooks and food service workers, meatcutters and department managers.",
+      "match": ["cashier", "food service", "\\bcook\\b", "meat", "grocery", "store", "produce", "customer experience", "checker"],
+      "exclude": [],
+      "pay": "mixed",
+      "trades": false,
+      "related": ["custodial-facilities", "admin-hr"]
+    },
+    {
+      "id": "environmental",
+      "name": "Environmental",
+      "group": "support",
+      "intro": "Environmental jobs at Hill include field technicians who sample groundwater and run cleanup systems on long-term remediation projects, plus environmental engineers and protection specialists.",
+      "match": ["environmental", "remediation", "groundwater"],
+      "exclude": [],
+      "pay": "mixed",
+      "trades": false,
+      "related": ["engineering", "custodial-facilities"]
+    },
+    {
+      "id": "internships-entry",
+      "name": "Internships & entry-level",
+      "group": "support",
+      "intro": "These employers have internships, student programs or entry-level jobs that don't need years of experience. Federal student and graduate programs are also listed under USAJOBS Pathways in the More ways to find jobs section.",
+      "category": "internships-entry",
+      "match": ["intern", "early career", "junior", "trainee", "apprentice", "entry", "palace acquire"],
+      "exclude": [],
+      "pay": "mixed",
+      "trades": false,
+      "related": ["aircraft-mechanic", "engineering", "retail-food"]
+    }
+  ]
+}
