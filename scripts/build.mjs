@@ -164,7 +164,7 @@ function renderCard(e, site, jobCounts, h = 'h2', prefix = './') {
   const suggest = listingLink(site, prefix, 'fix', e.name);
   return `<li><article class="card" data-type="${esc(e.type)}" data-cats="${esc(e.categories.join(' '))}" data-id="${esc(e.id)}" aria-labelledby="e-${esc(e.id)}">
 <div class="card-top"><span class="badge badge-${esc(e.type)}">${esc(typeLabel)}</span></div>
-<${h} id="e-${esc(e.id)}">${esc(e.name)}</${h}>
+<${h} id="e-${esc(e.id)}"><a class="card-name" href="${prefix}employers/${esc(e.id)}/">${esc(e.name)}</a></${h}>
 <p class="desc">${esc(e.description)}</p>
 <ul class="tags" aria-label="Job categories">${catLabels.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
 <p class="why" hidden></p>
@@ -251,6 +251,134 @@ ${list.map((e) => renderCard(e, site, jobCounts, 'h3', '../')).join('\n')}
     typeChips: renderChips(employers).typeChips,
     groups,
     searchData: searchData(employers, synonyms, jobCounts, careerTitles),
+  });
+}
+
+// ---------- One page per employer (/employers/<id>/) ----------
+
+/** The employer page's path, e.g. /employers/boeing/. */
+export const employerPath = (e) => `/employers/${e.id}/`;
+
+/** Cuts text at a word boundary so meta descriptions stay under the length search engines show. */
+function clip(s, max) {
+  if (s.length <= max) return s;
+  const cut = s.slice(0, max - 1);
+  return `${cut.slice(0, Math.max(cut.lastIndexOf(' '), 40)).replace(/[\s,;:–-]+$/, '')}…`;
+}
+
+/** Up to `n` other employers at the same base that share the most job categories (same type breaks ties). */
+export function similarEmployers(e, allEmployers, n = 6) {
+  return allEmployers
+    .filter((o) => o.base === e.base && o.id !== e.id)
+    .map((o) => ({ o, score: o.categories.filter((c) => e.categories.includes(c)).length * 2 + (o.type === e.type ? 1 : 0) }))
+    .filter((x) => x.score >= 2)
+    .sort((a, b) => b.score - a.score || a.o.name.localeCompare(b.o.name, 'en', { sensitivity: 'base', numeric: true }))
+    .slice(0, n)
+    .map((x) => x.o);
+}
+
+const MAX_PAGE_TITLES = 20;
+
+/** One employer's own page: what they do at Hill, kinds of work, live job titles, similar employers. */
+export function renderEmployerPage(e, base, allEmployers, site, template, jobCounts = null, careerTitles = null, today = null) {
+  const root = site.siteUrl.replace(/\/$/, '');
+  const label = `${base.name}, ${STATE_NAMES[base.state] || base.state}`;
+  const canonical = `${root}${employerPath(e)}`;
+  const prefix = '../../';
+  const name = esc(e.name);
+
+  const secondary = e.secondaryUrl
+    ? `    <a class="link-secondary" href="${esc(e.secondaryUrl)}" target="_blank" rel="noopener">${e.type === 'federal' ? 'Agency hiring page' : 'More openings'}<span class="sr-only"> for ${name}</span>${NEW_TAB}</a>\n`
+    : '';
+  const roles = e.roles.length
+    ? `    <p>${name} hires people at Hill for work like:</p>\n    <ul>\n${e.roles.map((r) => `      <li>${esc(r)}</li>`).join('\n')}\n    </ul>\n`
+    : '';
+  const categories = e.categories
+    .map((c) => `<li><a href="${prefix}?cat=${encodeURIComponent(c)}">${esc(LABELS.categories[c])}<span class="sr-only">: more Hill employers</span></a></li>`)
+    .join('');
+
+  // Live titles: USAJOBS for federal employers, careers sites for contractors (both read at build time).
+  const usaTitles = jobCounts?.titles?.[e.id];
+  const list = (usaTitles?.length ? usaTitles : careerTitles?.[e.id]) || [];
+  const checked = usaTitles?.length ? jobCounts.checkedAt : today;
+  const unique = [...new Set(list)];
+  const shown = unique.slice(0, MAX_PAGE_TITLES);
+  const titles = shown.length
+    ? `
+  <section aria-labelledby="h-titles">
+    <h2 id="h-titles">Recent openings near Hill</h2>
+    <p class="note">Job titles listed on ${name}'s site${checked ? `, checked <time datetime="${esc(checked)}">${dateLabel(checked)}</time>` : ''}. Openings change daily, so confirm on their site.</p>
+    <ul class="emp-titles">
+${shown.map((t) => `      <li>${esc(t)}</li>`).join('\n')}
+    </ul>${unique.length > shown.length ? `\n    <p class="note">Plus ${unique.length - shown.length} more on their site.</p>` : ''}
+  </section>
+`
+    : '';
+
+  const tips = [
+    `      <li><a href="${prefix}how-hiring-works/">How hiring at Hill works</a>: base access, clearances and what to expect after you apply.</li>`,
+    e.type === 'federal'
+      ? `      <li>Federal jobs use a long, detailed resume. <a href="${prefix}?tab=resume#resume-help">Free federal resume help near Hill</a>.</li>`
+      : `      <li>Many contractor sites screen resumes by keyword. Match the wording in the posting. <a href="${prefix}?tab=resume#resume-help">Free resume help near Hill</a>.</li>`,
+    e.categories.includes('trades-maintenance')
+      ? `      <li>Need a certificate first? <a href="${prefix}get-trained/">Trade schools and apprenticeships near Hill</a>.</li>`
+      : '',
+    `      <li><a href="${prefix}?tab=events#events">Upcoming job fairs and hiring events</a>, where recruiters often meet applicants in person.</li>`,
+  ].filter(Boolean).join('\n') + '\n';
+
+  const sim = similarEmployers(e, allEmployers);
+  const similar = sim.length
+    ? `
+  <section aria-labelledby="h-similar">
+    <h2 id="h-similar">Similar employers at Hill</h2>
+    <ul class="emp-similar">
+${sim.map((o) => `      <li><a href="../${esc(o.id)}/">${esc(o.name)}</a> <span class="emp-sim-type">${esc(LABELS.types[o.type])}</span></li>`).join('\n')}
+    </ul>
+    <p><a href="../">All employers at Hill →</a></p>
+  </section>
+`
+    : '';
+
+  const fix = listingLink(site, prefix, 'fix', e.name);
+  const suggest = fix
+    ? `  <p class="emp-fine emp-suggest">Something out of date? <a href="${esc(fix.href)}"${fix.newTab ? ' target="_blank" rel="noopener"' : ''}>Suggest a change<span class="sr-only"> for ${name}</span>${fix.newTab ? NEW_TAB : ''}</a></p>\n`
+    : '';
+
+  const breadcrumbs = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: site.siteName, item: `${root}/` },
+      { '@type': 'ListItem', position: 2, name: 'Employers', item: `${root}/employers/` },
+      { '@type': 'ListItem', position: 3, name: e.name, item: canonical },
+    ],
+  }).replace(/</g, '\\u003c');
+
+  const about = /[.!?]$/.test(e.description) ? e.description : `${e.description}.`;
+  return fill(template, {
+    analytics: renderAnalytics(site),
+    siteName: esc(site.siteName),
+    title: esc(`${e.name} jobs at ${base.name}, ${base.state} · ${site.siteName}`),
+    ogTitle: esc(`${e.name} jobs at ${label}`),
+    description: esc(clip(`${e.name} at ${base.name}: ${about} See kinds of work, recent openings and where to apply.`, 160)),
+    canonical: esc(canonical),
+    ogImage: esc(`${root}/assets/og.png`),
+    breadcrumbs,
+    name,
+    type: esc(e.type),
+    typeLabel: esc(LABELS.types[e.type]),
+    baseLabel: esc(label),
+    openJobs: openJobsLine(e.id, jobCounts) ? `    ${openJobsLine(e.id, jobCounts)}` : '',
+    jobsUrl: esc(e.jobsUrl),
+    secondary,
+    verified: verifiedLabel(e.verified),
+    about: esc(about),
+    roles,
+    categories,
+    titles,
+    tips,
+    similar,
+    suggest,
   });
 }
 
@@ -535,14 +663,14 @@ export function renderGuide(site, template) {
 }
 
 /** Every indexable page the build writes. /thanks/ is left out: it's noindex. */
-export function sitemapPaths(bases) {
-  return [...new Set([...Object.values(bases).map((b) => b.path), '/employers/', '/get-trained/', '/how-hiring-works/', '/about/', '/privacy/'])];
+export function sitemapPaths(bases, employers = []) {
+  return [...new Set([...Object.values(bases).map((b) => b.path), '/employers/', '/get-trained/', '/how-hiring-works/', '/about/', '/privacy/', ...employers.filter((e) => e.base === 'hill').map(employerPath)])];
 }
 
 /** sitemap.xml for the indexable pages; lastmod is the build date (YYYY-MM-DD). */
-export function renderSitemap(site, bases, date) {
+export function renderSitemap(site, bases, date, employers = []) {
   const root = site.siteUrl.replace(/\/$/, '');
-  const urls = sitemapPaths(bases)
+  const urls = sitemapPaths(bases, employers)
     .map((p) => `  <url>\n    <loc>${esc(root + p)}</loc>\n    <lastmod>${esc(date)}</lastmod>\n  </url>`)
     .join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
@@ -1124,6 +1252,16 @@ async function main() {
   await mkdir(path.join(DIST, 'employers'), { recursive: true });
   await writeFile(path.join(DIST, 'employers', 'index.html'), withSecurityMeta(renderDirectory('hill', data.bases.hill, data.employers, site, dirTemplate, jobCounts, synonyms, careerTitles)));
 
+  // One page per Hill employer, linked from every card.
+  const empTemplate = await readFile(path.join(ROOT, 'templates/employer.html'), 'utf8');
+  const hillEmployers = data.employers.filter((e) => e.base === 'hill');
+  for (const e of hillEmployers) {
+    const dir = path.join(DIST, 'employers', e.id);
+    await mkdir(dir, { recursive: true });
+    await writeFile(path.join(dir, 'index.html'), withSecurityMeta(renderEmployerPage(e, data.bases.hill, data.employers, site, empTemplate, jobCounts, careerTitles, today)));
+  }
+  console.log(`✓ wrote ${hillEmployers.length} employer pages`);
+
   // Thank-you page the contact form returns to when JavaScript is off.
   const thanksTemplate = await readFile(path.join(ROOT, 'templates/thanks.html'), 'utf8');
   await mkdir(path.join(DIST, 'thanks'), { recursive: true });
@@ -1146,9 +1284,9 @@ async function main() {
   await writeFile(path.join(DIST, 'about', 'index.html'), withSecurityMeta(renderAbout(site, aboutTemplate, hillCount)));
 
   // Sitemap and robots.txt for search engines (indexable pages only; /thanks/ is noindex).
-  await writeFile(path.join(DIST, 'sitemap.xml'), renderSitemap(site, data.bases, today));
+  await writeFile(path.join(DIST, 'sitemap.xml'), renderSitemap(site, data.bases, today, data.employers));
   await writeFile(path.join(DIST, 'robots.txt'), renderRobots(site));
-  console.log(`✓ wrote sitemap.xml (${sitemapPaths(data.bases).length} pages) and robots.txt`);
+  console.log(`✓ wrote sitemap.xml (${sitemapPaths(data.bases, data.employers).length} pages) and robots.txt`);
   const keyFile = indexNowKeyFile(site);
   if (keyFile) {
     await writeFile(path.join(DIST, keyFile.name), keyFile.body);

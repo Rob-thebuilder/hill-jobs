@@ -70,7 +70,7 @@ test('every built page has a CSP covering each inline script, and safe new-tab l
       }
       const firstScript = html.indexOf('<script');
       assert.ok(firstScript === -1 || html.indexOf('Content-Security-Policy') < firstScript, `${rel}: CSP must come before any script`);
-      assert.ok(!/<script(?![^>]*type="application\/json")[^>]*>[\s\S]*?<\/script>/.test(html.replace(/<script>[\s\S]*?<\/script>|<script [^>]*src="[^"]+"[^>]*><\/script>/g, '')),
+      assert.ok(!/<script(?![^>]*type="application\/(?:ld\+)?json")[^>]*>[\s\S]*?<\/script>/.test(html.replace(/<script>[\s\S]*?<\/script>|<script [^>]*src="[^"]+"[^>]*><\/script>/g, '')),
         `${rel}: only hashed inline scripts and src scripts are allowed`);
       assert.ok(!/\son[a-z]+="/i.test(html), `${rel}: no inline event handlers (CSP would block them)`);
       assert.ok(!/\sstyle="/i.test(html), `${rel}: no style attributes (CSP would block them)`);

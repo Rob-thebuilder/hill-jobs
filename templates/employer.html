@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{analytics}}<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+<link rel="canonical" href="{{canonical}}">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0b1f3a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{siteName}}">
+<meta property="og:title" content="{{ogTitle}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:image" content="{{ogImage}}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../assets/styles.css">
+<script type="application/ld+json">{{breadcrumbs}}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="hero hero-small">
+  <div class="wrap hero-inner">
+    <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">{{siteName}}</a></li><li><a href="../">Employers</a></li><li><span aria-current="page">{{name}}</span></li></ol></nav>
+    <p class="emp-badge"><span class="badge badge-{{type}}">{{typeLabel}}</span></p>
+    <h1>{{name}}</h1>
+    <p class="tagline">Jobs at {{baseLabel}}</p>
+  </div>
+</header>
+
+<main id="main" class="wrap prose employer">
+  <section class="emp-apply" aria-label="Apply">
+{{openJobs}}    <a class="btn-jobs" href="{{jobsUrl}}" target="_blank" rel="noopener">View open jobs <span aria-hidden="true">→</span><span class="sr-only"> at {{name}} (opens in new tab)</span></a>
+{{secondary}}    <p class="emp-fine">You apply on the employer's own site. Work At Hill never takes applications or resumes. Link verified {{verified}}.</p>
+  </section>
+
+  <section aria-labelledby="h-what">
+    <h2 id="h-what">What they do at Hill</h2>
+    <p>{{about}}</p>
+  </section>
+
+  <section aria-labelledby="h-work">
+    <h2 id="h-work">Kinds of work</h2>
+{{roles}}    <ul class="tags emp-cats" aria-label="Job categories">{{categories}}</ul>
+  </section>
+{{titles}}
+  <section aria-labelledby="h-next">
+    <h2 id="h-next">Before you apply</h2>
+    <ul>
+{{tips}}    </ul>
+  </section>
+{{similar}}
+{{suggest}}</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="disclaimer">Work At Hill is an independent directory and is not affiliated with or endorsed by the U.S. Air Force, the Department of Defense, or {{name}}.</p>
+    <p class="fine">Free for job seekers. Every employer is listed free, and nobody can pay to rank higher. Links go straight to each employer's careers site. <a href="../../">Home</a> · <a href="../">Employers</a> · <a href="../../how-hiring-works/">How hiring at Hill works</a> · <a href="../../get-trained/">Get Trained</a> · <a href="../../about/">About</a> · <a href="../../privacy/">Privacy</a></p>
+  </div>
+</footer>
+</body>
+</html>
