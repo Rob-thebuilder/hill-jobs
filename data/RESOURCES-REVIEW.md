@@ -19,6 +19,16 @@ Researched 2026-11-08. **You approve every listing before launch.** The rules fo
 | Empire Resume | Paid | ⚑ medium | Ogden-area listings on [Yelp](https://www.yelp.com/biz/empire-resume-ogden) and BBB (serving Davis and Weber counties). The [website](https://www.empireresume.com/) has military and federal resume guides. Reviews are positive but come from competitor sites. Pricing from about $249 (unverified). |
 | Notus Human Capital | Paid | ⚑ medium | BBB lists Farmington and Kaysville addresses, A+ rating, "resume services, career counseling". The [website](https://getnotus.com/) presents a career management and outplacement firm. Confirm they write resumes for individuals, not only for companies' outplacement. |
 
+### Online resume builders (added 2026-11-27)
+
+| Listing | Free/Paid | Confidence | Evidence and notes |
+|---|---|---|---|
+| USAJOBS Resume Builder | Free | high | [USAJOBS help: how to build a resume](https://help.usajobs.gov/how-to/account/documents/resume/build): sign in, "Build resume", add each section. [Page-limit FAQ](https://help.usajobs.gov/faq/application/documents/resume/page-limit): "Federal agencies only accept resumes up to two pages", and USAJOBS won't build or upload a longer one. [Military OneSource](https://militaryonesource.mil/education-employment/for-service-members/building-your-federal-resume) also points service members to it. |
+| Utah Workforce Services Resume Builder | Free | high | [jobs.utah.gov Job Search Tools](https://jobs.utah.gov/jobseeker/js.html) lists "Resume Builder" (sign-in) plus a resume outline, critique form and examples (PDFs). [mydoorway.utah.gov Job Support](https://mydoorway.utah.gov/job-support): "Create an account or sign in … to access our resume builder tool." Free is not stated on the page; DWS job services are free. |
+| CareerOneStop Resume Guide | Free | ⚑ medium | U.S. Department of Labor. The guide ([readable copy](https://cloudfront.careeronestop.org/JobSearch/Resumes/ResumeGuide/Introduction.aspx)) offers "a step-by-step plan for what to include in your resume", tips, samples and templates. It's a guide, not a form that makes the resume for you. ⚑ The listed www.careeronestop.org link blocks automated checks: open it in a browser, and add it to `link-allowlist.json` if the weekly link check flags it. |
+
+**Builders left out:** commercial resume builders (Indeed, Canva, Zety and similar). Most are free to start but push paid plans or collect resumes; add one only if you want to.
+
 **Left out:**
 - National firms with "local" landing pages: ARC Resumes, ClearPoint, Snap Editing, TopResume.
 - Firms based in Salt Lake City or Utah County: Upword Resume, Wasatch Career Services, Paradise Writing, Five Strengths.

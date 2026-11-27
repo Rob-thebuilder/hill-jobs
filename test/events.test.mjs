@@ -159,10 +159,19 @@ test('robots.txt is respected and a broken calendar does not stop the others', a
 
 // ---------- rendering ----------
 
-test('resume help: free listings first, then paid with the no-endorsement note', () => {
+test('online resume builders must be free', () => {
+  const bad = structuredClone(resources);
+  bad.resources.find((r) => r.kind === 'builder').cost = 'paid';
+  assert.ok(validateResources(bad).some((e) => /online resume builders must be free/.test(e)));
+});
+
+test('resume help: free listings first, then online builders, then paid with the no-endorsement note', () => {
   const html = renderResourcesPanel(structuredClone(resources.resources));
   const text = strip(html);
-  assert.ok(text.indexOf('Resources 7') < text.indexOf('Resume Professionals'));
+  assert.ok(text.indexOf('Resources 7') < text.indexOf('Build Your Resume Online 3'));
+  assert.ok(text.indexOf('Build Your Resume Online 3') < text.indexOf('Resume Professionals'));
+  assert.match(html, /<h3 class="group-title" id="resume-builders">/);
+  assert.match(text, /only accept resumes up to two pages/);
   for (const r of resources.resources) assert.ok(html.includes(r.name.replace(/&/g, '&amp;')), r.name);
   assert.match(text, /doesn't endorse them, and nobody pays to be listed/);
   for (const r of resources.resources) if (r.sourceUrl !== r.url) assert.ok(!html.includes(r.sourceUrl), `sourceUrl leaked: ${r.id}`);
@@ -193,7 +202,7 @@ test('the page has three tabs and three panels, with counts', async () => {
     resources: resources.resources, events: list, annual: eventsFile.annual, eventsChecked: 'x',
   });
   for (const id of ['employers', 'resume-help', 'events']) assert.match(html, new RegExp(`<section id="${id}" class="panel`));
-  assert.match(html, /data-tab="resume">Resume Resources <span class="tab-n">9<\/span>/);
+  assert.match(html, /data-tab="resume">Resume Resources <span class="tab-n">12<\/span>/);
   assert.match(html, /<h2 id="resume-heading">Resume Resources Near Hill<\/h2>/);
   assert.match(html, /data-tab="events">Events <span class="tab-n">1<\/span>/);
   assert.equal((html.match(/<h1>/g) || []).length, 1);

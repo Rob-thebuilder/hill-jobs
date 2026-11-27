@@ -90,6 +90,8 @@ test('searches that find no employer still lead somewhere useful', () => {
     'real id': 's-guide-base',
     recruiter: 's-about-recruiters',
     gs: 's-guide-pay',
+    'resume builder': 's-resume-builders',
+    'resume template': 's-resume-builders',
   };
   for (const [q, id] of Object.entries(expect)) assert.ok(top(q).includes(id), `"${q}" should show ${id}; got ${top(q).join(', ')}`);
 });

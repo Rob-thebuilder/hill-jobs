@@ -37,6 +37,13 @@
       "keywords": ["resume", "cv", "federal resume", "resume help", "resume review", "resume writer", "cover letter", "interview", "interview practice", "linkedin", "career center", "job center", "career counseling"]
     },
     {
+      "id": "resume-builders",
+      "title": "Build Your Resume Online",
+      "kind": "Resume help",
+      "path": "?tab=resume#resume-builders",
+      "keywords": ["resume builder", "build a resume", "resume template", "resume maker", "resume generator", "write a resume", "usajobs resume", "two page resume", "2 page resume", "federal resume"]
+    },
+    {
       "id": "events",
       "title": "Job Fairs, Workshops and Meet-and-Greets",
       "kind": "Events",

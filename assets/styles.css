@@ -444,6 +444,7 @@ button { font: inherit; }
 
 /* ---------- more ways to find Hill jobs ---------- */
 .more-ways { padding-top: 1rem; padding-bottom: 3rem; border-top: 1px solid var(--line); scroll-margin-top: 4.5rem; }
+.group-title[id] { scroll-margin-top: 4.5rem; }
 .more-ways:focus { outline: none; }
 .more-ways h2 { font-size: clamp(1.35rem, 5vw, 1.75rem); font-weight: 900; margin-top: 1.25rem; }
 .more-ways-lead { margin-top: .35rem; color: var(--muted); }

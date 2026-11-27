@@ -1,5 +1,5 @@
 {
-  "_note": "Resume help near Hill AFB. Free services are listed first, then paid local professionals. Listing is not an endorsement and nobody pays to be listed. Every entry needs a sourceUrl (internal, never shown). Review flags live in RESOURCES-REVIEW.md.",
+  "_note": "Resume help near Hill AFB. Free services are listed first, then free online resume builders (kind \"builder\"), then paid local professionals. Listing is not an endorsement and nobody pays to be listed. Every entry needs a sourceUrl (internal, never shown). Review flags live in RESOURCES-REVIEW.md.",
   "resources": [
     {
       "id": "hill-mfrc",
@@ -117,6 +117,45 @@
       "url": "https://getnotus.com/",
       "verified": "2026-11",
       "sourceUrl": "https://www.bbb.org/us/ut/farmington/category/recruitment-services"
+    },
+    {
+      "id": "usajobs-resume-builder",
+      "name": "USAJOBS Resume Builder",
+      "cost": "free",
+      "kind": "builder",
+      "description": "Build a federal resume section by section in your free USAJOBS account, then apply with it. It won't let you build one longer than two pages.",
+      "services": ["Federal resumes", "Step-by-step builder", "Two-page check"],
+      "who": "Anyone applying for federal jobs (USAJOBS sign-in)",
+      "city": "Online",
+      "url": "https://help.usajobs.gov/how-to/account/documents/resume/build",
+      "verified": "2026-11",
+      "sourceUrl": "https://help.usajobs.gov/faq/application/documents/resume/page-limit"
+    },
+    {
+      "id": "utah-dws-resume-builder",
+      "name": "Utah Workforce Services Resume Builder",
+      "cost": "free",
+      "kind": "builder",
+      "description": "Resume builder in your jobs.utah.gov account, plus a resume outline, critique form and examples you can download.",
+      "services": ["Resume builder", "Resume outline", "Resume examples", "Critique form"],
+      "who": "Anyone (jobs.utah.gov sign-in for the builder)",
+      "city": "Online",
+      "url": "https://jobs.utah.gov/jobseeker/js.html",
+      "verified": "2026-11",
+      "sourceUrl": "https://mydoorway.utah.gov/job-support"
+    },
+    {
+      "id": "careeronestop-resume-guide",
+      "name": "CareerOneStop Resume Guide",
+      "cost": "free",
+      "kind": "builder",
+      "description": "A step-by-step plan for what to put in your resume, with tips, samples and templates. From the U.S. Department of Labor.",
+      "services": ["Step-by-step guide", "Resume samples", "Templates"],
+      "who": "Anyone",
+      "city": "Online",
+      "url": "https://www.careeronestop.org/JobSearch/Resumes/ResumeGuide/Introduction.aspx",
+      "verified": "2026-11",
+      "sourceUrl": "https://cloudfront.careeronestop.org/JobSearch/Resumes/ResumeGuide/Introduction.aspx"
     }
   ]
 }

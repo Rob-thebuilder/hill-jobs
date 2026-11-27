@@ -130,10 +130,11 @@ The page has three tabs below the hero: **Employers** (the default), **Resume he
 ### Resume help (`data/resources.json`)
 - **Who is listed:**
   - Free help near Hill comes first: the base Military & Family Readiness Center, Utah Workforce Services job centers in Clearfield and Ogden, its veteran services, and Weber State, Davis Tech and Ogden-Weber Tech career centers.
+  - Free online resume builders follow under "Build Your Resume Online" (`#resume-builders`): the USAJOBS Resume Builder, the Utah Workforce Services Resume Builder and the CareerOneStop Resume Guide. A note says federal jobs only accept resumes up to two pages. Builders must be free (the build checks it).
   - Paid local resume professionals in Davis and Weber counties follow, under a note that Work At Hill doesn't endorse them and nobody pays to be listed.
   - National firms with "local" landing pages and Salt Lake County firms are left out.
 - **Fields:**
-  - `id`, `name`, `cost` (`free`/`paid`), `kind` (Military & family, State job center, Veterans, College career center, Private resume writer), `description` (≤160), `services` (1–6), `who` (eligibility), `city`, `url`, `verified` (YYYY-MM).
+  - `id`, `name`, `cost` (`free`/`paid`), `kind` (Military & family, State job center, Veterans, College career center, Private resume writer, Online resume builder), `description` (≤160), `services` (1–6), `who` (eligibility), `city`, `url`, `verified` (YYYY-MM).
   - `sourceUrl` is internal, never shown, and required.
 - **Approval:** `data/RESOURCES-REVIEW.md` records evidence and confidence, and you approve every listing.
 

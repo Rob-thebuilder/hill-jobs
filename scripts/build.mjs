@@ -1057,6 +1057,7 @@ export const RESOURCE_KINDS = {
   veterans: 'Veterans',
   college: 'College career center',
   private: 'Private resume writer',
+  builder: 'Online resume builder',
 };
 
 function renderResource(r) {
@@ -1073,19 +1074,25 @@ function renderResource(r) {
 }
 
 export function renderResourcesPanel(resources, prefix = './') {
-  const free = resources.filter((r) => r.cost === 'free');
+  const free = resources.filter((r) => r.cost === 'free' && r.kind !== 'builder');
+  const builders = resources.filter((r) => r.kind === 'builder');
   const paid = resources.filter((r) => r.cost === 'paid');
   const byName = (a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base', numeric: true });
   return `<div class="panel-intro">
 <h2 id="resume-heading">Resume Resources Near Hill</h2>
-<p>Free resume resources are available at the base, state job centers and local colleges. They review and explain federal resumes and run workshops. Paid local resume professionals are listed after.</p>
+<p>Free resume resources are available at the base, state job centers and local colleges. They review and explain federal resumes and run workshops. Free online resume builders and paid local resume professionals are listed after.</p>
 <p>Applying for a federal job for the first time? Read <a href="${prefix}how-hiring-works/">how hiring at Hill works</a>: pay, clearances, getting on base and hiring preferences.</p>
 </div>
 <h3 class="group-title">Resources <span class="group-n">${free.length}</span></h3>
 <ul class="res-grid">
 ${free.sort(byName).map(renderResource).join('\n')}
 </ul>
-<h3 class="group-title">Resume Professionals <span class="group-n">${paid.length}</span></h3>
+${builders.length ? `<h3 class="group-title" id="resume-builders">Build Your Resume Online <span class="group-n">${builders.length}</span></h3>
+<p class="note">Free tools that walk you through writing a resume. Federal jobs only accept resumes up to two pages, and the USAJOBS builder enforces that.</p>
+<ul class="res-grid">
+${builders.sort(byName).map(renderResource).join('\n')}
+</ul>
+` : ''}<h3 class="group-title">Resume Professionals <span class="group-n">${paid.length}</span></h3>
 <p class="note">Listed for convenience: Work At Hill doesn't endorse them, and nobody pays to be listed. Ask for samples (especially federal resumes) and check reviews before you buy.</p>
 <ul class="res-grid">
 ${paid.sort(byName).map(renderResource).join('\n')}
@@ -1199,6 +1206,7 @@ export function validateResources(file) {
     seen.add(r?.id);
     if (!['free', 'paid'].includes(r?.cost)) errors.push(`${at}: cost must be "free" or "paid"`);
     if (!(r?.kind in RESOURCE_KINDS)) errors.push(`${at}: unknown kind "${r?.kind}"`);
+    if (r?.kind === 'builder' && r?.cost !== 'free') errors.push(`${at}: online resume builders must be free`);
     if (!isText(r?.name, 80)) errors.push(`${at}: name must be 1–80 characters`);
     if (!isText(r?.description, 160)) errors.push(`${at}: description must be 1–160 characters`);
     if (!isText(r?.who, 100) || !isText(r?.city, 40)) errors.push(`${at}: "who" (≤100) and "city" (≤40) are required`);
@@ -1246,7 +1254,7 @@ export function validateEvents(file, sourcesFile) {
 
 // ---------- site-wide search (pages, training, resources, programs, events) ----------
 
-const PAGE_PATH = /^(?:(?:get-trained|how-hiring-works|about|employers)\/(?:#[a-z0-9-]+)?|\?tab=(?:resume|events)|#[a-z0-9-]+)$/;
+const PAGE_PATH = /^(?:(?:get-trained|how-hiring-works|about|employers)\/(?:#[a-z0-9-]+)?|\?tab=(?:resume|events)(?:#[a-z0-9-]+)?|#[a-z0-9-]+)$/;
 const PAGE_KEYS = ['id', 'title', 'kind', 'path', 'keywords'];
 
 /** Checks data/site-pages.json: the hand-listed pages and sections the search box should find. */
