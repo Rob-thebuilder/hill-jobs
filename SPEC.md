@@ -173,6 +173,24 @@ One shareable page listing every Hill employer, grouped by type (Prime contracto
 - **Layout:** one column under 640 px.
 - **Linked from:** the homepage hero ("Employer Directory →") and the footer of every page.
 
+## 4b-3. Employer pages (`/employers/<id>/`)
+
+One page per Hill employer, so each one can be found in search ("Boeing jobs Hill AFB") and shared on its own.
+
+- **Built from `data/employers.json`** by `renderEmployerPage` and `templates/employer.html`, on every deploy (including the daily rebuild). No JavaScript.
+- **Contents:** breadcrumbs (Home › Employers › name, also as `BreadcrumbList` JSON-LD), type badge, the "View open jobs" button (plus the secondary link), what they do at Hill, kinds of work (`roles`) and category pills that open the home page filtered by that category, recent job titles read at build time (USAJOBS for federal cards, careers sites for contractors; up to 20, with the date checked), "Before you apply" tips (hiring guide, resume help, Get Trained for trade employers, events), up to 6 similar employers (share a category; same type breaks ties) and "Suggest a change".
+- **Linked from:** every card's name, on the home page and the directory. Listed in `sitemap.xml` and sent to IndexNow after a push.
+- **Still no `JobPosting` data:** titles are shown as plain text, never as job postings.
+
+## 4b-4. Jobs by type (`/jobs/` and `/jobs/<id>/`)
+
+One page per kind of work ("Aircraft mechanic jobs at Hill AFB"), so people searching for their trade or field find the site, plus an index at `/jobs/`.
+
+- **Data:** `data/job-types.json`. Each type has an `id`, `name`, `group` (trades, tech, support), a short `intro`, `match`/`exclude` patterns (case-insensitive regular expressions tested against each employer's `roles`), an optional `category` (lists every employer with that category instead), `pay` (wg, gs or mixed, picks the pay tip), `trades` (adds the Get Trained link) and `related` types. The build checks every field, that each pattern compiles, that `related` ids exist and that each type matches at least one employer.
+- **Each page:** breadcrumbs (+ `BreadcrumbList` JSON-LD), the intro, a card per employer, A–Z, with its matching roles (or its description for category types), up to 3 matching live job titles ("Open now", from USAJOBS or careers sites, same patterns) and "View jobs"; a dated total of matching openings; "Good to know" tips (pay, federal vs contractor, Get Trained for trades, resume help and job fairs); related job types.
+- **Linked from:** the home hero ("Browse jobs by type"), the directory tagline, each employer page ("Browse by job type"), and every page's footer. Listed in `sitemap.xml` and sent to IndexNow after a push.
+- **Adding a type:** add an entry to `data/job-types.json` and push. Keep `intro` to facts true for every employer it lists.
+
 ## 4c. How hiring at Hill works (`/how-hiring-works/`)
 - **What it is:** a short, plain-language page (about 850 words) in five sections:
   - federal vs. contractor jobs
@@ -276,7 +294,7 @@ Everything runs in the browser, with no server.
 │   ├── weekly-email.mjs    builds the weekly email and creates it in Buttondown
 │   └── lib/                usajobs.mjs (USAJOBS counts/titles), careers.mjs (contractor titles), events.mjs (event calendars), newsletter.mjs (weekly email), chrome.mjs (headless Chrome)
 ├── test/                   node --test unit and build tests
-├── templates/base.html, privacy.html, guide.html, training.html
+├── templates/base.html, employer.html, jobs.html, job-type.html, privacy.html, guide.html, training.html
 └── .github/workflows/
     ├── deploy.yml
     ├── link-check.yml
@@ -378,7 +396,7 @@ A short form at the bottom of the home page (name, email, message) for questions
   - Turn on "Enforce HTTPS" in the repo's Pages settings.
   - Verify the domain in the GitHub account settings so nobody else can claim it.
   - `www.workathill.com` redirects to the apex domain.
-- **Sitemap and robots.txt:** the build writes `sitemap.xml` (every base page, `/employers/`, `/how-hiring-works/`, `/privacy/`; not the noindex `/thanks/`; `<lastmod>` = build date) and `robots.txt` (allow all, plus the sitemap URL), both from `siteUrl`.
+- **Sitemap and robots.txt:** the build writes `sitemap.xml` (every base page, `/employers/`, each `/employers/<id>/`, `/jobs/`, each `/jobs/<id>/`, `/how-hiring-works/`, `/privacy/`; not the noindex `/thanks/`; `<lastmod>` = build date) and `robots.txt` (allow all, plus the sitemap URL), both from `siteUrl`.
 - **Validation on every push and PR:** schema check, duplicate-id check, all URLs must be `https://`, `node --test`, and the automated phone checks. Any failure blocks the deploy.
 - **Daily refresh:** `deploy.yml` also runs on a daily schedule (13:15 UTC, about 6–7 am Mountain) to rebuild and redeploy with fresh open-job counts.
   - GitHub pauses scheduled workflows in a public repo after 60 days with no repo activity; re-enable it in the Actions tab if that happens.

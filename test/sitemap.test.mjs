@@ -9,6 +9,7 @@ import { renderSitemap, renderRobots } from '../scripts/build.mjs';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const data = JSON.parse(await readFile(path.join(ROOT, 'data/employers.json'), 'utf8'));
+const jobTypes = JSON.parse(await readFile(path.join(ROOT, 'data/job-types.json'), 'utf8'));
 const site = JSON.parse(await readFile(path.join(ROOT, 'data/site.json'), 'utf8'));
 
 /**
@@ -70,6 +71,8 @@ test('the build writes a valid sitemap of indexable https://workathill.com pages
     const expected = [
       ...Object.values(data.bases).map((b) => b.path),
       '/employers/', '/get-trained/', '/how-hiring-works/', '/about/', '/privacy/',
+      ...data.employers.filter((e) => e.base === 'hill').map((e) => `/employers/${e.id}/`),
+      '/jobs/', ...jobTypes.types.map((t) => `/jobs/${t.id}/`),
     ].map((p) => `https://workathill.com${p}`);
     assert.deepEqual([...urls].sort(), [...new Set(expected)].sort());
     for (const u of urls) assert.ok(u.startsWith('https://workathill.com/'), u);

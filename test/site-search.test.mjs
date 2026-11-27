@@ -5,7 +5,7 @@ import { readFile } from 'node:fs/promises';
 import { createRequire } from 'node:module';
 import {
   renderBase, renderDirectory, renderTraining, renderGuide, renderAbout, renderEventsPanel, renderResourcesPanel,
-  pageEntries, validateSitePages,
+  pageEntries, validateSitePages, renderJobType,
 } from '../scripts/build.mjs';
 
 const Search = createRequire(import.meta.url)('../assets/search.js');
@@ -21,7 +21,8 @@ const resources = (await json('data/resources.json')).resources;
 const programs = (await json('data/programs.json')).programs;
 const eventsFile = await json('data/events.json');
 const extras = { resources, programs, annual: eventsFile.annual, events: [], eventsChecked: '' };
-const pages = pageEntries(sitePages.pages, extras, training);
+const jobTypes = await json('data/job-types.json');
+const pages = pageEntries(sitePages.pages, { ...extras, jobTypes, employers: data.employers }, training);
 extras.pages = pages;
 
 const index = Search.createIndex(pages.map((p) => ({ id: p.id, name: p.title, description: p.text || '', roles: p.keywords, titles: [], last: p.last })), synonyms);
@@ -59,8 +60,9 @@ test('every on-site link points at an anchor that exists on that page', async ()
     'about/': renderAbout(site, await read('templates/about.html'), data.employers.length),
     'employers/': renderDirectory('hill', data.bases.hill, data.employers, site, await read('templates/employers.html')),
   };
+  for (const t of jobTypes.types) html[`jobs/${t.id}/`] = renderJobType(t, jobTypes, data.bases.hill, data.employers, site, await read('templates/job-type.html'));
   for (const p of pages.filter((x) => x.path)) {
-    const m = p.path.match(/^((?:[a-z-]+\/)?)(?:\?tab=[a-z]+)?(?:#(.+))?$/);
+    const m = p.path.match(/^((?:[a-z-]+\/){0,2})(?:\?tab=[a-z]+)?(?:#(.+))?$/);
     assert.ok(m, `${p.id}: odd path ${p.path}`);
     const page = html[m[1]];
     assert.ok(page !== undefined, `${p.id}: unknown page ${m[1]}`);
@@ -120,5 +122,18 @@ test('free resume help always comes before paid resume writers', () => {
     const ids = Search.rank(index, q).ids;
     const firstPaid = ids.findIndex((id) => paid.has(id));
     if (firstPaid >= 0) assert.ok(ids.slice(firstPaid).every((id) => paid.has(id)), `"${q}": ${ids.join(', ')}`);
+  }
+});
+
+test('job-type pages are found by their name and by the roles they list', () => {
+  assert.equal(top('machinist')[0], 'j-sheet-metal-machinist');
+  assert.equal(top('painter')[0], 'j-painting-coatings');
+  assert.ok(top('isso').includes('j-it-cybersecurity'));
+  assert.ok(top('forklift').includes('j-logistics-supply'));
+  assert.ok(top('aircraft mechanic').includes('j-aircraft-mechanic'));
+  assert.deepEqual(top('boeing'), [], 'an employer name alone finds no page');
+  for (const t of jobTypes.types) {
+    const e = pages.find((p) => p.id === `j-${t.id}`);
+    assert.ok(e && e.path === `jobs/${t.id}/` && e.kind === 'Job type', t.id);
   }
 });

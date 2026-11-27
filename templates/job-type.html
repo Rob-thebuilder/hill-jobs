@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+{{analytics}}<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{{title}}</title>
+<meta name="description" content="{{description}}">
+<link rel="canonical" href="{{canonical}}">
+<meta name="color-scheme" content="light dark">
+<meta name="theme-color" content="#0b1f3a">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{siteName}}">
+<meta property="og:title" content="{{ogTitle}}">
+<meta property="og:description" content="{{description}}">
+<meta property="og:url" content="{{canonical}}">
+<meta property="og:image" content="{{ogImage}}">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" href="../../assets/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="../../assets/apple-touch-icon.png">
+<link rel="stylesheet" href="../../assets/styles.css">
+<script type="application/ld+json">{{breadcrumbs}}</script>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="hero hero-small">
+  <div class="wrap hero-inner">
+    <nav class="crumbs" aria-label="Breadcrumb"><ol><li><a href="../../">{{siteName}}</a></li><li><a href="../">Jobs by type</a></li><li><span aria-current="page">{{name}}</span></li></ol></nav>
+    <h1>{{name}} jobs at Hill AFB</h1>
+    <p class="tagline">{{count}} near {{baseLabel}} hire for this work.</p>
+  </div>
+</header>
+
+<main id="main" class="wrap job-type">
+  <div class="prose jt-intro">
+    <p>{{intro}}</p>
+{{openLine}}    <p class="note">Every employer is listed free, A–Z. "View jobs" opens the employer's own careers site, where you apply.</p>
+  </div>
+  <h2 class="sr-only">Employers that hire for {{lower}} jobs</h2>
+  <ul class="grid jt-grid">
+{{cards}}
+  </ul>
+  <div class="prose">
+  <section aria-labelledby="h-tips">
+    <h2 id="h-tips">Good to know</h2>
+    <ul>
+      {{tips}}
+    </ul>
+  </section>
+{{related}}  </div>
+</main>
+
+<footer class="site-footer">
+  <div class="wrap">
+    <p class="disclaimer">Work At Hill is an independent directory and is not affiliated with or endorsed by the U.S. Air Force, the Department of Defense, or any listed employer.</p>
+    <p class="fine">Free for job seekers. Every employer is listed free, and nobody can pay to rank higher. Links go straight to each employer's careers site. <a href="../../">Home</a> · <a href="../../employers/">Employers</a> · <a href="../">Jobs by type</a> · <a href="../../how-hiring-works/">How hiring at Hill works</a> · <a href="../../get-trained/">Get Trained</a> · <a href="../../about/">About</a> · <a href="../../privacy/">Privacy</a></p>
+  </div>
+</footer>
+</body>
+</html>

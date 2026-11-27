@@ -3,7 +3,7 @@
 // instead of waiting for their next crawl. Node built-ins only.
 //
 // Usage: node scripts/indexnow.mjs [--scope all|home] [--dry-run]
-//   --scope all   every page in the sitemap (after a push to main: content may have changed anywhere)
+//   --scope all   every page in the sitemap, employer pages included (after a push to main: content may have changed anywhere)
 //   --scope home  only the home page (the daily rebuild refreshes job counts and events there)
 //   --dry-run     print what would be sent, send nothing
 //
@@ -20,11 +20,11 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 export const INDEXNOW_ENDPOINT = 'https://api.indexnow.org/indexnow';
 
 /** The JSON body for one IndexNow submission, or null when IndexNow is off. */
-export function buildSubmission(site, bases, scope = 'all') {
+export function buildSubmission(site, bases, scope = 'all', employers = [], jobTypes = null) {
   const keyFile = indexNowKeyFile(site);
   if (!keyFile) return null;
   const root = site.siteUrl.replace(/\/$/, '');
-  const paths = scope === 'home' ? ['/'] : sitemapPaths(bases);
+  const paths = scope === 'home' ? ['/'] : sitemapPaths(bases, employers, jobTypes);
   return {
     host: new URL(root).host,
     key: keyFile.body,
@@ -55,8 +55,9 @@ async function main() {
     return;
   }
   const site = JSON.parse(await readFile(path.join(ROOT, 'data/site.json'), 'utf8'));
-  const { bases } = JSON.parse(await readFile(path.join(ROOT, 'data/employers.json'), 'utf8'));
-  const body = buildSubmission(site, bases, scope);
+  const { bases, employers } = JSON.parse(await readFile(path.join(ROOT, 'data/employers.json'), 'utf8'));
+  const jobTypes = JSON.parse(await readFile(path.join(ROOT, 'data/job-types.json'), 'utf8'));
+  const body = buildSubmission(site, bases, scope, employers, jobTypes);
   if (!body) {
     console.log('IndexNow: off (no indexNowKey in data/site.json), nothing sent');
     return;

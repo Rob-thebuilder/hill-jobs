@@ -18,7 +18,8 @@ test('directory lists every employer once, grouped by type, A–Z within each gr
   for (const [block, type] of sections.map((m) => [m[0], m[1]])) {
     const ids = [...block.matchAll(/data-type="([a-z]+)"[^>]*data-id="([^"]+)"/g)];
     assert.ok(ids.every(([, t]) => t === type), `${type} group holds only ${type}`);
-    const names = [...block.matchAll(/<h3 id="e-[^"]+">([^<]+)<\/h3>/g)].map((m) => m[1]);
+    const names = [...block.matchAll(/<h3 id="e-[^"]+"><a class="card-name" href="\.\.\/employers\/[a-z0-9-]+\/">([^<]+)<\/a><\/h3>/g)].map((m) => m[1]);
+    assert.equal(names.length, ids.length, `${type}: every card name links to its employer page`);
     assert.deepEqual(names, [...names].sort((a, b) => a.localeCompare(b, 'en', { sensitivity: 'base', numeric: true })));
     assert.match(block, new RegExp(`${GROUP_TITLES[type].replace('&', '&amp;')} <span class="group-n">${ids.length}</span>`));
   }

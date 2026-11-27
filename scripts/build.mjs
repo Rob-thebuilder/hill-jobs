@@ -164,7 +164,7 @@ function renderCard(e, site, jobCounts, h = 'h2', prefix = './') {
   const suggest = listingLink(site, prefix, 'fix', e.name);
   return `<li><article class="card" data-type="${esc(e.type)}" data-cats="${esc(e.categories.join(' '))}" data-id="${esc(e.id)}" aria-labelledby="e-${esc(e.id)}">
 <div class="card-top"><span class="badge badge-${esc(e.type)}">${esc(typeLabel)}</span></div>
-<${h} id="e-${esc(e.id)}">${esc(e.name)}</${h}>
+<${h} id="e-${esc(e.id)}"><a class="card-name" href="${prefix}employers/${esc(e.id)}/">${esc(e.name)}</a></${h}>
 <p class="desc">${esc(e.description)}</p>
 <ul class="tags" aria-label="Job categories">${catLabels.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
 <p class="why" hidden></p>
@@ -266,6 +266,324 @@ ${list.map((e) => renderCard(e, site, jobCounts, 'h3', '../')).join('\n')}
     typeChips: renderChips(employers).typeChips,
     groups,
     searchData: searchData(employers, synonyms, jobCounts, careerTitles, pages, '../'),
+  });
+}
+
+// ---------- One page per employer (/employers/<id>/) ----------
+
+/** The employer page's path, e.g. /employers/boeing/. */
+export const employerPath = (e) => `/employers/${e.id}/`;
+
+/** Cuts text at a word boundary so meta descriptions stay under the length search engines show. */
+function clip(s, max) {
+  if (s.length <= max) return s;
+  const cut = s.slice(0, max - 1);
+  return `${cut.slice(0, Math.max(cut.lastIndexOf(' '), 40)).replace(/[\s,;:–-]+$/, '')}…`;
+}
+
+/** Up to `n` other employers at the same base that share the most job categories (same type breaks ties). */
+export function similarEmployers(e, allEmployers, n = 6) {
+  return allEmployers
+    .filter((o) => o.base === e.base && o.id !== e.id)
+    .map((o) => ({ o, score: o.categories.filter((c) => e.categories.includes(c)).length * 2 + (o.type === e.type ? 1 : 0) }))
+    .filter((x) => x.score >= 2)
+    .sort((a, b) => b.score - a.score || a.o.name.localeCompare(b.o.name, 'en', { sensitivity: 'base', numeric: true }))
+    .slice(0, n)
+    .map((x) => x.o);
+}
+
+const MAX_PAGE_TITLES = 20;
+
+/** One employer's own page: what they do at Hill, kinds of work, live job titles, similar employers. */
+export function renderEmployerPage(e, base, allEmployers, site, template, jobCounts = null, careerTitles = null, today = null, jobTypes = null) {
+  const root = site.siteUrl.replace(/\/$/, '');
+  const label = `${base.name}, ${STATE_NAMES[base.state] || base.state}`;
+  const canonical = `${root}${employerPath(e)}`;
+  const prefix = '../../';
+  const name = esc(e.name);
+
+  const secondary = e.secondaryUrl
+    ? `    <a class="link-secondary" href="${esc(e.secondaryUrl)}" target="_blank" rel="noopener">${e.type === 'federal' ? 'Agency hiring page' : 'More openings'}<span class="sr-only"> for ${name}</span>${NEW_TAB}</a>\n`
+    : '';
+  const roles = e.roles.length
+    ? `    <p>${name} hires people at Hill for work like:</p>\n    <ul>\n${e.roles.map((r) => `      <li>${esc(r)}</li>`).join('\n')}\n    </ul>\n`
+    : '';
+  const categories = e.categories
+    .map((c) => `<li><a href="${prefix}?cat=${encodeURIComponent(c)}">${esc(LABELS.categories[c])}<span class="sr-only">: more Hill employers</span></a></li>`)
+    .join('');
+
+  // Live titles: USAJOBS for federal employers, careers sites for contractors (both read at build time).
+  const usaTitles = jobCounts?.titles?.[e.id];
+  const list = (usaTitles?.length ? usaTitles : careerTitles?.[e.id]) || [];
+  const checked = usaTitles?.length ? jobCounts.checkedAt : today;
+  const unique = [...new Set(list)];
+  const shown = unique.slice(0, MAX_PAGE_TITLES);
+  const titles = shown.length
+    ? `
+  <section aria-labelledby="h-titles">
+    <h2 id="h-titles">Recent openings near Hill</h2>
+    <p class="note">Job titles listed on ${name}'s site${checked ? `, checked <time datetime="${esc(checked)}">${dateLabel(checked)}</time>` : ''}. Openings change daily, so confirm on their site.</p>
+    <ul class="emp-titles">
+${shown.map((t) => `      <li>${esc(t)}</li>`).join('\n')}
+    </ul>${unique.length > shown.length ? `\n    <p class="note">Plus ${unique.length - shown.length} more on their site.</p>` : ''}
+  </section>
+`
+    : '';
+
+  const tips = [
+    `      <li><a href="${prefix}how-hiring-works/">How hiring at Hill works</a>: base access, clearances and what to expect after you apply.</li>`,
+    e.type === 'federal'
+      ? `      <li>Federal jobs use a long, detailed resume. <a href="${prefix}?tab=resume#resume-help">Free federal resume help near Hill</a>.</li>`
+      : `      <li>Many contractor sites screen resumes by keyword. Match the wording in the posting. <a href="${prefix}?tab=resume#resume-help">Free resume help near Hill</a>.</li>`,
+    e.categories.includes('trades-maintenance')
+      ? `      <li>Need a certificate first? <a href="${prefix}get-trained/">Trade schools and apprenticeships near Hill</a>.</li>`
+      : '',
+    `      <li><a href="${prefix}?tab=events#events">Upcoming job fairs and hiring events</a>, where recruiters often meet applicants in person.</li>`,
+  ].filter(Boolean).join('\n') + '\n';
+
+  const types = jobTypesFor(e, jobTypes);
+  const jobTypeLinks = types.length
+    ? `    <p class="emp-jobtypes">Browse by job type: ${types.map((t) => `<a href="${prefix}jobs/${esc(t.id)}/">${esc(t.name)} jobs</a>`).join(' · ')}</p>\n`
+    : '';
+
+  const sim = similarEmployers(e, allEmployers);
+  const similar = sim.length
+    ? `
+  <section aria-labelledby="h-similar">
+    <h2 id="h-similar">Similar employers at Hill</h2>
+    <ul class="emp-similar">
+${sim.map((o) => `      <li><a href="../${esc(o.id)}/">${esc(o.name)}</a> <span class="emp-sim-type">${esc(LABELS.types[o.type])}</span></li>`).join('\n')}
+    </ul>
+    <p><a href="../">All employers at Hill →</a></p>
+  </section>
+`
+    : '';
+
+  const fix = listingLink(site, prefix, 'fix', e.name);
+  const suggest = fix
+    ? `  <p class="emp-fine emp-suggest">Something out of date? <a href="${esc(fix.href)}"${fix.newTab ? ' target="_blank" rel="noopener"' : ''}>Suggest a change<span class="sr-only"> for ${name}</span>${fix.newTab ? NEW_TAB : ''}</a></p>\n`
+    : '';
+
+  const breadcrumbs = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: site.siteName, item: `${root}/` },
+      { '@type': 'ListItem', position: 2, name: 'Employers', item: `${root}/employers/` },
+      { '@type': 'ListItem', position: 3, name: e.name, item: canonical },
+    ],
+  }).replace(/</g, '\\u003c');
+
+  const about = /[.!?]$/.test(e.description) ? e.description : `${e.description}.`;
+  return fill(template, {
+    analytics: renderAnalytics(site),
+    siteName: esc(site.siteName),
+    title: esc(`${e.name} jobs at ${base.name}, ${base.state} · ${site.siteName}`),
+    ogTitle: esc(`${e.name} jobs at ${label}`),
+    description: esc(clip(`${e.name} at ${base.name}: ${about} See kinds of work, recent openings and where to apply.`, 160)),
+    canonical: esc(canonical),
+    ogImage: esc(`${root}/assets/og.png`),
+    breadcrumbs,
+    name,
+    type: esc(e.type),
+    typeLabel: esc(LABELS.types[e.type]),
+    baseLabel: esc(label),
+    openJobs: openJobsLine(e.id, jobCounts) ? `    ${openJobsLine(e.id, jobCounts)}` : '',
+    jobsUrl: esc(e.jobsUrl),
+    secondary,
+    verified: verifiedLabel(e.verified),
+    about: esc(about),
+    roles,
+    categories,
+    jobTypeLinks,
+    titles,
+    tips,
+    similar,
+    suggest,
+  });
+}
+
+// ---------- Job-type pages (/jobs/ and /jobs/<id>/) ----------
+
+export const jobTypePath = (t) => `/jobs/${t.id}/`;
+
+/** Problems with data/job-types.json (ids, groups, patterns that don't compile, unknown related ids). */
+export function validateJobTypes(file, employers = []) {
+  const errors = [];
+  const groups = file?.groups || {};
+  const types = Array.isArray(file?.types) ? file.types : [];
+  if (!types.length) return ['types must be a non-empty array'];
+  const ids = new Set();
+  for (const [i, t] of types.entries()) {
+    const at = `types[${i}]${t?.id ? ` (${t.id})` : ''}`;
+    if (!/^[a-z0-9]+(-[a-z0-9]+)*$/.test(t?.id || '')) errors.push(`${at}: id must be lowercase-with-dashes`);
+    else if (ids.has(t.id)) errors.push(`${at}: duplicate id`);
+    ids.add(t?.id);
+    if (!isText(t?.name, 60)) errors.push(`${at}: name is required (60 characters max)`);
+    if (!(t?.group in groups)) errors.push(`${at}: group must be one of ${Object.keys(groups).join(', ')}`);
+    if (!isText(t?.intro, 500)) errors.push(`${at}: intro is required (500 characters max)`);
+    if (!['wg', 'gs', 'mixed'].includes(t?.pay)) errors.push(`${at}: pay must be wg, gs or mixed`);
+    if (typeof t?.trades !== 'boolean') errors.push(`${at}: trades must be true or false`);
+    if (t?.category !== undefined && !(t.category in LABELS.categories)) errors.push(`${at}: unknown category "${t.category}"`);
+    for (const key of ['match', 'exclude']) {
+      if (!Array.isArray(t?.[key])) { errors.push(`${at}: ${key} must be an array`); continue; }
+      for (const p of t[key]) {
+        try { new RegExp(p, 'i'); } catch { errors.push(`${at}: ${key} pattern "${p}" is not a valid regular expression`); }
+      }
+    }
+    if (!t?.category && !t?.match?.length) errors.push(`${at}: needs at least one match pattern (or a category)`);
+  }
+  for (const t of types) {
+    for (const r of t.related || []) if (!ids.has(r)) errors.push(`${t.id}: related "${r}" is not a job type`);
+  }
+  if (!errors.length) {
+    for (const t of types) {
+      if (jobTypeEmployers(t, employers).length === 0) errors.push(`${t.id}: matches no employer`);
+    }
+  }
+  return errors;
+}
+
+/** A test for one role or job title: matches a 'match' pattern and no 'exclude' pattern. */
+export function jobTypeMatcher(t) {
+  const yes = (t.match || []).map((p) => new RegExp(p, 'i'));
+  const no = (t.exclude || []).map((p) => new RegExp(p, 'i'));
+  return (text) => yes.some((r) => r.test(text)) && !no.some((r) => r.test(text));
+}
+
+/** Hill employers for a job type, A–Z, each with the roles that matched. */
+export function jobTypeEmployers(t, employers) {
+  const ok = jobTypeMatcher(t);
+  return employers
+    .filter((e) => e.base === 'hill')
+    .map((e) => ({ e, roles: e.roles.filter(ok) }))
+    .filter(({ e, roles }) => (t.category ? e.categories.includes(t.category) : roles.length > 0))
+    .sort((a, b) => a.e.name.localeCompare(b.e.name, 'en', { sensitivity: 'base', numeric: true }));
+}
+
+/** Job types that list this employer (for links on its page). */
+export function jobTypesFor(e, jobTypes) {
+  return (jobTypes?.types || []).filter((t) => jobTypeEmployers(t, [e]).length > 0);
+}
+
+const MAX_TITLES_PER_ROW = 3;
+
+const PAY_TIPS = {
+  wg: 'Federal trades jobs are paid by the hour on the WG (wage grade) scale; contractors set their own pay.',
+  gs: 'Federal jobs in this field are usually on the GS scale (some say "NH" pay bands); contractors set their own pay.',
+  mixed: 'Federal jobs here may be on the GS or WG scale, and some are nonappropriated-fund (NAF) jobs; contractors set their own pay.',
+};
+
+/** One job type's page: who hires for it at Hill, the matching roles, and live matching openings. */
+export function renderJobType(t, jobTypes, base, allEmployers, site, template, jobCounts = null, careerTitles = null, today = null) {
+  const root = site.siteUrl.replace(/\/$/, '');
+  const label = `${base.name}, ${STATE_NAMES[base.state] || base.state}`;
+  const prefix = '../../';
+  const ok = jobTypeMatcher(t);
+  const rows = jobTypeEmployers(t, allEmployers);
+  const lower = t.name.charAt(0).toLowerCase() + t.name.slice(1);
+
+  let openTotal = 0;
+  const cards = rows.map(({ e, roles }) => {
+    const usa = jobCounts?.titles?.[e.id];
+    const live = [...new Set(((usa?.length ? usa : careerTitles?.[e.id]) || []).filter(ok))];
+    openTotal += live.length;
+    const shownTitles = live.slice(0, MAX_TITLES_PER_ROW);
+    const what = roles.length
+      ? `<p class="jt-roles"><span class="jt-label">Roles:</span> ${roles.map(esc).join(', ')}</p>`
+      : `<p class="desc">${esc(e.description)}</p>`;
+    const open = shownTitles.length
+      ? `\n<p class="jt-open"><span class="jt-label">Open now:</span> ${shownTitles.map(esc).join(', ')}${live.length > shownTitles.length ? ` <span class="jt-more">+${live.length - shownTitles.length} more</span>` : ''}</p>`
+      : '';
+    return `<li><article class="card" aria-labelledby="jt-${esc(e.id)}">
+<div class="card-top"><span class="badge badge-${esc(e.type)}">${esc(LABELS.types[e.type])}</span></div>
+<h2 id="jt-${esc(e.id)}"><a class="card-name" href="../../employers/${esc(e.id)}/">${esc(e.name)}</a></h2>
+${what}${open}
+<div class="card-actions">
+<a class="btn-jobs" href="${esc(e.jobsUrl)}" target="_blank" rel="noopener">View jobs <span aria-hidden="true">→</span><span class="sr-only"> at ${esc(e.name)}</span>${NEW_TAB}</a>
+</div>
+</article></li>`;
+  });
+
+  const openLine = openTotal
+    ? `<p class="jt-summary"><strong>${openTotal}</strong> matching opening${openTotal === 1 ? '' : 's'} on these employers' sites${today ? `, checked <time datetime="${esc(today)}">${dateLabel(today)}</time>` : ''}.</p>\n`
+    : '';
+
+  const tips = [
+    `<li>${esc(PAY_TIPS[t.pay])} <a href="${prefix}how-hiring-works/#pay">How pay works at Hill</a>.</li>`,
+    `<li>Federal or contractor? <a href="${prefix}how-hiring-works/#federal-or-contractor">The difference, and how each one hires</a>.</li>`,
+    t.trades ? `<li>Need a certificate or apprenticeship first? <a href="${prefix}get-trained/">Trade schools and apprenticeships near Hill</a>.</li>` : '',
+    `<li><a href="${prefix}?tab=resume#resume-help">Free resume help near Hill</a>, and <a href="${prefix}?tab=events#events">upcoming job fairs</a>.</li>`,
+  ].filter(Boolean).join('\n      ');
+
+  const byId = new Map(jobTypes.types.map((x) => [x.id, x]));
+  const related = (t.related || []).map((id) => byId.get(id)).filter(Boolean);
+  const relatedHtml = related.length
+    ? `
+  <section aria-labelledby="h-related">
+    <h2 id="h-related">Related job types</h2>
+    <ul class="jt-related">
+${related.map((r) => `      <li><a href="../${esc(r.id)}/">${esc(r.name)} jobs</a></li>`).join('\n')}
+    </ul>
+    <p><a href="../">All job types →</a></p>
+  </section>
+`
+    : '';
+
+  const canonical = `${root}${jobTypePath(t)}`;
+  const breadcrumbs = JSON.stringify({
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: site.siteName, item: `${root}/` },
+      { '@type': 'ListItem', position: 2, name: 'Jobs by type', item: `${root}/jobs/` },
+      { '@type': 'ListItem', position: 3, name: `${t.name} jobs`, item: canonical },
+    ],
+  }).replace(/</g, '\\u003c');
+
+  return fill(template, {
+    analytics: renderAnalytics(site),
+    siteName: esc(site.siteName),
+    title: esc(`${t.name} jobs at ${base.name}, ${base.state} · ${site.siteName}`),
+    ogTitle: esc(`${t.name} jobs at ${label}`),
+    description: esc(clip(`${t.name} jobs at ${base.name}: ${countText(rows.length)} that hire for this work, with roles, current openings and direct links to apply.`, 160)),
+    canonical: esc(canonical),
+    ogImage: esc(`${root}/assets/og.png`),
+    breadcrumbs,
+    name: esc(t.name),
+    lower: esc(lower),
+    baseLabel: esc(label),
+    count: countText(rows.length),
+    intro: esc(t.intro),
+    openLine,
+    cards: cards.join('\n'),
+    tips,
+    related: relatedHtml,
+  });
+}
+
+/** The /jobs/ index: every job type, grouped, with how many employers hire for it. */
+export function renderJobsIndex(jobTypes, base, allEmployers, site, template) {
+  const root = site.siteUrl.replace(/\/$/, '');
+  const label = `${base.name}, ${STATE_NAMES[base.state] || base.state}`;
+  const groups = Object.entries(jobTypes.groups)
+    .map(([g, title]) => [g, title, jobTypes.types.filter((t) => t.group === g)])
+    .filter(([, , list]) => list.length)
+    .map(([g, title, list]) => `  <section aria-labelledby="jg-${esc(g)}">
+    <h2 id="jg-${esc(g)}">${esc(title)}</h2>
+    <ul class="jt-index">
+${list.map((t) => `      <li><a href="./${esc(t.id)}/">${esc(t.name)}</a> <span class="jt-n">${countText(jobTypeEmployers(t, allEmployers).length)}</span></li>`).join('\n')}
+    </ul>
+  </section>`)
+    .join('\n');
+  return fill(template, {
+    analytics: renderAnalytics(site),
+    siteName: esc(site.siteName),
+    baseLabel: esc(label),
+    canonical: esc(`${root}/jobs/`),
+    ogImage: esc(`${root}/assets/og.png`),
+    description: esc(`Jobs at ${label} by type: aircraft mechanic, painting and LO coatings, engineering, IT and cyber, logistics and more, with every employer that hires for each.`),
+    groups,
   });
 }
 
@@ -550,14 +868,15 @@ export function renderGuide(site, template) {
 }
 
 /** Every indexable page the build writes. /thanks/ is left out: it's noindex. */
-export function sitemapPaths(bases) {
-  return [...new Set([...Object.values(bases).map((b) => b.path), '/employers/', '/get-trained/', '/how-hiring-works/', '/about/', '/privacy/'])];
+export function sitemapPaths(bases, employers = [], jobTypes = null) {
+  const jobs = jobTypes?.types?.length ? ['/jobs/', ...jobTypes.types.map(jobTypePath)] : [];
+  return [...new Set([...Object.values(bases).map((b) => b.path), '/employers/', ...jobs, '/get-trained/', '/how-hiring-works/', '/about/', '/privacy/', ...employers.filter((e) => e.base === 'hill').map(employerPath)])];
 }
 
 /** sitemap.xml for the indexable pages; lastmod is the build date (YYYY-MM-DD). */
-export function renderSitemap(site, bases, date) {
+export function renderSitemap(site, bases, date, employers = [], jobTypes = null) {
   const root = site.siteUrl.replace(/\/$/, '');
-  const urls = sitemapPaths(bases)
+  const urls = sitemapPaths(bases, employers, jobTypes)
     .map((p) => `  <url>\n    <loc>${esc(root + p)}</loc>\n    <lastmod>${esc(date)}</lastmod>\n  </url>`)
     .join('\n');
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
@@ -956,6 +1275,11 @@ export function validateSitePages(file) {
 export function pageEntries(sitePages, extras = {}, training = []) {
   const out = [];
   for (const p of sitePages || []) out.push({ id: `s-${p.id}`, kind: p.kind, title: p.title, path: p.path, keywords: p.keywords });
+  // Job-type pages: found by their name and by every employer role they list ("machinist", "isso").
+  for (const t of extras.jobTypes?.types || []) {
+    const roles = [...new Set(jobTypeEmployers(t, extras.employers || []).flatMap((r) => r.roles))];
+    out.push({ id: `j-${t.id}`, kind: 'Job type', title: `${t.name} jobs at Hill`, path: `jobs/${t.id}/`, keywords: [t.name, ...roles] });
+  }
   for (const t of training) {
     out.push({
       id: `t-${t.id}`, kind: 'Training', title: t.name, context: `${t.provider} · ${t.city}`, path: `get-trained/#t-${t.id}`,
@@ -1079,6 +1403,7 @@ async function main() {
     readJson('data/training.json'),
     readJson('data/site-pages.json'),
   ]);
+  const jobTypes = await readJson('data/job-types.json');
   const rolesIndex = Search.createIndex(
     data.employers.map((e) => ({ id: e.id, name: e.name, description: e.description, roles: e.roles || [], titles: [] })),
     synonyms,
@@ -1094,6 +1419,7 @@ async function main() {
     ...validateTraining(trainingFile, rolesIndex).map((e) => `training.json: ${e}`),
     ...validateSitePages(sitePagesFile).map((e) => `site-pages.json: ${e}`),
     ...validateEvents(eventsFile, eventSources).map((e) => `events.json: ${e}`),
+    ...validateJobTypes(jobTypes, data.employers).map((e) => `job-types.json: ${e}`),
     ...validateNewsletter(site).map((e) => `site.json newsletter: ${e}`),
     ...validateContact(site).map((e) => `site.json contact: ${e}`),
     ...validateAnalytics(site).map((e) => `site.json: ${e}`),
@@ -1163,7 +1489,7 @@ async function main() {
   const curated = eventsFile.events.map((e) => ({ ...e, start: e.start, end: e.end || null, allDay: !/T/.test(e.start), venue: e.venue || '' }));
   const eventList = upcoming([...curated, ...pulled], today);
   const extras = { resources: resourcesFile.resources, events: eventList, annual: eventsFile.annual, eventsChecked, programs: programsFile.programs };
-  extras.pages = pageEntries(sitePagesFile.pages, extras, trainingFile.training);
+  extras.pages = pageEntries(sitePagesFile.pages, { ...extras, jobTypes, employers: data.employers }, trainingFile.training);
 
   if (!contactReady(site) && !site.form) console.warn('WARN: no contact.web3formsKey or "form" config in data/site.json; "Suggest a change" and recruiter links are left out.');
   if (!contactReady(site)) console.warn('WARN: data/site.json has no contact.web3formsKey; the Let\'s Connect form is left out.');
@@ -1204,6 +1530,28 @@ async function main() {
   await mkdir(path.join(DIST, 'employers'), { recursive: true });
   await writeFile(path.join(DIST, 'employers', 'index.html'), withSecurityMeta(renderDirectory('hill', data.bases.hill, data.employers, site, dirTemplate, jobCounts, synonyms, careerTitles, extras.pages)));
 
+  // One page per Hill employer, linked from every card.
+  const empTemplate = await readFile(path.join(ROOT, 'templates/employer.html'), 'utf8');
+  const hillEmployers = data.employers.filter((e) => e.base === 'hill');
+  for (const e of hillEmployers) {
+    const dir = path.join(DIST, 'employers', e.id);
+    await mkdir(dir, { recursive: true });
+    await writeFile(path.join(dir, 'index.html'), withSecurityMeta(renderEmployerPage(e, data.bases.hill, data.employers, site, empTemplate, jobCounts, careerTitles, today, jobTypes)));
+  }
+  console.log(`✓ wrote ${hillEmployers.length} employer pages`);
+
+  // Jobs by type: an index at /jobs/ and one page per job type (data/job-types.json).
+  const jobsTemplate = await readFile(path.join(ROOT, 'templates/jobs.html'), 'utf8');
+  const jobTypeTemplate = await readFile(path.join(ROOT, 'templates/job-type.html'), 'utf8');
+  await mkdir(path.join(DIST, 'jobs'), { recursive: true });
+  await writeFile(path.join(DIST, 'jobs', 'index.html'), withSecurityMeta(renderJobsIndex(jobTypes, data.bases.hill, data.employers, site, jobsTemplate)));
+  for (const t of jobTypes.types) {
+    const dir = path.join(DIST, 'jobs', t.id);
+    await mkdir(dir, { recursive: true });
+    await writeFile(path.join(dir, 'index.html'), withSecurityMeta(renderJobType(t, jobTypes, data.bases.hill, data.employers, site, jobTypeTemplate, jobCounts, careerTitles, today)));
+  }
+  console.log(`✓ wrote ${jobTypes.types.length} job-type pages and /jobs/`);
+
   // Thank-you page the contact form returns to when JavaScript is off.
   const thanksTemplate = await readFile(path.join(ROOT, 'templates/thanks.html'), 'utf8');
   await mkdir(path.join(DIST, 'thanks'), { recursive: true });
@@ -1226,9 +1574,9 @@ async function main() {
   await writeFile(path.join(DIST, 'about', 'index.html'), withSecurityMeta(renderAbout(site, aboutTemplate, hillCount)));
 
   // Sitemap and robots.txt for search engines (indexable pages only; /thanks/ is noindex).
-  await writeFile(path.join(DIST, 'sitemap.xml'), renderSitemap(site, data.bases, today));
+  await writeFile(path.join(DIST, 'sitemap.xml'), renderSitemap(site, data.bases, today, data.employers, jobTypes));
   await writeFile(path.join(DIST, 'robots.txt'), renderRobots(site));
-  console.log(`✓ wrote sitemap.xml (${sitemapPaths(data.bases).length} pages) and robots.txt`);
+  console.log(`✓ wrote sitemap.xml (${sitemapPaths(data.bases, data.employers, jobTypes).length} pages) and robots.txt`);
   const keyFile = indexNowKeyFile(site);
   if (keyFile) {
     await writeFile(path.join(DIST, keyFile.name), keyFile.body);
