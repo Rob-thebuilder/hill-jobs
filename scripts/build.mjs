@@ -169,8 +169,8 @@ function renderCard(e, site, jobCounts, h = 'h2', prefix = './') {
 <ul class="tags" aria-label="Job categories">${catLabels.map((l) => `<li>${esc(l)}</li>`).join('')}</ul>
 <p class="why" hidden></p>
 <div class="card-actions">
-${openJobsLine(e.id, jobCounts)}<a class="btn-jobs" href="${esc(e.jobsUrl)}" target="_blank" rel="noopener">View jobs <span aria-hidden="true">→</span><span class="sr-only"> at ${esc(e.name)}</span>${NEW_TAB}</a>
-${e.secondaryUrl ? `<a class="link-secondary" href="${esc(e.secondaryUrl)}" target="_blank" rel="noopener">${e.type === 'federal' ? 'Agency hiring page' : 'More openings'}<span class="sr-only"> for ${esc(e.name)}</span>${NEW_TAB}</a>` : ''}
+${openJobsLine(e.id, jobCounts)}<a class="btn-jobs" href="${esc(e.jobsUrl)}" target="_blank" rel="noopener" data-employer="${esc(e.id)}">View jobs <span aria-hidden="true">→</span><span class="sr-only"> at ${esc(e.name)}</span>${NEW_TAB}</a>
+${e.secondaryUrl ? `<a class="link-secondary" href="${esc(e.secondaryUrl)}" target="_blank" rel="noopener" data-employer="${esc(e.id)}" data-link="secondary">${e.type === 'federal' ? 'Agency hiring page' : 'More openings'}<span class="sr-only"> for ${esc(e.name)}</span>${NEW_TAB}</a>` : ''}
 </div>
 <p class="meta"><span>Link verified ${verifiedLabel(e.verified)}</span>${suggest ? `<a href="${esc(suggest.href)}"${suggest.newTab ? ' target="_blank" rel="noopener"' : ''}>Suggest a change<span class="sr-only"> for ${esc(e.name)}</span>${suggest.newTab ? NEW_TAB : ''}</a>` : ''}</p>
 </article></li>`;
@@ -304,7 +304,7 @@ export function renderEmployerPage(e, base, allEmployers, site, template, jobCou
   const name = esc(e.name);
 
   const secondary = e.secondaryUrl
-    ? `    <a class="link-secondary" href="${esc(e.secondaryUrl)}" target="_blank" rel="noopener">${e.type === 'federal' ? 'Agency hiring page' : 'More openings'}<span class="sr-only"> for ${name}</span>${NEW_TAB}</a>\n`
+    ? `    <a class="link-secondary" href="${esc(e.secondaryUrl)}" target="_blank" rel="noopener" data-employer="${esc(e.id)}" data-link="secondary">${e.type === 'federal' ? 'Agency hiring page' : 'More openings'}<span class="sr-only"> for ${name}</span>${NEW_TAB}</a>\n`
     : '';
   const roles = e.roles.length
     ? `    <p>${name} hires people at Hill for work like:</p>\n    <ul>\n${e.roles.map((r) => `      <li>${esc(r)}</li>`).join('\n')}\n    </ul>\n`
@@ -391,6 +391,7 @@ ${sim.map((o) => `      <li><a href="../${esc(o.id)}/">${esc(o.name)}</a> <span 
     baseLabel: esc(label),
     openJobs: openJobsLine(e.id, jobCounts) ? `    ${openJobsLine(e.id, jobCounts)}` : '',
     jobsUrl: esc(e.jobsUrl),
+    id: esc(e.id),
     secondary,
     verified: verifiedLabel(e.verified),
     about: esc(about),
@@ -501,7 +502,7 @@ export function renderJobType(t, jobTypes, base, allEmployers, site, template, j
 <h2 id="jt-${esc(e.id)}"><a class="card-name" href="../../employers/${esc(e.id)}/">${esc(e.name)}</a></h2>
 ${what}${open}
 <div class="card-actions">
-<a class="btn-jobs" href="${esc(e.jobsUrl)}" target="_blank" rel="noopener">View jobs <span aria-hidden="true">→</span><span class="sr-only"> at ${esc(e.name)}</span>${NEW_TAB}</a>
+<a class="btn-jobs" href="${esc(e.jobsUrl)}" target="_blank" rel="noopener" data-employer="${esc(e.id)}">View jobs <span aria-hidden="true">→</span><span class="sr-only"> at ${esc(e.name)}</span>${NEW_TAB}</a>
 </div>
 </article></li>`;
   });
@@ -653,6 +654,26 @@ export function renderAnalytics(site) {
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', '${id}');
+  // "View jobs" clicks: which employer, from which kind of page. Links carry data-employer.
+  (function () {
+    function send(e) {
+      var a = e.target && e.target.closest ? e.target.closest('a[data-employer]') : null;
+      if (!a || (e.type === 'auxclick' && e.button !== 1)) return;
+      var parts = location.pathname.split('/').filter(Boolean);
+      var jobType = parts[0] === 'jobs' && parts.length === 2 ? parts[1] : undefined;
+      var q = new URLSearchParams(location.search).get('q');
+      gtag('event', 'view_jobs', {
+        employer_id: a.getAttribute('data-employer'),
+        link_type: a.getAttribute('data-link') || 'jobs',
+        page_type: !parts.length ? 'home' : parts[0] === 'employers' ? (parts.length === 1 ? 'directory' : 'employer') : jobType ? 'job_type' : 'other',
+        job_type: jobType,
+        search_term: q ? q.slice(0, 100) : undefined,
+        transport_type: 'beacon'
+      });
+    }
+    document.addEventListener('click', send);
+    document.addEventListener('auxclick', send);
+  })();
 </script>
 `;
 }

@@ -31,7 +31,7 @@ test('directory page: one h1, search box, All + type pills, careers buttons open
   assert.match(html, /<input id="dq" name="q" type="search"/);
   assert.match(html, /data-type="" aria-pressed="true">All<\/button>/);
   for (const t of new Set(hill.map((e) => e.type))) assert.match(html, new RegExp(`data-type="${t}" aria-pressed="false"`));
-  const buttons = [...html.matchAll(/<a class="btn-jobs" href="[^"]+" target="_blank" rel="noopener">/g)];
+  const buttons = [...html.matchAll(/<a class="btn-jobs" href="[^"]+" target="_blank" rel="noopener" data-employer="[a-z0-9-]+">/g)];
   assert.equal(buttons.length, hill.length);
   assert.match(html, /<link rel="canonical" href="https:\/\/workathill\.com\/employers\/">/);
   assert.ok(!html.includes('{{'));

@@ -86,3 +86,20 @@ test('index lists every type in its group, and employer pages link back to their
   for (const t of jobTypesFor(lm, jobTypes)) assert.ok(ep.includes(`href="../../jobs/${t.id}/"`), t.id);
 });
 
+
+test('every "View jobs" link on home, directory, employer and job-type pages carries data-employer for the click event', async () => {
+  const { renderBase, renderDirectory } = await import('../scripts/build.mjs');
+  const pages = [
+    renderBase('hill', data.bases.hill, data.employers, site, await read('templates/base.html')),
+    renderDirectory('hill', data.bases.hill, data.employers, site, await read('templates/employers.html')),
+    renderEmployerPage(hill[0], data.bases.hill, data.employers, site, EMP_TEMPLATE, null, null, null, jobTypes),
+    page(byId('engineering')),
+  ];
+  for (const html of pages) {
+    const jobLinks = [...html.matchAll(/<a class="(?:btn-jobs|link-secondary)"[^>]*>/g)].map((m) => m[0]);
+    assert.ok(jobLinks.length > 0);
+    for (const a of jobLinks) assert.match(a, /data-employer="[a-z0-9-]+"/, a);
+  }
+  const lm = page(byId('painting-coatings'));
+  assert.ok(lm.includes('data-employer="lockheed-martin"'));
+});

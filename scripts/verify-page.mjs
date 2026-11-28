@@ -796,6 +796,23 @@ try {
     await p.close();
   }
 
+  // 11f. Analytics: a "View jobs" click sends a view_jobs event with the employer and page type.
+  for (const [rel, want] of [['', 'home'], ['employers/', 'directory'], [`employers/${hill[0].id}/`, 'employer'], ['jobs/aircraft-mechanic/', 'job_type']]) {
+    const p = await openPage(`${ORIGIN}/${rel}`, { width: 390 });
+    const ev = await p.evaluate(`(() => {
+      const tagged = !!document.querySelector('script[src*="googletagmanager.com/gtag/js"]');
+      if (!tagged) return { skipped: 'no analytics tag in this build' };
+      if (typeof gtag !== 'function' || !window.dataLayer) return { broken: 'analytics tag is on the page but its script did not run' };
+      document.addEventListener('click', (e) => e.preventDefault()); // stay on the page
+      const a = document.querySelector('a.btn-jobs[data-employer]');
+      a.click();
+      const hit = [...window.dataLayer].reverse().find((x) => x[0] === 'event' && x[1] === 'view_jobs');
+      return hit ? { employer: hit[2].employer_id, page: hit[2].page_type, job: hit[2].job_type || null, expected: a.getAttribute('data-employer') } : { none: true };
+    })()`);
+    check(`analytics: "View jobs" click on /${rel} sends view_jobs (${want})`, ev.skipped || (ev.employer === ev.expected && ev.page === want && (want !== 'job_type' || ev.job === 'aircraft-mechanic')), JSON.stringify(ev));
+    await p.close();
+  }
+
   // Every page, once more, then: nothing on the site may trip the Content-Security-Policy.
   for (const rel of ['', 'employers/', `employers/${hill[0].id}/`, 'jobs/', 'jobs/aircraft-mechanic/', 'how-hiring-works/', 'get-trained/', 'about/?topic=fix&company=Boeing', 'privacy/', 'thanks/']) {
     const p = await openPage(`${ORIGIN}/${rel}`, { width: 390 });

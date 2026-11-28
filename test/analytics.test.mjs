@@ -15,14 +15,15 @@ const site = JSON.parse(await read('data/site.json'));
 const data = JSON.parse(await read('data/employers.json'));
 const ID = 'G-BGK14WRT9L';
 
-const TAG = `<script async src="https://www.googletagmanager.com/gtag/js?id=${ID}"></script>
+// Google's snippet, exactly, followed by the site's "View jobs" click event in the same script.
+const BASE = `<script async src="https://www.googletagmanager.com/gtag/js?id=${ID}"></script>
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('js', new Date());
   gtag('config', '${ID}');
-</script>
 `;
+const TAG = renderAnalytics(site);
 
 test('site.json carries the GA4 measurement ID', () => {
   assert.equal(site.analyticsId, ID);
@@ -33,7 +34,15 @@ test('site.json carries the GA4 measurement ID', () => {
 });
 
 test('renderAnalytics gives the exact gtag.js snippet, or nothing when the ID is null or invalid', () => {
-  assert.equal(renderAnalytics(site), TAG);
+  assert.ok(TAG.startsWith(BASE), 'starts with Google\'s snippet, unchanged');
+  assert.ok(TAG.endsWith('</script>\n'));
+  assert.equal((TAG.match(/<script>/g) || []).length, 1, 'one inline script (one CSP hash)');
+  assert.match(TAG, /gtag\('event', 'view_jobs'/);
+  assert.match(TAG, /closest\('a\[data-employer\]'\)/);
+  assert.ok(!TAG.includes('innerHTML'));
+  // The inline script must parse: a syntax error would silently stop all visit counting.
+  const code = TAG.match(/<script>\n([\s\S]*?)<\/script>/)[1];
+  assert.doesNotThrow(() => new Function(code), 'inline analytics script has a syntax error');
   assert.equal(renderAnalytics({ ...site, analyticsId: null }), '');
   assert.equal(renderAnalytics({ ...site, analyticsId: '"><script>alert(1)</script>' }), '');
 });
@@ -61,6 +70,7 @@ test('every indexable page has the tag right after <head> (after only the charse
     const pages = [
       ...Object.values(data.bases).map((b) => path.join(b.path, 'index.html')),
       'employers/index.html', 'get-trained/index.html', 'how-hiring-works/index.html', 'about/index.html', 'privacy/index.html',
+      'employers/boeing/index.html', 'jobs/index.html', 'jobs/aircraft-mechanic/index.html',
     ];
     for (const rel of pages) {
       const html = await readFile(path.join(out, rel), 'utf8');
